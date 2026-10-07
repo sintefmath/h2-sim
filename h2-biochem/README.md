@@ -17,9 +17,9 @@ This module extends MRST's capabilities by integrating a bio-chemistry model wit
 
 `setupH2StorageExampleWithSRB_benchmark` supports exactly two PHREEQC backends. Both require Windows, a registered
 `IPhreeqcCOM.Object` (or configured `phreeqcComProgId`), and an explicit absolute `phreeqcDatabaseFile` path to
-`PHREEQC_Modified.DAT`. The database is bundled at
-[`h2-biochem/database/PHREEQC_Modified.DAT`](database/PHREEQC_Modified.DAT); since that folder is on the MATLAB path
-after running `startupH2sim`, `which('PHREEQC_Modified.DAT')` resolves it automatically.
+`h2_biogeochemistry.dat`. The database is bundled at
+[`h2-biochem/database/h2_biogeochemistry.dat`](database/h2_biogeochemistry.dat); since that folder is on the MATLAB path
+after running `startupH2sim`, `which('h2_biogeochemistry.dat')` resolves it automatically.
 
 Set `phreeqcBackend='sequential-compositional-phreeqc'` with `phreeqcTimestepCoupling=true` to run the post-convergence
 compositional kinetics/chemistry split.
@@ -58,7 +58,7 @@ MRST `nbact` is likewise outside the equilibrium-only boundary.
 `phreeqcBackend='sequential-h2biochem-phreeqc'` retains MRST's biochemical
 sources and adds sequential PHREEQC equilibrium feedback.
 It also requires a registered IPhreeqcCOM server and an absolute
-`PHREEQC_Modified.DAT` path, but contains **no** PHREEQC `RATES` or
+`h2_biogeochemistry.dat` path, but contains **no** PHREEQC `RATES` or
 `KINETICS`. MRST's existing `state.nbact` Monod model remains the sole
 reaction owner: bacterial growth, `BactConvertionRate`, and tracer reaction
 sources remain active.
@@ -67,7 +67,7 @@ sources remain active.
 [~, model, schedule, state0] = setupH2StorageExampleWithSRB_benchmark( ...
     'phreeqcBackend', 'sequential-h2biochem-phreeqc', ...
     'phreeqcTimestepCoupling', true, ...
-    'phreeqcDatabaseFile', which('PHREEQC_Modified.DAT'));
+    'phreeqcDatabaseFile', which('h2_biogeochemistry.dat'));
 [wellSols, states, report] = simulateSequentialH2BiochemPhreeqc( ...
     state0, model, schedule);
 ```

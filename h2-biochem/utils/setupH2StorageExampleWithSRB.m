@@ -13,7 +13,7 @@ function [biochemFluid, model, schedule, state0] = setupH2StorageExampleWithSRB(
 %   initial_SO4         - Initial sulfate molality (mol/kg, default: 0.1)
 %   pH                  - pH of the system (default: 7.2)
 
-require ad-props compositional deckformat h2-biochem
+require ad-props compositional deckformat
 
 % --- Parse optional parameters ---
 opt = struct('rate', 'highrate', ...           % 'medrate' or 'highrate'
@@ -65,7 +65,7 @@ rock = makeRock(G, 100 * milli * darcy, 0.20);
 %% 2. Fluid components
 volatileNames   = {'Water', 'Hydrogen', 'CarbonDioxide', 'Methane', 'HydrogenSulfide', 'AceticAcid'};
 volatileSymbols = {'H2O',   'H2',       'CO2',           'C1',      'H2S',             'CH3COOH'};
-compFluid = TableCompositionalMixture(volatileNames, volatileSymbols);
+compFluid = h2BiochemCompositionalMixture(volatileNames, volatileSymbols);
 
 %% 3. Biochemical reactions
 reactNames = {'MethanogenicArchae', 'AcetogenicBacteria', 'SulfateReducingBacteria'};

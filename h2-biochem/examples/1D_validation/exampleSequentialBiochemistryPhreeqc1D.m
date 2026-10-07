@@ -26,9 +26,9 @@ function summary = exampleSequentialBiochemistryPhreeqc1D(varargin)
 %       'phreeqcDatabaseFile', db, 'reactionSubstepMaxDt', 0.4*day);
 %
 % OPTIONAL PARAMETERS:
-%   phreeqcDatabaseFile  - Absolute path to PHREEQC_Modified.DAT. Falls
+%   phreeqcDatabaseFile  - Absolute path to h2_biogeochemistry.dat. Falls
 %                          back to the PHREEQC_DATABASE_FILE environment
-%                          variable, then to `which('PHREEQC_Modified.DAT')`.
+%                          variable, then to `which('h2_biogeochemistry.dat')`.
 %   reactionSubstepMaxDt - Maximum duration of one local reaction/PHREEQC
 %                          substep (default 0.4 day, matching the
 %                          hybrid Picard reference used elsewhere in this
@@ -210,16 +210,16 @@ function databaseFile = resolvePhreeqcDatabaseFile(databaseFile)
         databaseFile = getenv('PHREEQC_DATABASE_FILE');
     end
     if isempty(strtrim(databaseFile))
-        databaseFile = which('PHREEQC_Modified.DAT');
+        databaseFile = which('h2_biogeochemistry.dat');
     end
     if isempty(strtrim(databaseFile)) || ~isfile(databaseFile)
         error('exampleSequentialBiochemistryPhreeqc1D:MissingPhreeqcDatabase', ...
-            ['PHREEQC_Modified.DAT was not found. Pass its absolute path ', ...
+            ['h2_biogeochemistry.dat was not found. Pass its absolute path ', ...
             'using ''phreeqcDatabaseFile'', databaseFile.']);
     end
     [~, name, extension] = fileparts(databaseFile);
-    assert(strcmpi([name, extension], 'PHREEQC_Modified.DAT'), ...
-        'The database must be PHREEQC_Modified.DAT.');
+    assert(strcmpi([name, extension], 'h2_biogeochemistry.dat'), ...
+        'The database must be h2_biogeochemistry.dat.');
 end
 
 %{

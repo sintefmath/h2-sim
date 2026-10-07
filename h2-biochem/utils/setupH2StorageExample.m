@@ -22,7 +22,7 @@ function [biochemFluid, model, schedule, state0] = setupH2StorageExample(varargi
 %   schedule     - Cyclic schedule (injection, shut-in, production)
 %   state0       - Initial state
 
-    require ad-props compositional deckformat h2-biochem
+    require ad-props compositional deckformat
 
     % --- Parse optional parameters ---
     opt = struct('bacteriamodel', true, ...
@@ -41,7 +41,7 @@ function [biochemFluid, model, schedule, state0] = setupH2StorageExample(varargi
     rock = makeRock(G, 100 * milli * darcy, 0.20);
 
     %% 2. Fluid components and EOS (5 components)
-    compFluid = TableCompositionalMixture( ...
+    compFluid = h2BiochemCompositionalMixture( ...
         {'Water', 'Hydrogen', 'CarbonDioxide', 'Methane', 'AceticAcid'}, ...
         {'H2O', 'H2', 'CO2', 'C1', 'CH3COOH'});
     biochemFluid = TableBioChemMixture({'MethanogenicArchae', 'AcetogenicBacteria'}, ...

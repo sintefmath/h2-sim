@@ -1,13 +1,13 @@
 function state = runSequentialCompositionalPhreeqcCoupling(model, state, dt)
 % Run the optional compositional PHREEQC split after convergence.
 %
-% This backend uses the PHREEQC_Modified.DAT IPhreeqcCOM input and
+% This backend uses the h2_biogeochemistry.dat IPhreeqcCOM input and
 % SELECTED_OUTPUT convention. It is Windows-only: PHREEQC owns MET/ACE/SRB
 % kinetics and its biomass state, while MRST retains flow and tracer
 % transport. Its split conventions match the UGFACT H2Storage1D reference.
 %
 % Cells are processed through one persistent IPhreeqcCOM object and one
-% PHREEQC_Modified.DAT database load per coupling invocation (actxserver
+% h2_biogeochemistry.dat database load per coupling invocation (actxserver
 % activation and LoadDatabase are the expensive per-call operations).
 % model.phreeqcCouplingOptions.sequentialCompositionalPhreeqcBatchSize
 % (default 1, the behavior-safe/original setting) controls how many
@@ -58,7 +58,7 @@ mineral = getMineralData(state, waterMass, nc);
 state = storePhreeqcInputDiagnostics(state, phase);
 
 results = repmat(emptyResult(), nc, 1);
-% One IPhreeqcCOM object and one PHREEQC_Modified.DAT database load are
+% One IPhreeqcCOM object and one h2_biogeochemistry.dat database load are
 % reused for every cell (and every batch) in this coupling invocation;
 % LoadDatabase/actxserver are the expensive operations, and IPhreeqcCOM
 % supports repeated RunString calls on the same instance by design.
@@ -163,12 +163,12 @@ assert(ischar(opt.databaseFile) || ...
 databaseFile = char(opt.databaseFile);
 assert(~isempty(strtrim(databaseFile)) && isAbsolutePath(databaseFile), ...
     ['sequential-compositional-phreeqc requires an explicit absolute databaseFile path to ', ...
-     'PHREEQC_Modified.DAT.']);
+     'h2_biogeochemistry.dat.']);
 assert(isfile(databaseFile), ...
     'compositional PHREEQC database not found: %s', databaseFile);
 [~, databaseName, extension] = fileparts(databaseFile);
-assert(strcmpi(extension, '.dat') && contains(lower(databaseName), 'phreeqc_modified'), ...
-    ['sequential-compositional-phreeqc requires PHREEQC_Modified.DAT, not a standard PHREEQC ', ...
+assert(strcmpi(extension, '.dat') && contains(lower(databaseName), 'h2_biogeochemistry'), ...
+    ['sequential-compositional-phreeqc requires h2_biogeochemistry.dat, not a standard PHREEQC ', ...
      'Pitzer database: %s'], databaseFile);
 assert(ischar(opt.comProgId) || (isstring(opt.comProgId) && isscalar(opt.comProgId)), ...
     'sequential-compositional-phreeqc comProgId must identify a registered IPhreeqcCOM server.');

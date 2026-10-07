@@ -10,7 +10,7 @@ function results = runTransportEffectsSensitivity(varargin)
 %                 (SequentialBiochemistryPhreeqcModel, built with
 %                 convertToSequentialBiochemistryPhreeqcModel). MRST retains
 %                 the microbial kinetics/biomass; PHREEQC owns the aqueous
-%                 and mineral equilibrium. Requires PHREEQC_Modified.DAT.
+%                 and mineral equilibrium. Requires h2_biogeochemistry.dat.
 %
 % Each backend's cases are compared against that backend's own baseline.
 % Cases that fail to converge are recorded and skipped rather than aborting
@@ -22,12 +22,12 @@ function results = runTransportEffectsSensitivity(varargin)
 %   % Original backend only (no PHREEQC needed):
 %   results = runTransportEffectsSensitivity('backends', {'original'});
 %
-%   % Both backends (PHREEQC_Modified.DAT is bundled at h2-biochem/database/
+%   % Both backends (h2_biogeochemistry.dat is bundled at h2-biochem/database/
 %   % and found automatically via which() once startupH2sim has run):
 %   results = runTransportEffectsSensitivity();
 %
 %   % To use a different database, pass its absolute path explicitly:
-%   db = '/absolute/path/to/PHREEQC_Modified.DAT';
+%   db = '/absolute/path/to/h2_biogeochemistry.dat';
 %   results = runTransportEffectsSensitivity('phreeqcDatabaseFile', db);
 
     mrstModule add ad-props compositional deckformat 
@@ -300,17 +300,17 @@ function databaseFile = resolvePhreeqcDatabaseFile(databaseFile)
         databaseFile = getenv('PHREEQC_DATABASE_FILE');
     end
     if isempty(strtrim(databaseFile))
-        databaseFile = which('PHREEQC_Modified.DAT');
+        databaseFile = which('h2_biogeochemistry.dat');
     end
     if isempty(strtrim(databaseFile)) || ~isfile(databaseFile)
         error('runTransportEffectsSensitivity:MissingPhreeqcDatabase', ...
-            ['PHREEQC_Modified.DAT was not found. Pass its absolute path ', ...
+            ['h2_biogeochemistry.dat was not found. Pass its absolute path ', ...
             'using ''phreeqcDatabaseFile'', databaseFile, or request only ', ...
             'the original backend with ''backends'', {''original''}.']);
     end
     [~, name, extension] = fileparts(databaseFile);
-    assert(strcmpi([name, extension], 'PHREEQC_Modified.DAT'), ...
-        'The database must be PHREEQC_Modified.DAT.');
+    assert(strcmpi([name, extension], 'h2_biogeochemistry.dat'), ...
+        'The database must be h2_biogeochemistry.dat.');
 end
 
 function base = findBaseline(results, backendName)

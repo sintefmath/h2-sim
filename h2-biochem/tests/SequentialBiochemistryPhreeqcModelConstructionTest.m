@@ -78,14 +78,14 @@ classdef SequentialBiochemistryPhreeqcModelConstructionTest < matlab.unittest.Te
             % flowNonLinearSolver/reactionNonLinearSolver are deliberately
             % left at their defaults here to prove the model builds
             % successfully with a bare-minimum valid configuration. A
-            % syntactically valid, existing PHREEQC_Modified.DAT path is
+            % syntactically valid, existing h2_biogeochemistry.dat path is
             % required by BiochemistryPhreeqcModel's constructor-time
             % validation whenever phreeqcTimestepCoupling is true, even
             % though construction alone never opens a live IPhreeqcCOM
             % connection; skip cleanly (via assumeTrue) if none is found.
             databaseFile = resolveConstructionTestDatabaseFile();
             testCase.assumeTrue(~isempty(databaseFile), ...
-                'No PHREEQC_Modified.DAT could be found on this machine.');
+                'No h2_biogeochemistry.dat could be found on this machine.');
             model = testCase.constructModel('reactionSubstepMaxDt', 0.4*day, ...
                 'phreeqcBackend', 'sequential-h2biochem-phreeqc', ...
                 'phreeqcTimestepCoupling', true, ...
@@ -104,10 +104,10 @@ classdef SequentialBiochemistryPhreeqcModelConstructionTest < matlab.unittest.Te
             % reach past the phreeqcTimestepCoupling/backend checks (and
             % therefore needs a database file) to actually exercise the
             % flowNonLinearSolver type validation; skip cleanly if no
-            % PHREEQC_Modified.DAT can be found.
+            % h2_biogeochemistry.dat can be found.
             databaseFile = resolveConstructionTestDatabaseFile();
             testCase.assumeTrue(~isempty(databaseFile), ...
-                'No PHREEQC_Modified.DAT could be found on this machine.');
+                'No h2_biogeochemistry.dat could be found on this machine.');
             testCase.verifyError(@() testCase.constructModel( ...
                 'reactionSubstepMaxDt', 0.4*day, ...
                 'phreeqcBackend', 'sequential-h2biochem-phreeqc', ...
@@ -121,7 +121,7 @@ classdef SequentialBiochemistryPhreeqcModelConstructionTest < matlab.unittest.Te
         function testReactionSubstepMaxDtIsStoredOnModel(testCase)
             databaseFile = resolveConstructionTestDatabaseFile();
             testCase.assumeTrue(~isempty(databaseFile), ...
-                'No PHREEQC_Modified.DAT could be found on this machine.');
+                'No h2_biogeochemistry.dat could be found on this machine.');
             model = testCase.constructModel('reactionSubstepMaxDt', 0.4*day, ...
                 'phreeqcBackend', 'sequential-h2biochem-phreeqc', ...
                 'phreeqcTimestepCoupling', true, ...
@@ -133,12 +133,12 @@ classdef SequentialBiochemistryPhreeqcModelConstructionTest < matlab.unittest.Te
 end
 
 function databaseFile = resolveConstructionTestDatabaseFile()
-% Best-effort PHREEQC_Modified.DAT lookup. Returns '' (rather than
+% Best-effort h2_biogeochemistry.dat lookup. Returns '' (rather than
 % throwing) when the database cannot be located, so calling tests can
 % gate on it via assumeTrue and skip cleanly.
     databaseFile = getenv('PHREEQC_DATABASE_FILE');
     if isempty(strtrim(databaseFile))
-        databaseFile = which('PHREEQC_Modified.DAT');
+        databaseFile = which('h2_biogeochemistry.dat');
     end
     if isempty(strtrim(databaseFile)) || ~isfile(databaseFile)
         databaseFile = '';

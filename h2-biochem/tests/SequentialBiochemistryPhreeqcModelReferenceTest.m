@@ -52,7 +52,7 @@ classdef SequentialBiochemistryPhreeqcModelReferenceTest < matlab.unittest.TestC
 % difference, not a numerical-error budget.
 %
 % This requires a registered IPhreeqcCOM server and an on-disk
-% PHREEQC_Modified.DAT (both drivers call PHREEQC); the whole class is
+% h2_biogeochemistry.dat (both drivers call PHREEQC); the whole class is
 % skipped cleanly via assumeTrue in TestClassSetup when either is
 % unavailable.
 %
@@ -103,7 +103,7 @@ classdef SequentialBiochemistryPhreeqcModelReferenceTest < matlab.unittest.TestC
             databaseFile = resolveReferenceTestDatabaseFile();
             testCase.assumeTrue(~isempty(databaseFile) && isIPhreeqcComAvailableForReferenceTest(), ...
                 ['A registered IPhreeqcCOM server and an on-disk ', ...
-                 'PHREEQC_Modified.DAT are required for this test.']);
+                 'h2_biogeochemistry.dat are required for this test.']);
 
             [~, baseModel, schedule, state0] = setupH2StorageExampleWithSRB_benchmark( ...
                 'rate', 'highrate', ...
@@ -251,12 +251,12 @@ function total = totalH2Consumed(states, schedule, model, nReactions)
 end
 
 function databaseFile = resolveReferenceTestDatabaseFile()
-% Best-effort PHREEQC_Modified.DAT lookup. Returns '' (rather than
+% Best-effort h2_biogeochemistry.dat lookup. Returns '' (rather than
 % throwing) when the database cannot be located, so calling tests can
 % gate on it via assumeTrue and skip cleanly.
     databaseFile = getenv('PHREEQC_DATABASE_FILE');
     if isempty(strtrim(databaseFile))
-        databaseFile = which('PHREEQC_Modified.DAT');
+        databaseFile = which('h2_biogeochemistry.dat');
     end
     if isempty(strtrim(databaseFile)) || ~isfile(databaseFile)
         databaseFile = '';

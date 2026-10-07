@@ -54,7 +54,7 @@ classdef BiochemistryPhreeqcModel < BiochemistryModel
     %   'phreeqcBackend'          - 'sequential-compositional-phreeqc'
     %                               (default) or 'sequential-h2biochem-phreeqc'.
     %   'phreeqcDatabaseFile'     - Absolute path to the PHREEQC database
-    %                               (PHREEQC_Modified.DAT).
+    %                               (h2_biogeochemistry.dat).
     %   'phreeqcComProgId'        - Registered IPhreeqcCOM server ProgID
     %                               (default 'IPhreeqcCOM.Object').
     %   'phreeqcCouplingOptions'  - Struct of backend-specific coupling
@@ -83,7 +83,7 @@ classdef BiochemistryPhreeqcModel < BiochemistryModel
         carbonateBufferPka1 = 6.35;
         phreeqcTimestepCoupling = false; % Post-timestep PHREEQC equilibration
         phreeqcBackend = 'sequential-compositional-phreeqc'; % or 'sequential-h2biochem-phreeqc'
-        phreeqcDatabaseFile = '';          % Absolute path to PHREEQC_Modified.DAT
+        phreeqcDatabaseFile = '';          % Absolute path to h2_biogeochemistry.dat
         phreeqcComProgId = 'IPhreeqcCOM.Object'; % Registered IPhreeqcCOM server ProgID
         phreeqcCouplingOptions = struct(); % Backend-specific coupling parameters (kinetics, brine, tolerances)
         % Set only by simulateSequentialH2BiochemPhreeqc. Keeping the
@@ -1324,15 +1324,15 @@ if isempty(databaseFile) && isfield(model.phreeqcCouplingOptions, 'databaseFile'
     databaseFile = model.phreeqcCouplingOptions.databaseFile;
 end
 assert(ischar(databaseFile) || (isstring(databaseFile) && isscalar(databaseFile)), ...
-    'COM PHREEQC backends require an explicitly configured PHREEQC_Modified.DAT path.');
+    'COM PHREEQC backends require an explicitly configured h2_biogeochemistry.dat path.');
 databaseFile = char(databaseFile);
 assert(~isempty(strtrim(databaseFile)) && isAbsolutePhreeqcPath(databaseFile), ...
     ['COM PHREEQC backends require an explicit absolute databaseFile path to ', ...
-     'PHREEQC_Modified.DAT.']);
+     'h2_biogeochemistry.dat.']);
 assert(isfile(databaseFile), ...
     'COM PHREEQC database not found: %s', databaseFile);
-assert(contains(lower(databaseFile), 'phreeqc_modified.dat'), ...
-    ['COM PHREEQC backends require PHREEQC_Modified.DAT, not a standard ', ...
+assert(contains(lower(databaseFile), 'h2_biogeochemistry.dat'), ...
+    ['COM PHREEQC backends require h2_biogeochemistry.dat, not a standard ', ...
      'PHREEQC database: %s'], databaseFile);
 
 comProgId = model.phreeqcComProgId;

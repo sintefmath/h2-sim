@@ -66,7 +66,7 @@ else
 end
 
 if model.isSequentialCompositionalPhreeqcBackend() || model.isSequentialH2BiochemPhreeqcBackend()
-    % COM backends use the PHREEQC_Modified.DAT phase names. The optional
+    % COM backends use the h2_biogeochemistry.dat phase names. The optional
     % Mineral inventories are shared, whereas kinetic biomass remains
     % specific to the compositional split and separate from MRST's nbact state.
     state = initializeOptionalMineral(state, 'phreeqcMineralAnhydrite', ...

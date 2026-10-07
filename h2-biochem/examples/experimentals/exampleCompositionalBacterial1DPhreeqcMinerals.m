@@ -311,15 +311,15 @@ if isempty(strtrim(databaseFile))
     databaseFile = getenv('PHREEQC_DATABASE_FILE');
 end
 if isempty(strtrim(databaseFile))
-    databaseFile = which('PHREEQC_Modified.DAT');
+    databaseFile = which('h2_biogeochemistry.dat');
 end
 if isempty(strtrim(databaseFile)) || ~isfile(databaseFile)
     error('exampleCompositionalBacterial1DPhreeqcMinerals:MissingPhreeqcDatabase', ...
-        ['PHREEQC_Modified.DAT was not found. Pass its absolute path using ', ...
+        ['h2_biogeochemistry.dat was not found. Pass its absolute path using ', ...
          '''phreeqcDatabaseFile'', databaseFile, or set the ', ...
          'PHREEQC_DATABASE_FILE environment variable.']);
 end
 [~, name, extension] = fileparts(databaseFile);
-assert(strcmpi([name, extension], 'PHREEQC_Modified.DAT'), ...
-    'The database must be PHREEQC_Modified.DAT.');
+assert(strcmpi([name, extension], 'h2_biogeochemistry.dat'), ...
+    'The database must be h2_biogeochemistry.dat.');
 end

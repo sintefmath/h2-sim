@@ -12,6 +12,21 @@ fprintf('H2sim is based on MRST, which will now be initialized.\n\n');
 
 rootdirname = fileparts(mfilename('fullpath'));
 
+% A recursively added MRST tree can leave Octave compatibility shims on
+% MATLAB's saved path. In particular, properties.m breaks parpool settings
+% discovery. Remove these paths from every MRST installation before startup.
+if exist('OCTAVE_VERSION', 'builtin') == 0
+    savedPaths = strsplit(path, pathsep);
+    normalizedPaths = strrep(savedPaths, '\', '/');
+    octavePaths = ~cellfun(@isempty, ...
+        regexp(normalizedPaths, '/octave_only(/|$)', 'once'));
+    if any(octavePaths)
+        rmpath(savedPaths{octavePaths});
+        clear properties maxNumCompThreads
+        rehash path
+    end
+end
+
 %% Make sure the git submodules (MRST, PhreeqcMatlab) are present, downloading them on demand
 %
 % If a submodule directory is missing (e.g. the repository was cloned without
@@ -87,7 +102,7 @@ function ensureSubmodule(rootdirname, name)
         return
     end
 
-    if ~isfolder(fullfile(rootdirname, '.git'))
+    if ~(isfolder(fullfile(rootdirname, '.git')) || isfile(fullfile(rootdirname, '.git')))
         error('h2sim:missingGitRepo', ['Cannot auto-download the ''%s'' submodule because\n  %s\n' ...
                             'is not a git checkout. Please install H2sim using ' ...
                             '''git clone --recurse-submodules'' as described in the documentation ' ...

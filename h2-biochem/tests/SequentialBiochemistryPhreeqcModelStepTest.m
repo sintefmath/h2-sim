@@ -8,7 +8,7 @@ classdef SequentialBiochemistryPhreeqcModelStepTest < matlab.unittest.TestCase
 % report/state, so no test method contains control-flow logic of its own.
 %
 % This requires a registered IPhreeqcCOM server and an on-disk
-% PHREEQC_Modified.DAT (both are needed because every accepted coarse
+% h2_biogeochemistry.dat (both are needed because every accepted coarse
 % step runs one real PHREEQC equilibrium call); the whole class
 % is skipped cleanly via assumeTrue in TestClassSetup when either is
 % unavailable.
@@ -31,7 +31,7 @@ classdef SequentialBiochemistryPhreeqcModelStepTest < matlab.unittest.TestCase
             databaseFile = resolveStepTestDatabaseFile();
             testCase.assumeTrue(~isempty(databaseFile) && isIPhreeqcComAvailable(), ...
                 ['A registered IPhreeqcCOM server and an on-disk ', ...
-                 'PHREEQC_Modified.DAT are required for this test.']);
+                 'h2_biogeochemistry.dat are required for this test.']);
 
             % Small grid and a short single control period keep this test
             % fast; options otherwise match the high-rate sequential
@@ -178,12 +178,12 @@ classdef SequentialBiochemistryPhreeqcModelStepTest < matlab.unittest.TestCase
 end
 
 function databaseFile = resolveStepTestDatabaseFile()
-% Best-effort PHREEQC_Modified.DAT lookup. Returns '' (rather than
+% Best-effort h2_biogeochemistry.dat lookup. Returns '' (rather than
 % throwing) when the database cannot be located, so calling tests can
 % gate on it via assumeTrue and skip cleanly.
     databaseFile = getenv('PHREEQC_DATABASE_FILE');
     if isempty(strtrim(databaseFile))
-        databaseFile = which('PHREEQC_Modified.DAT');
+        databaseFile = which('h2_biogeochemistry.dat');
     end
     if isempty(strtrim(databaseFile)) || ~isfile(databaseFile)
         databaseFile = '';
