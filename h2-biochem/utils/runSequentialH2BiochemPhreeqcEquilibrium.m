@@ -37,13 +37,14 @@ assert(ispc, ['sequential-h2biochem-phreeqc requires Windows and a registered ',
 assert(exist('actxserver', 'file') == 2 || exist('actxserver', 'builtin') == 5, ...
     ['IPhreeqcCOM activation is unavailable. Install/register the Windows ', ...
      'IPhreeqcCOM server identified by phreeqcComProgId.']);
+iph = getPersistentIPhreeqcCom(opt, false);
 results = repmat(emptyResult(), nc, 1);
 for cellNo = 1:nc
     input = buildPhreeqcInput(opt, phase, mineral, cellNo);
     if cellNo == 1
         state.sequentialH2BiochemPhreeqcInputCell1String = input;
     end
-    raw = runIPhreeqcCOM(input, opt, cellNo);
+    raw = runIPhreeqcCOM(iph, input, opt, cellNo);
     results(cellNo) = parseSelectedOutput(raw, cellNo);
 end
 
@@ -86,16 +87,21 @@ opt = struct( ...
     'phreeqcElementBalanceAbsoluteTolerance', 1e-7, ...
     'phreeqcElementBalanceRelativeTolerance', 1e-8, ...
     'phreeqcReflashAbsoluteTolerance', 1e-7, ...
-    'phreeqcReflashRelativeTolerance', 1e-6);
+    'phreeqcReflashRelativeTolerance', 1e-6, ...
+    'phreeqcReflashLocalBracket', true, ...
+    'phreeqcReflashParallel', false);
 configured = model.phreeqcCouplingOptions;
 for name = fieldnames(opt).'
     if isfield(configured, name{1})
         opt.(name{1}) = configured.(name{1});
     end
 end
+opt.phreeqcReflashParallel = resolveH2BiochemParallel(opt.phreeqcReflashParallel);
 end
 
 function validateCouplingOptions(opt, nComponents)
+validateattributes(opt.phreeqcReflashLocalBracket, {'logical'}, {'scalar'});
+validateattributes(opt.phreeqcReflashParallel, {'logical'}, {'scalar'});
 assert(ischar(opt.phreeqcDatabaseFile) || ...
     (isstring(opt.phreeqcDatabaseFile) && isscalar(opt.phreeqcDatabaseFile)), ...
     'sequential-h2biochem-phreeqc databaseFile must be a character vector or scalar string.');
@@ -295,6 +301,9 @@ input = sprintf([ ...
 end
 
 function block = selectedOutputBlock()
+% Acetate is a pseudo-element representing CH3COO in the bundled database.
+% SYS("H") sees only explicit acid protons; include its three implicit H
+% atoms on both initial and final rows, just as the C audit counts two C.
 % Deliberately no RATES or KINETICS: MRST is the reaction owner.
 block = sprintf([ ...
     'USER_PUNCH 1\n' ...
@@ -306,6 +315,7 @@ block = sprintf([ ...
     '40 IF (typeh$(i) <> "aq" OR nameh$(i) <> "H2O") THEN reactiveh = reactiveh + molesh(i)\n' ...
     '50 NEXT i\n' ...
     '60 reactiveh = reactiveh + 2*(TOT("water") - 1)*1000/GFW("H2O")\n' ...
+    '65 reactiveh = reactiveh + 3*TOT("Acetate")*TOT("water")\n' ...
     '70 tds = (RHO - TOT("water")/SOLN_VOL)*1e3\n' ...
     '80 Punch reactiveh, tds\n' ...
     '-end\n' ...
@@ -323,21 +333,56 @@ block = sprintf([ ...
     'END\n']);
 end
 
-function raw = runIPhreeqcCOM(input, opt, cellNo)
-try
-    iph = actxserver(char(opt.comProgId));
-catch ME
-    error('H2Biochem:SequentialH2BiochemPhreeqcActivation', ...
-        'IPhreeqcCOM activation failed in cell %d for "%s":\n%s', ...
-        cellNo, char(opt.comProgId), ME.message);
-end
-try
-    loadStatus = iph.LoadDatabase(char(opt.phreeqcDatabaseFile));
+function iph = getPersistentIPhreeqcCom(opt, forceNew)
+% Keep one activated IPhreeqcCOM server with the database already loaded
+% across all cells/substeps/control steps: actxserver activation and
+% LoadDatabase parsing, not RunString, dominate per-call cost. Each
+% RunString input fully redefines SOLUTION 1/EQUILIBRIUM_PHASES 1, so
+% reusing the server across cells does not leak state between them.
+persistent server progId dbFile
+thisProgId = char(opt.comProgId);
+thisDbFile = char(opt.phreeqcDatabaseFile);
+if forceNew || isempty(server) || ~strcmp(progId, thisProgId) || ~strcmp(dbFile, thisDbFile)
+    try
+        newServer = actxserver(thisProgId);
+    catch ME
+        error('H2Biochem:SequentialH2BiochemPhreeqcActivation', ...
+            'IPhreeqcCOM activation failed for "%s":\n%s', thisProgId, ME.message);
+    end
+    % We only ever read GetSelectedOutputArray/GetErrorString (in-memory);
+    % none of IPhreeqc's echo/log/dump/selected-output FILES are used.
+    % Left on, they accumulate for the server's whole lifetime instead of
+    % per cell, growing without bound and slowing every later RunString.
+    % Best-effort: not every registered IPhreeqcCOM build exposes all of
+    % these toggles, so a missing one must not block the simulation.
+    disableIPhreeqcFileOutput(newServer);
+    loadStatus = newServer.LoadDatabase(thisDbFile);
     if loadStatus ~= 0
         error('H2Biochem:SequentialH2BiochemPhreeqcDatabase', ...
-            'PHREEQC database load failed in cell %d:\n%s', cellNo, ...
-            getPhreeqcError(iph));
+            'PHREEQC database load failed:\n%s', getPhreeqcError(newServer));
     end
+    server = newServer;
+    progId = thisProgId;
+    dbFile = thisDbFile;
+end
+iph = server;
+end
+
+function disableIPhreeqcFileOutput(iph)
+toggles = {'SetOutputFileOn', 'SetErrorFileOn', 'SetLogFileOn', ...
+    'SetSelectedOutputFileOn', 'SetDumpFileOn', 'SetDumpStringOn'};
+for k = 1:numel(toggles)
+    try
+        iph.(toggles{k})(false);
+    catch
+        % Not exposed by this IPhreeqcCOM build: skip, file output is an
+        % optional performance toggle, not required for correctness.
+    end
+end
+end
+
+function raw = runIPhreeqcCOM(iph, input, opt, cellNo)
+try
     status = iph.RunString(input);
     if status ~= 0
         error('H2Biochem:SequentialH2BiochemPhreeqcRun', ...
@@ -346,19 +391,15 @@ try
     end
     raw = iph.GetSelectedOutputArray;
 catch ME
-    message = getPhreeqcError(iph);
-    try
-        clear iph
-    catch
-    end
     if startsWith(ME.identifier, 'H2Biochem:SequentialH2BiochemPhreeqc')
         rethrow(ME);
     end
+    % Unexpected COM failure: drop the cached server so the next call
+    % reactivates it instead of reusing a possibly broken instance.
+    getPersistentIPhreeqcCom(opt, true);
     error('H2Biochem:SequentialH2BiochemPhreeqcRun', ...
-        'IPhreeqcCOM failed in cell %d:\n%s\nPHREEQC message:\n%s', ...
-        cellNo, ME.message, message);
+        'IPhreeqcCOM failed in cell %d:\n%s', cellNo, ME.message);
 end
-clear iph
 end
 
 function message = getPhreeqcError(iph)
@@ -602,16 +643,19 @@ totalMoles = sum(targetComponentMoles, 2);
 composition = bsxfun(@rdivide, targetComponentMoles, totalMoles);
 pressure = zeros(nc, 1);
 
-for cellNo = 1:nc
-    residual = @(logPressure) flashVolumeResidual(exp(logPressure), ...
-        temperature(cellNo), composition(cellNo, :), totalMoles(cellNo), ...
-        poreVolume(cellNo), model.EOSModel);
-    try
-        pressure(cellNo) = exp(fzero(residual, log(pressure0(cellNo))));
-    catch ME
-        error('H2Biochem:SequentialPhreeqcVolumeFlash', ...
-            ['Unable to preserve the PHREEQC component inventory in cell %d ', ...
-             'with a constant-volume flash: %s'], cellNo, ME.message);
+EOSModel = model.EOSModel;
+useLocalBracket = opt.phreeqcReflashLocalBracket;
+if opt.phreeqcReflashParallel
+    parfor cellNo = 1:nc
+        pressure(cellNo) = solveConstantVolumeFlashCell(cellNo, ...
+            temperature(cellNo), composition(cellNo, :), totalMoles(cellNo), ...
+            poreVolume(cellNo), pressure0(cellNo), EOSModel, useLocalBracket);
+    end
+else
+    for cellNo = 1:nc
+        pressure(cellNo) = solveConstantVolumeFlashCell(cellNo, ...
+            temperature(cellNo), composition(cellNo, :), totalMoles(cellNo), ...
+            poreVolume(cellNo), pressure0(cellNo), EOSModel, useLocalBracket);
     end
 end
 
@@ -658,6 +702,24 @@ if any(~pass(:))
         actualComponentMoles(cellNo, componentNo), ...
         absoluteResidual(cellNo, componentNo), ...
         normalizedResidual(cellNo, componentNo));
+end
+end
+
+function pressure = solveConstantVolumeFlashCell(cellNo, temperature, ...
+    composition, totalMoles, poreVolume, pressure0, EOSModel, useLocalBracket)
+residual = @(logPressure) flashVolumeResidual(exp(logPressure), ...
+    temperature, composition, totalMoles, poreVolume, EOSModel);
+try
+    if useLocalBracket
+        logPressure = solveH2BiochemVolumePressure(residual, log(pressure0));
+    else
+        logPressure = fzero(residual, log(pressure0));
+    end
+    pressure = exp(logPressure);
+catch ME
+    error('H2Biochem:SequentialPhreeqcVolumeFlash', ...
+        ['Unable to preserve the PHREEQC component inventory in cell %d ', ...
+         'with a constant-volume flash: %s'], cellNo, ME.message);
 end
 end
 

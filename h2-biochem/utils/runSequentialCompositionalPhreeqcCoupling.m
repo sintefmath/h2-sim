@@ -10,19 +10,12 @@ function state = runSequentialCompositionalPhreeqcCoupling(model, state, dt)
 % h2_biogeochemistry.dat database load per coupling invocation (actxserver
 % activation and LoadDatabase are the expensive per-call operations).
 % model.phreeqcCouplingOptions.sequentialCompositionalPhreeqcBatchSize
-% (default 1, the behavior-safe/original setting) controls how many
-% cells' PHREEQC keyword blocks are concatenated into each RunString
-% call: with the default, this reduces exactly to the original one
-% RunString-per-cell loop. With a batch size greater than 1, multiple
-% cells are submitted in a single RunString call using unique local
-% SOLUTION/GAS_PHASE/KINETICS/EQUILIBRIUM_PHASES numbers, and the
-% returned SELECTED_OUTPUT rows are split back to their originating cells
-% using a deterministic per-cell row count together with PHREEQC's "soln"
-% and "sim" selected-output identifier columns (see selectedOutputBlock
-% and splitBatchedSelectedOutput). That split is self-verified at runtime
-% (row counts and identifier columns are checked for every batch); any
-% mismatch raises H2Biochem:SequentialCompositionalPhreeqcBatchOutputMismatch
-% instead of silently mis-attributing PHREEQC output to the wrong cell.
+% (default 50) controls how many independent cell blocks share a RunString
+% call. Set it to 1 for one call per cell. Each block ends explicitly before
+% the next cell is defined. Unique local entity numbers isolate cell inputs.
+% Selected-output rows are checked by row count and repeated kinetic-step
+% sequences before being assigned in execution order; mismatches raise
+% H2Biochem:SequentialCompositionalPhreeqcBatchOutputMismatch.
 
 assert(isa(model, 'BiochemistryPhreeqcModel'), ...
     'compositional PHREEQC coupling requires a BiochemistryPhreeqcModel instance.');
@@ -58,33 +51,43 @@ mineral = getMineralData(state, waterMass, nc);
 state = storePhreeqcInputDiagnostics(state, phase);
 
 results = repmat(emptyResult(), nc, 1);
-% One IPhreeqcCOM object and one h2_biogeochemistry.dat database load are
-% reused for every cell (and every batch) in this coupling invocation;
-% LoadDatabase/actxserver are the expensive operations, and IPhreeqcCOM
-% supports repeated RunString calls on the same instance by design.
-iph = openPhreeqcSession(opt);
-cleanupIph = onCleanup(@() releasePhreeqcSession(iph));
-
-preamble = buildPhreeqcPreamble(opt);
-rowsPerCell = 1 + opt.sequentialCompositionalPhreeqcSteps;
-batchSize = round(opt.sequentialCompositionalPhreeqcBatchSize);
-firstBatch = true;
-cellStart = 1;
-while cellStart <= nc
-    cellEnd = min(cellStart + batchSize - 1, nc);
-    cellIdx = cellStart:cellEnd;
-    input = buildPhreeqcBatchInput(preamble, opt, phase, mineral, ...
-        state, cellIdx, dt);
-    if firstBatch
-        state.sequentialCompositionalPhreeqcInputCell1String = input;
-        firstBatch = false;
+% Inactive chemistry is restored verbatim by updateStateFromResults. Large
+% grids therefore need not execute PHREEQC calls whose physical output is
+% discarded. First-step equilibration still runs for every wet cell.
+executeCells = true(nc, 1);
+if opt.sequentialCompositionalPhreeqcSkipInactiveCells && ~firstCouplingStep
+    executeCells = phase.activeCells;
+end
+state.sequentialCompositionalPhreeqcExecutedCells = executeCells;
+indices = find(executeCells);
+if ~isempty(indices)
+    iph = openPhreeqcSession(opt);
+    cleanupIph = onCleanup(@() releasePhreeqcSession(iph));
+    preamble = buildPhreeqcPreamble(opt);
+    rowsPerCell = 1 + opt.sequentialCompositionalPhreeqcSteps;
+    batchSize = round(opt.sequentialCompositionalPhreeqcBatchSize);
+    firstBatch = true;
+    for cellStart = 1:batchSize:numel(indices)
+        cellIdx = indices(cellStart:min(cellStart + batchSize - 1, numel(indices)));
+        input = buildPhreeqcBatchInput(preamble, opt, phase, mineral, state, cellIdx, dt);
+        if firstBatch
+            state.sequentialCompositionalPhreeqcInputCell1String = input;
+            firstBatch = false;
+        end
+        output = runIPhreeqcCOMBatch(iph, input, cellIdx);
+        cellOutputs = splitBatchedSelectedOutput(output, cellIdx, rowsPerCell);
+        for k = 1:numel(cellIdx)
+            results(cellIdx(k)) = parseSelectedOutput(cellOutputs{k}, cellIdx(k));
+        end
     end
-    output = runIPhreeqcCOMBatch(iph, input, cellIdx);
-    cellOutputs = splitBatchedSelectedOutput(output, cellIdx, rowsPerCell);
-    for k = 1:numel(cellIdx)
-        results(cellIdx(k)) = parseSelectedOutput(cellOutputs{k}, cellIdx(k));
-    end
-    cellStart = cellEnd + 1;
+else
+    state.sequentialCompositionalPhreeqcInputCell1String = '';
+end
+for cellNo = find(~executeCells).'
+    results(cellNo).water = 1;
+    % No PHREEQC RATES evaluation occurred in these cells. NaN labels the
+    % unavailable diagnostic explicitly; it never enters any rate/closure.
+    results(cellNo).tds = NaN;
 end
 
 state = auditElementBalance(state, opt, phase, ...
@@ -122,7 +125,7 @@ opt = struct( ...
     'Fe3', 0, ...
     'Fe2', 0, ...
     'sequentialCompositionalPhreeqcSteps', 5, ...
-    'sequentialCompositionalPhreeqcBatchSize', 1, ...
+    'sequentialCompositionalPhreeqcBatchSize', 50, ...
     'sequentialCompositionalPhreeqcMuMET', 1.109, ...
     'sequentialCompositionalPhreeqcMuACE', 0.872, ...
     'sequentialCompositionalPhreeqcMuSRB', 1.048, ...
@@ -142,6 +145,7 @@ opt = struct( ...
     'sequentialCompositionalPhreeqcNmax', 1e13, ...
     'sequentialCompositionalPhreeqcCellMass', 1e-14, ...
     'sequentialCompositionalPhreeqcBiomassMW', 24.6, ...
+    'sequentialCompositionalPhreeqcSkipInactiveCells', model.G.cells.num > 1000, ...
     'sequentialCompositionalPhreeqcPinTDS', false, ...
     'phreeqcElementBalanceAbsoluteTolerance', 1e-7, ...
     'phreeqcElementBalanceRelativeTolerance', 1e-8);
@@ -205,6 +209,7 @@ for name = {'Fe3', 'Fe2'}
 end
 assert(opt.sequentialCompositionalPhreeqcNmax >= opt.sequentialCompositionalPhreeqcN0, ...
     'sequentialCompositionalPhreeqcNmax must be at least sequentialCompositionalPhreeqcN0.');
+validateattributes(opt.sequentialCompositionalPhreeqcSkipInactiveCells, {'logical'}, {'scalar'});
 validateattributes(opt.sequentialCompositionalPhreeqcPinTDS, {'logical'}, {'scalar'}, ...
     mfilename, 'sequentialCompositionalPhreeqcPinTDS');
 end
@@ -367,9 +372,8 @@ function input = buildPhreeqcBatchInput(preamble, opt, phase, mineral, ...
 % (as used by PhreeqcRM-style multi-cell couplings) so that PHREEQC does
 % not overwrite one cell's SOLUTION/KINETICS/EQUILIBRIUM_PHASES/GAS_PHASE
 % definitions with another's within the same RunString call. With the
-% default batch size of 1 this reduces to the original single-cell input
-% (entity number 1), byte-for-byte identical apart from the -sim/-soln
-% selected-output identifier columns enabled in selectedOutputBlock.
+% batch size of 1 this uses entity number 1 and the single-cell input.
+% The explicit final END preserves the end-of-input reaction boundary.
 blocks = cell(1, numel(cellIdx));
 for i = 1:numel(cellIdx)
     blocks{i} = buildPhreeqcCellBlock(opt, phase, mineral, state, ...
@@ -503,6 +507,7 @@ block = sprintf([ ...
     'USE kinetics %d\n' ...
     'USE equilibrium_phases %d\n' ...
     'USE gas_phase %d\n' ...
+    'END\n' ...
     ], ...
     localId, ...
     phase.pressureAtm(cellNo), phase.temperature(cellNo) - 273.15, phase.pH(cellNo), ...
@@ -643,10 +648,13 @@ rates = sprintf([ ...
 end
 
 function block = selectedOutputBlock()
+% Acetate is a pseudo-element representing CH3COO in the bundled database.
+% SYS("H") sees only explicit acid protons; include its three implicit H
+% atoms on both initial and final rows, just as the C audit counts two C.
 % Keep the compositional PHREEQC selected-output order and custom pseudo-species intact.
 % -sim/-soln are enabled (unlike the reference H2Storage1D convention) as
-% diagnostics. PHREEQC may assign an internal working-solution number to
-% kinetics rows, so only the simulation number is used as a cell boundary.
+% diagnostics. PHREEQC may assign internal working-solution numbers;
+% splitting checks initial-row signs and repeated kinetic-step sequences.
 block = sprintf([ ...
     'USER_PUNCH\n' ...
     '-headings MET_RATE ACE_RATE SRB_RATE TDS CO3-2 HCO3- TOT_CO2 Dissolved_CO2 Z_Factor act("Ca+2") act("CO3-2") act(CaHCO3+) Ca+2 CaHCO3+ REACTIVE_SYSTEM_H\n' ...
@@ -674,6 +682,7 @@ block = sprintf([ ...
     '130 IF (typeh$(i) <> "aq" OR nameh$(i) <> "H2O") THEN reactiveh = reactiveh + molesh(i)\n' ...
     '140 NEXT i\n' ...
     '150 reactiveh = reactiveh + 2*(TOT("water") - 1)*1000/GFW("H2O")\n' ...
+    '155 reactiveh = reactiveh + 3*TOT("Acetate")*TOT("water")\n' ...
     '160 Punch reactiveh\n' ...
     '-end\n' ...
     'SELECTED_OUTPUT\n' ...
@@ -784,7 +793,7 @@ function cellRaw = splitBatchedSelectedOutput(raw, cellIdx, rowsPerCell)
 % working-solution identifiers in "soln", and may change where initial rows
 % appear for larger batches. The step sign reliably distinguishes initial
 % rows from kinetics rows; execution order is preserved within each group.
-% Reducing sequentialCompositionalPhreeqcBatchSize to 1 (the default)
+% Reducing sequentialCompositionalPhreeqcBatchSize to 1
 % always avoids this code path entirely.
 cellRangeText = cellRangeDescription(cellIdx);
 assert(iscell(raw) && size(raw, 1) >= 2 && size(raw, 2) >= 1, ...
@@ -971,12 +980,41 @@ function state = auditElementBalance(state, options, phase, mineral, result, wat
 input = elementReservoirs(phase, mineral, waterMass);
 output = outputElementReservoirs(result, waterMass);
 [inputInventory, elements] = computePhreeqcElementInventory(input);
-outputInventory = computePhreeqcElementInventory(output);
+rawOutput = output;
+try
+    absoluteTolerance = 1e-7;
+    if isfield(options, 'phreeqcElementBalanceAbsoluteTolerance')
+        absoluteTolerance = options.phreeqcElementBalanceAbsoluteTolerance;
+    end
+    [output, roundoffCorrection, roundoffMoles, roundoffMinerals] = ...
+        normalizePhreeqcMineralRoundoff(output, waterMass, absoluteTolerance);
+    outputInventory = computePhreeqcElementInventory(output);
+    state.phreeqcMineralRoundoffElementCorrection = roundoffCorrection;
+    state.phreeqcMineralRoundoffMoles = roundoffMoles;
+    state.phreeqcMineralRoundoffFields = roundoffMinerals;
+catch inventoryError
+    diagnosticDirectory = fullfile(pwd, 'build', 'phreeqc-failures');
+    if ~exist(diagnosticDirectory, 'dir'), mkdir(diagnosticDirectory); end
+    diagnosticFile = fullfile(diagnosticDirectory, ...
+        ['invalid_inventory_', datestr(now, 'yyyymmdd_HHMMSSFFF'), '.mat']);
+    save(diagnosticFile, 'input', 'output', 'rawOutput', 'phase', 'mineral', ...
+        'result', 'waterMass', 'options', 'inventoryError', '-v7');
+    fprintf(2, 'PHREEQC invalid inventory diagnostic saved to %s\n', diagnosticFile);
+    rethrow(inventoryError);
+end
 % The first row is the interpreted SOLUTION (selected output is installed
 % before SOLUTION); add the explicitly supplied gas/mineral hydrogen.
 inputInventory(:, 1) = inputInventory(:, 1) + ...
     reshape([result.initialSystemHydrogen], [], 1).*waterMass;
-outputInventory(:, 1) = reshape([result.systemHydrogen], [], 1).*waterMass;
+% SYS(H) includes raw mineral hydrogen; apply the same phase correction.
+outputInventory(:, 1) = reshape([result.systemHydrogen], [], 1).*waterMass + ...
+    roundoffCorrection(:, 1);
+% Skipped cells undergo the identity chemistry map, not a PHREEQC audit.
+% Keep an explicit evaluation mask so these entries cannot be reported as
+% independent successful PHREEQC element checks.
+mask = state.sequentialCompositionalPhreeqcExecutedCells;
+outputInventory(~mask, :) = inputInventory(~mask, :);
+state.phreeqcElementBalanceEvaluatedCells = mask;
 state = checkPhreeqcElementBalance(state, inputInventory, outputInventory, ...
     elements, options, 'sequential-compositional-phreeqc');
 end
@@ -1009,7 +1047,8 @@ r = struct('hydrogen', zeros(size(waterMass)), ...
     'ca', aqueous('ca'), 'mg', aqueous('mg'), ...
     'fe2', aqueous('fe2'), 'fe3', aqueous('fe3'), ...
     'gasH2', column('gasH2'), 'gasCO2', column('gasCO2'), ...
-    'gasCH4', column('gasCH4'), 'gasH2S', column('gasH2S'), ...
+    'gasCH4', column('gasCH4') + aqueous('aqCH4'), ...
+    'gasH2S', column('gasH2S'), ...
     'calcite', column('calcite'), 'dolomite', column('dolomite'), ...
     'anhydrite', column('anhydrite'), 'gypsum', column('gypsum'), ...
     'goethite', column('goethite'), 'pyrite', column('pyrite'), ...
