@@ -85,11 +85,15 @@ else
     model.fluid.pvMultR = @(varargin) 1;
 end
 
-% Rock handles determine which dynamic state functions are registered.
-% Rebuild operators and state functions after replacing those handles.
-model = model.setupOperators();
-model.FlowDiscretization = BiochemicalFlowDiscretization(model);
-model = model.setupStateFunctionGroupings();
+% Only BiochemistryModel/BiochemistryPhreeqcModel know how to rebuild
+% operators from a function-handle rock.perm/poro (setupOperators
+% override). Plain pre-wrap callers get this from their own
+% BiochemistryModel(...) constructor right after.
+if ismethod(model, 'dynamicFlowTrans')
+    model = model.setupOperators();
+    model.FlowDiscretization = BiochemicalFlowDiscretization(model);
+    model = model.setupStateFunctionGroupings();
+end
 
 end
 

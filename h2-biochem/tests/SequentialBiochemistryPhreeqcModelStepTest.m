@@ -121,9 +121,9 @@ classdef SequentialBiochemistryPhreeqcModelStepTest < matlab.unittest.TestCase
             testCase.verifyEqual(stages.ReactionRejectedSteps, 0);
         end
 
-        function testOnePhreeqcCallPerFlowStep(testCase)
+        function testOnePhreeqcCallPerReactionSubstep(testCase)
             stages = testCase.report.SequentialBiochemistryPhreeqcStages;
-            testCase.verifyEqual(stages.PhreeqcCalls, 1);
+            testCase.verifyEqual(stages.PhreeqcCalls, stages.ReactionSubsteps);
         end
 
         function testStageTimingIsReported(testCase)

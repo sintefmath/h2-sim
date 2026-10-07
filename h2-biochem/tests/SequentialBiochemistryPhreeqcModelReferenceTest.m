@@ -7,7 +7,7 @@ classdef SequentialBiochemistryPhreeqcModelReferenceTest < matlab.unittest.TestC
 % short 2 day (5 x 0.4 day) injection period. The split model's coarse
 % control steps are configured at the SAME 0.4 day cadence as the
 % reference (reactionSubstepMaxDt = 0.2 day, so each coarse step still
-% exercises 2 local reaction substeps and one PHREEQC update) -- this isolates the
+% exercises 2 local reaction substeps and two PHREEQC updates) -- this isolates the
 % "no outer Picard iterations" splitting error from any additional error
 % due to a genuinely coarser flow step, and was confirmed empirically
 % (see below) to bring the two drivers into much closer qualitative
@@ -134,7 +134,8 @@ classdef SequentialBiochemistryPhreeqcModelReferenceTest < matlab.unittest.TestC
             % comparison window.
             nShort = 5;
             shortSchedule = schedule;
-            shortSchedule.step.val     = schedule.step.val(1:nShort);
+            shortSchedule.step.val     = repmat(0.4*day, nShort, 1);
+            assert(sum(shortSchedule.step.val)==2*day);
             shortSchedule.step.control = schedule.step.control(1:nShort);
 
             solver = NonLinearSolver();
@@ -146,7 +147,7 @@ classdef SequentialBiochemistryPhreeqcModelReferenceTest < matlab.unittest.TestC
             % Matched cadence: 5 coarse control steps of 0.4 day each
             % (identical to the reference's own step sizes), with
             % reactionSubstepMaxDt = 0.2 day so every coarse step still
-            % exercises 2 local reaction substeps and one PHREEQC update -- this tests
+            % exercises 2 local reaction substeps and two PHREEQC updates -- this tests
             % the general nSub-partitioning machinery while isolating
             % the "no outer Picard iterations" splitting error from any
             % additional error a genuinely coarser flow step would add

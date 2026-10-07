@@ -1249,7 +1249,11 @@ function scale = getEquationScaling(model, eqs, names, state0, dt)
             % Return zero-valued bacterial arguments matching a rock handle.
             narg = nargin(propertyFunction);
             if narg < 0
-                nbioreact = model.biochemFluid.nbioreact;
+                if isempty(model.biochemFluid)
+                    nbioreact = 1; % called during construction, biochemFluid unset
+                else
+                    nbioreact = model.biochemFluid.nbioreact;
+                end
             else
                 nbioreact = max(narg - 1, 1);
             end

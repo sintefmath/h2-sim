@@ -113,38 +113,17 @@ classdef SoreideWhitsonEos < EquationOfStateModel
             Tr = T ./ Tc_est;
             Pr = p ./ Pc_est;
 
-            if ~isempty(p)
-                if Tr > 1
-                    if Pr > 1
-                        L = 0; % Supercritical
-                    else
-                        if abs(Z_V - Z_L) < 0.1
-                            if Z_V < 0.5
-                                L = 1;
-                            else
-                                L = 0;
-                            end
-                        elseif Z_V > Z_L
-                            L = 0;
-                        else
-                            L = 1;
-                        end
-                    end
-                else
-                    if abs(Z_V - Z_L) < 0.1
-                        if Z_V < 0.5
-                            L = 1;
-                        else
-                            L = 0;
-                        end
-                    elseif Z_V > Z_L
-                        L = 0;
-                    else
-                        L = 1;
-                    end
-                end
-            else
+            % Each cell must retain the scalar labeling rule. MATLAB's
+            % if on a vector tests all entries and otherwise assigns one
+            % shared phase label to an entire heterogeneous batch.
+            if isempty(p)
                 L = [];
+            else
+                closeRoots = abs(Z_V - Z_L) < 0.1;
+                liquid = (closeRoots & Z_V < 0.5) | ...
+                    (~closeRoots & Z_V <= Z_L);
+                liquid(Tr > 1 & Pr > 1) = false;
+                L = double(liquid);
             end
         end
 
