@@ -25,6 +25,44 @@ partitioning, but assign microbial kinetics differently.
      - MRST local reaction substeps
      - Aqueous-only PHREEQC after each reaction substep
 
+Injection validation
+--------------------
+
+.. code-block:: matlab
+
+   result = runPhreeqcValidation('ugfactRoot', referenceRoot);
+   plotCompositionalPhreeqcValidation(result);
+
+The selected validation uses 50 cells over 50 m and the 50-day injection
+phase of a separate reference implementation. It compares dissolved hydrogen,
+pH, and cumulative hydrogen consumption using a common Soreide–Whitson EOS at 2.865 mol/kg salt molality and
+moderate kinetic rates. H2sim applies chemistry once per 2-day flow step;
+the reference uses five chemistry substeps within each flow step.
+
+The saved comparison reproduces the dissolved-H2 plateau closely, while the
+pH front differs by about one cell. The reported consumption diagnostics
+differ substantially: about 27.9 mol for H2sim and 42.8 mol for the reference
+over 50 days. The reference curve integrates its reported end-of-step rates;
+H2sim accumulates accepted PHREEQC reaction amounts. This comparison does
+not establish matching kinetic histories or timestep convergence. H2sim
+tracks acetate as an EOS component; the reference includes nitrogen and
+carries aqueous organic carbon separately. These component-bookkeeping
+differences are retained in this cross-implementation benchmark. The run
+also reports small sulfur-balance residuals above the configured audit
+tolerance, with a maximum absolute residual of about 2.9e-7 mol.
+
+.. button-ref:: notebooks/phreeqc_validation
+   :color: primary
+
+   Open PHREEQC validation →
+
+The reference implementation is
+`UGFACT <https://github.com/ahmadrezashojaee/UGFACT>`_ by Ahmadreza Shojaee.
+It remains a separate dependency for this comparison. Its sources are staged
+locally for Windows COM execution. The adapter uses the configured SW EOS
+for its post-chemistry reflash and the matching methane component alias;
+the reference kinetic equations are retained.
+
 Compositional kinetic coupling
 ------------------------------
 
@@ -46,7 +84,7 @@ update is not an independently evaluated chemistry audit.
 .. button-ref:: notebooks/mineral_comparison
    :color: primary
 
-   Open the mineral-chemistry notebook →
+   Open the mineral chemistry setup check →
 
 Multirate aqueous equilibrium
 -----------------------------

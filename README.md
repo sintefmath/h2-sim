@@ -12,7 +12,7 @@ In MATLAB, from the repository root:
 
 ```matlab
 startupH2sim
-result = exampleBlackOilH2Storage1D;
+result = exampleBlackOilAquifer2D;
 ```
 
 - **h2-store:** hydrogen storage in saline aquifers using black-oil models and fluid-property tools.

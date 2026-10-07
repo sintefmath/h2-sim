@@ -6,7 +6,9 @@ Compositional flow with bacterial effects · ``h2-biochem``
 The biochemistry module extends MRST compositional flow with microbial
 populations, reaction pathways, and aqueous tracer transport. This model
 family supports studying injected hydrogen mixed with residual reservoir
-gases. The introductory notebook uses a simplified one-dimensional setup.
+gases. The selected 2D example uses the existing three-reaction reservoir case
+with residual methane and five storage cycles. A one-dimensional notebook
+remains available as an introduction.
 
 What the models include
 -----------------------
@@ -20,22 +22,47 @@ What the models include
 The component mixture depends on the example. The multi-reaction setups
 include water, hydrogen, carbon dioxide, methane, hydrogen sulfide, and acetate.
 
-Start without PHREEQC
+Five-cycle 2D example
 ---------------------
 
 .. code-block:: matlab
 
    startupH2sim
-   simple1DBacterialExampleMetacet
+   results = exampleCompositionalBacterial2DThreeReactions( ...
+       'numCycles', 5, 'scenarios', {'bacterial','abiotic'}, ...
+       'molecularDiffusion', false, 'molecularDispersion', false);
 
-This MRST-only example introduces grid construction, wells, microbial
-populations, and compositional transport. It requires neither IPhreeqcCOM
-nor Parallel Computing Toolbox.
+This uses the original geometry, layered rock, 0.5 m grid spacing, residual
+methane, and default MET/ACE/SRB kinetic parameters. The selected comparison
+disables additional transport and clogging effects. It uses MRST-owned
+kinetics and requires neither PHREEQC nor Parallel Computing Toolbox.
+Accepted states, wells, reports, and full setups are saved for replotting.
+For this larger case, the optional AMGCL solver retains the compositional,
+bacterial, and aqueous-tracer cell unknowns together. Its native thread count
+is configurable through ``setupOptimizedLinearSolver``. See :doc:`installation`.
 
-.. button-ref:: nblinks/simple1DBacterialExampleMetacet
+.. button-ref:: notebooks/bacterial_storage_2d
    :color: primary
 
-   Open the bacterial-flow notebook →
+   Open the 2D bacterial storage notebook →
+
+.. figure:: _static/examples/compositional_2d_cycle_logs.png
+   :alt: Five injection, idle, and withdrawal cycles compared with and without bacterial reactions.
+   :width: 100%
+
+   Cycling well response. The well-cell gas fraction is a local sample,
+   not a flow-weighted production purity.
+
+Introductory notebook
+----------------------
+
+``simple1DBacterialExampleMetacet`` provides a smaller introduction to grid
+construction, wells, microbial populations, and compositional transport.
+
+.. button-ref:: nblinks/simple1DBacterialExampleMetacet
+   :color: secondary
+
+   Open the introductory notebook →
 
 Equation ownership
 ------------------

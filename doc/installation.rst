@@ -35,10 +35,33 @@ Check a small model
 
 .. code-block:: matlab
 
-   result = exampleBlackOilH2Storage1D;
+   result = exampleBlackOilAquifer2D;
 
 This compact black-oil injection example needs neither PHREEQC nor Parallel
 Computing Toolbox. Continue with :doc:`quickstart` or :doc:`examples`.
+
+Optional AMGCL acceleration
+---------------------------
+
+Large compositional cases can use MRST's AMGCL CPR solver. Configure a C++
+compiler with ``mex -setup C++``, load ``mrstModule add linearsolvers``,
+and follow the AMGCL gateway build instructions in your pinned MRST checkout.
+The compiled gateway must match your MATLAB platform.
+
+A gateway compiled in a separate local directory can be activated through
+MATLAB preferences:
+
+.. code-block:: matlab
+
+   setpref('H2sim', 'AMGCLGatewayPath', gatewayDirectory);
+   setpref('H2sim', 'AMGCLSourcePath', amgclSourceDirectory);
+   setpref('H2sim', 'BoostHeaderPath', boostHeaderDirectory);
+   assert(activateH2simAMGCL());
+
+``gatewayDirectory`` contains MRST's gateway files and its ``utils`` directory
+with ``amgcl_matlab`` compiled for your platform. A standard MRST installation
+can keep its existing solver paths. AMGCL does not require Parallel Computing
+Toolbox.
 
 Optional PHREEQC setup
 ----------------------

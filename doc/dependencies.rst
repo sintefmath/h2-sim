@@ -29,9 +29,19 @@ your selected model needs them.
    * - Parallel Computing Toolbox
      - Optional parallel pressure flashes
      - Optional; serial is the default
+   * - AMGCL and a supported C++ compiler
+     - Optional acceleration of large compositional cases
+     - MRST linear-solver MEX gateway; no Parallel Computing Toolbox needed
    * - Internet access to NIST
      - Pure-component table-generation scripts
      - Needed when fetching data, not for the compact notebooks
+
+Reference validation
+--------------------
+
+The PHREEQC validation case additionally uses a separate UGFACT checkout.
+Pass its root directory as ``ugfactRoot`` to ``runPhreeqcValidation``.
+All selected examples and the reference run use serial execution.
 
 Without Parallel Computing Toolbox
 ----------------------------------

@@ -65,7 +65,7 @@ Start small. Build understanding.
       :link: examples
       :link-type: doc
 
-      A compact black-oil model, microbial flow, and short chemistry examples.
+      A 2D aquifer cycle, microbial transport, thermodynamics, and PHREEQC validation.
 
       +++
       Browse examples →

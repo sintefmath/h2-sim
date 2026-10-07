@@ -10,21 +10,24 @@ Hydrogen storage in saline aquifers
 .. code-block:: matlab
 
    startupH2sim
-   result = exampleBlackOilH2Storage1D;
+   result = exampleBlackOilAquifer2D;
    lastState = result.states{end};
    gasSaturation = lastState.s(:, 2);
+   plotBlackOilAquifer2D(result);
 
-The tutorial uses a horizontal column, a fixed-pressure outlet, and an H₂
-injector. It is immiscible: dissolution and vaporization are disabled.
-See :doc:`store` for the black-oil interpretation and :doc:`thermodynamics`
-for the property tools.
+The example uses a 2D structural trap with hydrogen build-up and five storage
+cycles. Gravity, capillarity, and dissolved hydrogen use the existing aquifer
+model and input tables. See :doc:`store` and :doc:`thermodynamics`.
 
 Hydrogen storage in depleted gas reservoirs
 -------------------------------------------
 
 .. code-block:: matlab
 
-   simple1DBacterialExampleMetacet
+   results = exampleCompositionalBacterial2DThreeReactions( ...
+       'numCycles', 5, 'scenarios', {'bacterial', 'abiotic'}, ...
+       'molecularDiffusion', false, 'molecularDispersion', false);
+   plotCompositionalBacterial2DThreeReactions(results);
 
 Open the compositional notebook in :doc:`examples` to inspect the setup,
 well controls, microbial populations, and transport plots.

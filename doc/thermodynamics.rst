@@ -1,67 +1,121 @@
-Thermodynamics and fluid properties
-===================================
+Thermodynamics and PVT tabulation
+=================================
 
-Understand the property model before selecting a flow solver. Black-oil
-PVT tables and a compositional EOS provide different representations of
-hydrogen–brine phase behavior.
+H2sim connects hydrogen–brine phase behavior to compositional flow and
+black-oil storage simulations. Choose a property model, examine its
+partitioning and salinity response, then generate the tables your flow model
+requires.
 
-Property tools
---------------
+Phase-behavior capabilities
+---------------------------
 
-.. list-table:: Functions supplied by H2sim
+.. list-table:: Available calculations
    :header-rows: 1
-   :widths: 55 45
+   :widths: 22 40 38
 
-   * - Function
-     - Use
-   * - ``HenrySetschenowH2BrineEos``
-     - Dissolved H₂ mole fraction from temperature, salt molality, and H₂ partial pressure
-   * - ``calculateBrillBreggsZfactorHydrogen``
-     - Dimensionless H₂ compressibility factor from temperature and pressure
-   * - ``generateH2WaterSolubilityTable``
-     - H₂–water solubility table generation
-   * - ``generateComponentProperties``
-     - Pure-component properties; NIST access when generating new data
-   * - ``getFluidH2BrineProps``
-     - Write black-oil PVT data from component and solubility tables
-   * - ``SoreideWhitsonEos``
-     - Compositional gas–liquid equilibrium in biochemical models
+   * - Approach
+     - Capability
+     - Implementation
+   * - Redlich–Kwong (RK)
+     - Hydrogen dissolution and water partitioning, including salt corrections
+     - ``generateH2BrineSolubilityTable``
+   * - Søreide–Whitson (SW)
+     - Compositional gas–liquid flash with salinity-dependent interactions
+     - ``SoreideWhitsonEos``
+   * - Peng–Robinson (PR)
+     - General compositional flash; binary interactions can be specified
+     - MRST ``EquationOfStateModel``
+   * - Henry–Setschenow
+     - Dissolved hydrogen from H₂ partial pressure, temperature, and salt molality
+     - ``HenrySetschenowH2BrineEos``
+   * - ePC-SAFT reference tables
+     - Compare gas and liquid partitioning with supplied tabulated reference values
+     - Bundled ``ePcSaftH2BrineData.mat``; no live PC-SAFT solver is included
+   * - Black-oil PVT tables
+     - Formation-volume factors, solution ratio, vaporized-water ratio, and viscosities
+     - ``getFluidH2BrineProps`` with component and solubility tables
 
-A local solubility calculation
-------------------------------
+Two selected studies
+--------------------
+
+Run the existing hydrogen–brine study:
 
 .. code-block:: matlab
 
-   pressure = linspace(2e6, 20e6, 60).'; % H2 partial pressure, Pa
-   temperature = repmat(317.15, size(pressure)); % K
-   saltMolality = 3; % mol NaCl / kg water
-   tab = HenrySetschenowH2BrineEos(temperature, saltMolality, pressure);
-   plot(pressure/1e6, tab.x_H2);
-   xlabel('H_2 partial pressure (MPa)');
-   ylabel('Dissolved H_2 mole fraction (-)');
+   study = exampleH2BrineSolubilityStudy;
+   plotH2BrineSolubilityStudy(study);
 
-Use matching vector lengths for temperature and pressure. This evaluates the
-existing correlation locally; no external download or parallel toolbox is needed.
+The first study evaluates partitioning over the reference temperature and
+pressure grid. The figure shows the 50 °C slice from 6 to 20 MPa. It compares
+hydrogen in liquid water and water in the hydrogen gas phase. The supplied
+ePC-SAFT values are a near-pure-water reference. The generic PR curve uses
+its default binary interactions; it is not a calibrated hydrogen–water model.
+Henry–Setschenow supplies liquid hydrogen solubility, not gas-phase water.
 
-.. figure:: _static/examples/thermodynamics_solubility.png
-   :alt: Henry–Setschenow hydrogen solubility versus partial pressure at 44 degrees Celsius for three salt molalities.
+.. figure:: _static/examples/phase_partitioning.png
+   :alt: Hydrogen and water partitioning versus pressure at 50 degrees Celsius using RK, SW, PR, Henry–Setschenow, and tabulated ePC-SAFT.
    :width: 100%
 
-   The local correlation at 44 °C. These curves illustrate the implemented
-   function; they are not a new experimental validation.
+   Phase partitioning at zero added salt. Curves represent distinct property
+   models; agreement with a reference curve does not validate every model
+   over other temperatures, pressures, or salt concentrations.
 
-Keep units explicit
--------------------
+The second study holds temperature at 40 °C and pressure at 15 MPa while
+varying NaCl molality from zero to 5 mol/kg water. Absolute solubility and
+solubility normalized by the zero-salt value show the salting-out response
+without mixing it with a pressure or temperature change.
 
-The solubility function takes temperature in kelvin, pressure in pascals,
-and NaCl molality in mol/kg water. The Brill–Beggs implementation also takes
-pressure in pascals and returns a dimensionless ``Z`` factor. Check each
-function's interface before mixing molality, mass concentration, and mole fractions.
+.. figure:: _static/examples/salting_out.png
+   :alt: Absolute and normalized hydrogen solubility versus NaCl molality for RK, SW, and Henry–Setschenow at 40 degrees Celsius and 15 MPa.
+   :width: 100%
 
-Black-oil versus compositional
-------------------------------
+   Salting-out comparison. These are implemented model calculations,
+   not newly measured experimental data.
 
-Black-oil models use tabulated formation-volume and solution-ratio functions.
-Compositional models solve for phase fractions and component partitioning
-with an EOS. PHREEQC aqueous equilibrium adds speciation and mineral chemistry;
-it does not replace EOS ownership of the gas–liquid split in the selected workflows.
+.. button-ref:: notebooks/thermodynamics
+   :color: primary
+
+   Open the thermodynamics notebook →
+
+From phase behavior to black-oil PVT
+------------------------------------
+
+``examplePVTGenerationH2Brine`` demonstrates the complete tabulation route:
+
+1. Generate pure hydrogen and water density/viscosity tables with
+   ``generateComponentProperties``.
+2. Compute dissolved hydrogen and water partitioning with
+   ``generateH2BrineSolubilityTable`` or supply compatible reference tables.
+3. Pass matching temperature/pressure samples to ``getFluidH2BrineProps``.
+4. Export ``PVTO``, ``PVDO``, and ``PVTG`` tables as selected by the
+   dissolution and vaporization options, then use them in an Eclipse deck.
+
+.. code-block:: matlab
+
+   getFluidH2BrineProps(solubilityTable, hydrogenTable, waterTable, ...
+       'rs', true, 'rv', false, 'plot', true, ...
+       'outputPath', fullfile(pwd, 'build', 'pvt-tables'));
+
+The pure-component generation scripts fetch NIST data when creating new
+tables. The two selected studies run locally from correlations and bundled
+reference data, and require no Parallel Computing Toolbox. The 2D aquifer
+example reads existing PVT tables rather than regenerating them.
+
+Units and interpretation
+------------------------
+
+Compositional flashes use temperature in kelvin and pressure in pascals.
+The solubility-table generator's temperature bounds are in degrees Celsius;
+its pressure bounds are in pascals. NaCl molality is mol/kg water. Brill–Beggs
+returns a dimensionless hydrogen compressibility factor from kelvin and
+pascals. PVT exports use the selected deck unit system.
+
+For Henry–Setschenow, the pressure input is the hydrogen partial pressure.
+The selected hydrogen-dominated comparison approximates it by total pressure.
+PHREEQC handles aqueous speciation and mineral chemistry; the EOS retains
+ownership of the gas–liquid split in the coupled workflows.
+
+.. toctree::
+   :hidden:
+
+   notebooks/thermodynamics
