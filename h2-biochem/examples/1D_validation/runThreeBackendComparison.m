@@ -9,7 +9,7 @@ function scenarios = runThreeBackendComparison(varargin)
 % and the UGFACT solution only agree on the same quantity when the full
 % carbonate speciation is summed. Additional figures compare H2 loss over
 % time and its final spatial distribution. Results remain in memory and no
-% files are written.
+% simulation files are written; figures export to outputDirectory.
 %
 % The three compared backends are:
 %   1. Original h2-biochem (BiochemistryModel, no PHREEQC).
@@ -42,7 +42,9 @@ function scenarios = runThreeBackendComparison(varargin)
         'phreeqcDatabaseFile', '', ...
         'flowTimestepMaxDt', 2*day, ...
         'reactionSubstepMaxDt', 0.4*day, ...
-        'referenceUseSoreideWhitsonEOS', false);
+        'referenceUseSoreideWhitsonEOS', false, ...
+        'plotResults', true, ...
+        'outputDirectory', fullfile(pwd,'build','phreeqc-figures'));
     opt = merge_options(opt, varargin{:});
     validateattributes(opt.referenceUseSoreideWhitsonEOS, ...
         {'logical', 'numeric'}, {'scalar', 'real', 'finite'}, ...
@@ -55,6 +57,7 @@ function scenarios = runThreeBackendComparison(varargin)
     validateattributes(opt.reactionSubstepMaxDt, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'positive'}, ...
         mfilename, 'reactionSubstepMaxDt');
+    validateattributes(opt.plotResults, {'logical'}, {'scalar'});
     databaseFile = resolvePhreeqcDatabaseFile(opt.phreeqcDatabaseFile);
 
     commonOptions = { ...
@@ -143,7 +146,9 @@ function scenarios = runThreeBackendComparison(varargin)
     scenarios(end + 1) = runUGFACTReference( ...
         ugfactRoot, opt.referenceUseSoreideWhitsonEOS);
     printSummary(scenarios);
-    createComparisonFigures(scenarios);
+    if opt.plotResults
+        plotPhreeqcBackendComparison(scenarios,'outputDirectory',opt.outputDirectory);
+    end
 end
 
 function item = makeCase(name, options, driver)
@@ -172,6 +177,8 @@ function metrics = collectMetrics(states, schedule, model)
     idxCO2 = findComponentIndex(componentNames, {'CO2', 'CarbonDioxide'});
 
     controls = schedule.step.control(:);
+    assert(all(ismember([1 2 3],controls)), ...
+        'The comparison requires injection, storage, and production periods.');
     snapshotIndices = [find(controls == 1, 1, 'last'), ...
         find(controls == 2, 1, 'last'), numel(states)];
     assert(all(snapshotIndices > 0), ...
@@ -197,8 +204,7 @@ function metrics = collectMetrics(states, schedule, model)
     end
     totalConsumed = sum(cumulative, 2);
     injected = prescribedInjectedH2(schedule, model);
-    x = model.G.cells.centroids(:, 1);
-    x = (x - min(x))./max(max(x) - min(x), eps);
+    x = dimensionlessCellDistance(model.G);
 
     metrics = struct( ...
         'timeDays', cumsum(schedule.step.val(:))./day, ...
@@ -285,6 +291,8 @@ function metrics = collectUGFACTMetrics(states, schedule, model)
     idxCO2 = findComponentIndex(componentNames, {'CO2', 'CarbonDioxide'});
 
     controls = schedule.step.control(:);
+    assert(all(ismember([1 2 3],controls)), ...
+        'The comparison requires injection, storage, and production periods.');
     snapshotIndices = [find(controls == 1, 1, 'last'), ...
         find(controls == 2, 1, 'last'), numel(states)];
     snapshotLabels = ["End injection", "End storage", "End simulation"];
@@ -312,8 +320,7 @@ function metrics = collectUGFACTMetrics(states, schedule, model)
     end
 
     injected = prescribedInjectedH2(schedule, model);
-    x = model.G.cells.centroids(:, 1);
-    x = (x - min(x))./max(max(x) - min(x), eps);
+    x = dimensionlessCellDistance(model.G);
     metrics = struct( ...
         'timeDays', cumsum(schedule.step.val(:))./day, ...
         'snapshotIndices', snapshotIndices, ...
@@ -412,76 +419,6 @@ function printSummary(scenarios)
         'VariableNames', {'Backend', 'InjectedH2_mol', 'ConsumedH2_mol', ...
         'FinalH2Loss_percent', 'Runtime_seconds'});
     disp(summary);
-end
-
-function createComparisonFigures(scenarios)
-    colors = paperColors(numel(scenarios));
-    labels = scenarios(1).snapshotLabels;
-
-    fig = paperFigure([26, 16], ...
-        'Aqueous H2 and dissolved inorganic carbon profiles');
-    layout = tiledlayout(fig, 2, 3, ...
-        'TileSpacing', 'compact', 'Padding', 'compact');
-    for component = 1:2
-        for snapshot = 1:3
-            ax = nexttile(layout);
-            hold(ax, 'on');
-            for backend = 1:numel(scenarios)
-                if component == 1
-                    profile = scenarios(backend).aqueousH2(:, snapshot);
-                else
-                    profile = scenarios(backend).aqueousDIC(:, snapshot);
-                end
-                plot(ax, scenarios(backend).xDimensionless, profile, ...
-                    'LineWidth', 1.8, 'Color', colors(backend, :), ...
-                    'DisplayName', char(scenarios(backend).name));
-            end
-            title(ax, labels(snapshot));
-            if component == 1
-                ylabel(ax, 'Aqueous H_2 mole fraction');
-            else
-                ylabel(ax, 'Dissolved inorganic carbon (mol kgw^{-1})');
-            end
-            xlabel(ax, 'Dimensionless distance');
-            if component == 1 && snapshot == 3
-                legend(ax, 'Location', 'northeast');
-            end
-            styleAxes(ax);
-        end
-    end
-    paperExport(fig, 'three_backends_H2_DIC_profiles');
-
-    fig = paperFigure([18, 11], 'H2 loss over time');
-    ax = axes(fig);
-    hold(ax, 'on');
-    for backend = 1:numel(scenarios)
-        plot(ax, scenarios(backend).timeDays, ...
-            scenarios(backend).lossPercent, ...
-            'LineWidth', 1.8, 'Color', colors(backend, :), ...
-            'DisplayName', char(scenarios(backend).name));
-    end
-    xline(ax, 50, 'k:', 'End injection');
-    xline(ax, 200, 'k:', 'End storage');
-    xlabel(ax, 'Time (days)');
-    ylabel(ax, 'Consumed injected H_2 (%)');
-    legend(ax, 'Location', 'best');
-    styleAxes(ax);
-    paperExport(fig, 'three_backends_H2_loss_over_time');
-
-    fig = paperFigure([18, 11], 'Spatial H2 consumption');
-    ax = axes(fig);
-    hold(ax, 'on');
-    for backend = 1:numel(scenarios)
-        plot(ax, scenarios(backend).xDimensionless, ...
-            scenarios(backend).finalSpatialConsumptionMoles, ...
-            'LineWidth', 1.8, 'Color', colors(backend, :), ...
-            'DisplayName', char(scenarios(backend).name));
-    end
-    xlabel(ax, 'Dimensionless distance from injector');
-    ylabel(ax, 'Cumulative H_2 consumed (mol cell^{-1})');
-    legend(ax, 'Location', 'best');
-    styleAxes(ax);
-    paperExport(fig, 'three_backends_spatial_H2_consumption');
 end
 
 function databaseFile = resolvePhreeqcDatabaseFile(databaseFile)

@@ -19,7 +19,8 @@ This module extends MRST's capabilities by integrating a bio-chemistry model wit
 `IPhreeqcCOM.Object` (or configured `phreeqcComProgId`), and an explicit absolute `phreeqcDatabaseFile` path to
 `h2_biogeochemistry.dat`. The database is bundled at
 [`h2-biochem/database/h2_biogeochemistry.dat`](database/h2_biogeochemistry.dat); since that folder is on the MATLAB path
-after running `startupH2sim`, `which('h2_biogeochemistry.dat')` resolves it automatically.
+The database is a renamed, unmodified copy from [UGFACT](https://github.com/ahmadrezashojaee/UGFACT); [source revision and checksum](database/README.md) are recorded alongside it.
+After running `startupH2sim`, `which('h2_biogeochemistry.dat')` resolves it automatically.
 
 Set `phreeqcBackend='sequential-compositional-phreeqc'` with `phreeqcTimestepCoupling=true` to run the post-convergence
 compositional kinetics/chemistry split.
@@ -34,8 +35,9 @@ as a state field, and `PsiGrowthRate`/`CarbonLimitedGrowthRate`/`BacterialMass` 
 outputs. It maps the prescribed selected-output schema back to tracers, minerals, and EOS inventories before
 reflashing. This sequential coupling is not claimed to exactly reproduce any paper or external benchmark.
 
-Both backends reject a PHREEQC result before updating the state unless H, C, S,
-Ca, Mg, and Fe are conserved in every cell. The returned state records the
+The compositional backend records per-cell H, C, S, Ca, Mg, and Fe
+conservation diagnostics and warns when its configured tolerances are exceeded.
+Its returned state records the
 `nc`-by-6 diagnostics `phreeqcElementBalanceInput`,
 `phreeqcElementBalanceOutput`, `phreeqcElementBalanceAbsoluteResidual`,
 `phreeqcElementBalanceNormalizedResidual`, and
@@ -44,6 +46,11 @@ Ca, Mg, and Fe are conserved in every cell. The returned state records the
 with `phreeqcElementBalanceAbsoluteTolerance` (default `1e-7` mol) and
 `phreeqcElementBalanceRelativeTolerance` (default `1e-8`) in
 `phreeqcCouplingOptions`.
+
+The current multirate working implementation has its elemental audit disabled;
+its post-PHREEQC EOS component-inventory audit remains active. Consequently,
+a passing EOS inventory audit alone does not establish elemental conservation
+through the chemistry handoff.
 
 The audit covers aqueous analytical totals (including the separate acetate
 element), EOS H2/CO2/CH4/H2S, and all configured equilibrium minerals. Hydrogen
@@ -107,3 +114,75 @@ For detailed methodology and validation, see our publication:
   - `ad-props`
   - `h2store`
   -`biochemistry`
+
+### Terminal profiling
+
+From the H2sim repository root under WSL, run:
+
+```bash
+bash run_matlab_h2sim.sh "results = profilePhreeqcWorkflows;"
+```
+
+The launcher uses Windows MATLAB R2026a, initializes this checkout from the
+standard MATLAB path, and propagates MATLAB's batch exit status. Set
+`MATLAB_BIN` to another Windows MATLAB executable's WSL path when needed.
+The Windows COM backends require access to your MATLAB license server.
+
+`profilePhreeqcWorkflows` profiles each baseline and compares three alternating
+unprofiled baseline/candidate pairs. The candidates are the multirate local
+pressure bracket and compositional cell batching. The default benchmark uses
+50 cells and two 2-day flow steps, with 0.4-day multirate reaction substeps.
+Simulation tolerances are unchanged. State comparisons combine field-specific
+absolute tolerances with a relative tolerance of `1e-6`. Multirate EOS inventory
+audits must pass; compositional elemental audit warnings are retained in the
+saved states and reported without changing their existing warning policy. Profiles, paired states, comparisons and
+timings are saved in `build/phreeqc-performance`, using local temporary files
+before copying to the WSL filesystem.
+
+Select a backend or reuse a completed profile with:
+
+```matlab
+results = profilePhreeqcWorkflows('backends', {'multirate'}, ...
+    'collectProfiles', false, 'trials', 3);
+```
+
+Validated defaults use batches of up to 50 compositional cells and the local
+multirate pressure bracket with the original fzero fallback. Set
+`sequentialCompositionalPhreeqcBatchSize` to `1` or
+`phreeqcReflashLocalBracket` to `false` to reproduce the respective baselines.
+Three serial alternating trials at the benchmark settings gave median
+simulation times of 30.10 -> 24.11 seconds for compositional and
+168.35 -> 90.91 seconds for multirate. All compared compositional fields
+matched exactly; multirate differences passed the stated inventory-based
+absolute/relative tolerances. These short-case timings exclude startup and
+model construction and do not establish full-schedule speedups.
+
+### Publication figures
+
+The PHREEQC examples share labeled panels, consistent case colors and line
+styles, and vector PDF / 300-dpi PNG export to `build/phreeqc-figures`.
+Distance is measured at cell centers using the actual domain edges, so the
+first and last cells lie inside the interval `0 < x/L < 1`. Percentage labels
+state whether injection is cumulative to date or the total scheduled amount.
+
+```matlab
+% Short injection-only mineral comparison (the full default is 50 days):
+comparison = exampleCompositionalBacterial1DPhreeqcMinerals( ...
+    'gridCells', 4, 'maximumFlowSteps', 2);
+% Short multirate case with publication figures:
+summary = exampleSequentialBiochemistryPhreeqc1D( ...
+    'maximumFlowSteps', 2, 'plotResults', true);
+% Redraw completed runs without solving again:
+plotPhreeqcMineralComparison(comparison);
+plotSequentialBiochemistryPhreeqc(summary);
+% For results returned by runThreeBackendComparison:
+% plotPhreeqcBackendComparison(scenarios);
+```
+
+Pass `outputDirectory` to choose the export location; an empty string disables
+export. Set `plotResults` to false to run a case without plotting. Mineral
+case labels include rock names, and pH is shown only for PHREEQC cases that
+provide it. Backend profile panels share a y scale for each plotted quantity;
+phase boundaries and snapshot times come from the result schedules. Mineral
+consumption uses separate labeled scales for the original and PHREEQC kinetics,
+with printed totals; detail panels preserve the smaller mineral-case differences.

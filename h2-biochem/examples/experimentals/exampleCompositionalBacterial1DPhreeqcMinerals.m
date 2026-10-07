@@ -3,19 +3,30 @@ function comparison = exampleCompositionalBacterial1DPhreeqcMinerals(varargin)
 %
 % The test uses the 50-day injection period, no bio-clogging, and the same
 % grid, flow controls, brine, biomass, and transport settings in all cases.
+% Use maximumFlowSteps for short validation; plotResults=false suppresses plots.
+% Figures export to outputDirectory as vector PDF and 300-dpi PNG.
 
 mrstModule add ad-core ad-props compositional deckformat 
 
 opt = struct( ...
     'phreeqcDatabaseFile', '', ...
     'gridCells', 50, ...
-    'batchSize', 50);
+    'batchSize', 50, ...
+    'maximumFlowSteps', inf, ...
+    'plotResults', true, ...
+    'outputDirectory', fullfile(pwd,'build','phreeqc-figures'));
 opt = merge_options(opt, varargin{:});
 opt.phreeqcDatabaseFile = resolvePhreeqcDatabaseFile(opt.phreeqcDatabaseFile);
 validateattributes(opt.gridCells, {'numeric'}, ...
     {'scalar', 'integer', 'positive', 'finite'}, mfilename, 'gridCells');
 validateattributes(opt.batchSize, {'numeric'}, ...
     {'scalar', 'integer', 'positive', 'finite'}, mfilename, 'batchSize');
+
+assert(isnumeric(opt.maximumFlowSteps) && isreal(opt.maximumFlowSteps) && ...
+    isscalar(opt.maximumFlowSteps) && opt.maximumFlowSteps>0 && ...
+    (isinf(opt.maximumFlowSteps) || opt.maximumFlowSteps==floor(opt.maximumFlowSteps)), ...
+    'maximumFlowSteps must be a positive integer or Inf.');
+validateattributes(opt.plotResults, {'logical'}, {'scalar'});
 
 mineralCases = table( ...
     ["A"; "B"; "C"], ...
@@ -27,7 +38,7 @@ mineralCases = table( ...
 
 commonOptions = { ...
     'rate', 'highrate', ...
-    'scheduleMode', 'complete', ...
+    'scheduleMode', 'injection', ...
     'gridCells', opt.gridCells, ...
     'domainLength', 50, ...
     'bacteriamodel', true, ...
@@ -67,10 +78,12 @@ comparison = repmat(template, 4, 1);
     commonOptions{:}, ...
     'nbact0', 100, ... % 100*1e10 cells/m^3 = PHREEQC's 1e9 cells/kgw
     'phreeqcTimestepCoupling', false);
+schedule = limitSchedule(schedule,opt.maximumFlowSteps);
 comparison(1) = runPackedCase( ...
     "Original", "Original h2-biochem, no clogging", ...
     model, schedule, state0, ...
-    sprintf('H2_1D_NO_CLOG_ORIGINAL_MATCHED_INIT_INJECTION_%dCELLS', opt.gridCells));
+    sprintf('H2_1D_ORIGINAL_INJECTION_FIGURES_V2_%dCELLS_%dSTEPS', ...
+        opt.gridCells,numel(schedule.step.val)));
 
 %% Sequential compositional-PHREEQC mineral cases
 for caseNo = 1:height(mineralCases)
@@ -86,9 +99,10 @@ for caseNo = 1:height(mineralCases)
         'phreeqcInertWtFraction', mineralCases.Inert(caseNo), ...
         'sequentialCompositionalPhreeqcBatchSize', ...
             min(opt.batchSize, opt.gridCells));
+    schedule = limitSchedule(schedule,opt.maximumFlowSteps);
     assertMatchedInitialState(comparison(1), model, state0);
-    packedName = sprintf('H2_1D_NO_CLOG_PHREEQC_%s_INJECTION_%dCELLS', ...
-        mineralCases.Case(caseNo), opt.gridCells);
+    packedName = sprintf('H2_1D_PHREEQC_%s_INJECTION_FIGURES_V2_%dCELLS_%dSTEPS_BATCH%d', ...
+        mineralCases.Case(caseNo), opt.gridCells,numel(schedule.step.val),opt.batchSize);
     comparison(caseNo + 1) = runPackedCase( ...
         mineralCases.Case(caseNo), mineralCases.Rock(caseNo), ...
         model, schedule, state0, packedName);
@@ -96,7 +110,9 @@ end
 
 summary = makeSummary(comparison, mineralCases);
 disp(summary);
-plotComparison(comparison);
+if opt.plotResults
+    plotPhreeqcMineralComparison(comparison,'outputDirectory',opt.outputDirectory);
+end
 end
 
 function assertMatchedInitialState(original, phreeqcModel, phreeqcState)
@@ -127,7 +143,7 @@ function result = runPackedCase(name, rock, model, schedule, state0, packedName)
 fprintf('\nRunning %s: %s\n', name, rock);
 solver = NonLinearSolver();
 solver.maxTimestepCuts = 12;
-problem = packSimulationProblem( ...
+problem = packH2simSimulationProblem( ...
     state0, model, schedule, packedName, ...
     'NonLinearSolver', solver);
 timer = tic();
@@ -154,8 +170,7 @@ end
 timeDays = cumsum(schedule.step.val(:))./day;
 cumulativeInjected = prescribedInjectedH2(schedule, model);
 h2LossPercent = 100*totalCumulativeConsumed./cumulativeInjected;
-x = model.G.cells.centroids(:, 1);
-xDimensionless = (x - min(x))./max(max(x) - min(x), eps);
+xDimensionless = dimensionlessCellDistance(model.G);
 
 result = struct( ...
     'name', string(name), ...
@@ -205,61 +220,6 @@ summary = table( ...
         'Case', 'Rock', 'H2_MET_mol', 'H2_ACE_mol', 'H2_SRB_mol', ...
         'H2_Total_mol', 'FinalH2LossPercent', 'MeanFinalPH', 'FinalCalcite_mol', ...
         'FinalDolomite_mol', 'InertRockWtPercent', 'ElapsedSeconds'});
-end
-
-function plotComparison(comparison)
-names = vertcat(comparison.name);
-h2 = vertcat(comparison.h2ConsumedByReactionMoles);
-colors = paperColors(numel(comparison));
-
-fig = paperFigure([24, 11], '1D original versus PHREEQC mineral cases');
-layout = tiledlayout(fig, 1, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
-ax = nexttile(layout);
-bar(ax, categorical(names, names, 'Ordinal', true), h2, 'stacked');
-ylabel(ax, 'Cumulative H_2 consumption (mol)');
-title(ax, 'Microbial H_2 consumption');
-legend(ax, {'MET', 'ACE', 'SRB'}, 'Location', 'best');
-styleAxes(ax);
-
-ax = nexttile(layout);
-phreeqc = comparison(2:end);
-pHCounts = reshape(arrayfun(@(item) numel(item.finalPH), phreeqc), [], 1);
-pHNames = repelem(vertcat(phreeqc.name), pHCounts);
-boxchart(ax, categorical(pHNames), vertcat(phreeqc.finalPH));
-ylabel(ax, 'Final pH');
-title(ax, 'Cellwise final pH');
-styleAxes(ax);
-title(layout, '1D no-clogging injection comparison');
-paperExport(fig, 'minerals_1D_consumption_and_pH');
-
-fig = paperFigure([24, 11], '1D H2 loss percentage');
-lossLayout = tiledlayout(fig, 1, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
-ax = nexttile(lossLayout);
-hold(ax, 'on');
-for caseNo = 1:numel(comparison)
-    plot(ax, comparison(caseNo).timeDays, ...
-        comparison(caseNo).h2LossPercent, 'LineWidth', 1.6, ...
-        'Color', colors(caseNo, :), 'DisplayName', char(names(caseNo)));
-end
-xlabel(ax, 'Time (days)');
-ylabel(ax, 'Cumulative H_2 loss (%)');
-title(ax, 'Loss versus time');
-legend(ax, 'Location', 'best');
-styleAxes(ax);
-
-ax = nexttile(lossLayout);
-hold(ax, 'on');
-for caseNo = 1:numel(comparison)
-    plot(ax, comparison(caseNo).xDimensionless, ...
-        comparison(caseNo).spatialH2LossPercent, 'LineWidth', 1.6, ...
-        'Color', colors(caseNo, :));
-end
-xlabel(ax, 'Dimensionless distance, x/L');
-ylabel(ax, 'Final cellwise H_2 loss (% of injected H_2)');
-title(ax, 'Spatial loss distribution');
-styleAxes(ax);
-title(lossLayout, '1D cumulative biological H_2 loss');
-paperExport(fig, 'minerals_1D_H2_loss');
 end
 
 function cumulativeInjected = prescribedInjectedH2(schedule, model)
@@ -322,4 +282,10 @@ end
 [~, name, extension] = fileparts(databaseFile);
 assert(strcmpi([name, extension], 'h2_biogeochemistry.dat'), ...
     'The database must be h2_biogeochemistry.dat.');
+end
+
+function schedule=limitSchedule(schedule,steps)
+steps=min(steps,numel(schedule.step.val));
+schedule.step.val=schedule.step.val(1:steps);
+schedule.step.control=schedule.step.control(1:steps);
 end
