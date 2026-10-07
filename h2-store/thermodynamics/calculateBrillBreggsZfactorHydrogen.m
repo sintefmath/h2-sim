@@ -11,10 +11,10 @@ function Z = calculateBrillBreggsZfactorHydrogen(T, P)
 %
 % INPUTS:
 %   T - Temperature in Kelvin (K)
-%   P - Pressure in megapascals (MPa)
+%   P - Pressure in Pascal (Pa)
 %
 % OUTPUTS:
-%   rho - Hydrogen density in kilograms per cubic meter (kg/m^3)
+%   Z - Dimensionless hydrogen compressibility factor
 %
 % REFERENCE:
 %   Jafari Raad, Seyed Mostafa, Leonenko, Yuri, Hassanzadeh, Hassan, 2023.
