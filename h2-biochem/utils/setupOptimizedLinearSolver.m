@@ -11,18 +11,24 @@ function [nls, lsolve] = setupOptimizedLinearSolver(model, varargin)
 %                     'high' (with both diffusion & dispersion) [default: 'medium']
 %   solverTolerance - Tolerance for linear solver [default: 1e-4]
 %   maxNonlinIter   - Max nonlinear iterations [default: 15]
+%   linearThreads   - AMGCL OpenMP threads, no Parallel Toolbox [default: 4]
 %   cprDamp         - Retained for backward-compatible calls; AMGCL CPR
 %                     does not expose this setting.
 %
 % RETURNS:
 %   nls    - NonLinearSolver configured with linear solver
-%   lsolve - CPRSolverAD linear solver with optimized AMGCL parameters
+%   lsolve - Selected linear solver; AMGCL CPR when available for a large model
 
     opt = struct('complexityLevel', 'medium', ...
                  'solverTolerance', 1e-4, ...
                  'maxNonlinIter', 15, ...
-                 'cprDamp', []);
+                 'cprDamp', [], ...
+                 'linearThreads', 4);
     opt = merge_options(opt, varargin{:});
+    validateattributes(opt.linearThreads, {'numeric'}, {'scalar', 'integer', 'positive'});
+
+    % Use an optional user-local AMGCL installation when configured.
+    activateH2simAMGCL();
 
     % Select base linear solver
     lsolve = selectLinearSolverAD(model);
@@ -54,10 +60,21 @@ function [nls, lsolve] = setupOptimizedLinearSolver(model, varargin)
     % interface. Small systems may use the backslash fallback instead.
     if isa(lsolve, 'AMGCLSolverAD')
         lsolve.setCoarsening('aggregation');
+        lsolve.amgcl_setup.nthreads = opt.linearThreads;
         lsolve.amgcl_setup.max_levels = amgclSettings.max_levels;
         lsolve.amgcl_setup.verbose = amgclSettings.verbose;
         lsolve.amgcl_setup.aggr_eps_strong = amgclSettings.aggr_eps_strong;
         lsolve.maxIterations = amgclSettings.maxIterations;
+    end
+    if isa(lsolve, 'AMGCL_CPRSolverAD') && isa(model, 'BiochemistryModel') && model.bacteriamodel
+        % Keep bacterial and aqueous tracer cell unknowns in the CPR system.
+        % Reducing to fluid components can create an expensive Schur fill-in.
+        lsolve.amgcl_setup.block_size = 0;
+        lsolve.amgcl_setup.cpr_blocksolver = false;
+        lsolve.variableOrdering = [];
+        lsolve.equationOrdering = [];
+        lsolve.keepNumber = [];
+        lsolve.reduceToCell = true;
     end
     lsolve.tolerance = opt.solverTolerance;
 
