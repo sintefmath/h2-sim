@@ -61,6 +61,7 @@ options = struct( ...
     'dtIdle'       , 8.4 * hour          , ... % Timestep during idle phase
     'dtShut'       , 3*day          , ... % Timestep during shut-in phase
     'dtDischarge'  , 3*day          , ... % Timestep during discharge
+    'gridSpacing'  , [0.5,0.5]          , ... % PEBI target cell sizes (m)
     'numCycles'    , 5                  , ... % Number of injection/production cycles
     'chargeOnly'   , 0                   , ... % Simulate only charging period
     'cushionOnly'  , 0                   , ... % Simulate only cushion gas phase
@@ -99,7 +100,8 @@ y = 25 + 5 * sin(pi * x);     % Define y-axis using a sinusoidal function for do
 w = {[50 .* x', y']};         % Combine x and y to form 2D points for grid constraints
 
 % Grid size scaling and dimensions
-gS = [0.5, 0.5];              % Scaling factors for grid
+validateattributes(options.gridSpacing,{'numeric'},{'vector','numel',2,'positive','finite'});
+gS = options.gridSpacing;              % Scaling factors for grid
 pdims = [50, 50];             % Grid dimensions in x and y directions
 
 % Generate two versions of a composite PEBI grid
@@ -209,6 +211,14 @@ function W = setUpWells(G, rock, fluid, options)
               abs(G.cells.centroids(:, 2)) > 25 & ...
               abs(G.cells.centroids(:, 2)) < 29.5);
     
+    if isempty(wc)
+        % Coarse teaching grids may not have a centroid within the original
+        % 0.1 m well tolerance. Choose the closest reservoir cell beneath the crest.
+        reservoir=rock.poro>0.1; candidates=find(reservoir);
+        [~,closest]=min(sum((G.cells.centroids(candidates,:)-[25,28.5]).^2,2));
+        wc=candidates(closest);
+    end
+
     % Add a production well at the identified cells with specified properties
     W = addWell(W, G, rock, wc, ...
                 'Name', 'Prod', ...                       % Well name
@@ -310,7 +320,7 @@ function schedule = setUpSchedule(G0, rock, fluid, options)
         end
 
         % Handle remaining cushion schedules
-        dtCushion = dtCushions(10:end-10);
+        dtCushion = dtCushions(10:end-9);
         W(1).val = rateCushion(10);
         scheduleCushions{10} = simpleSchedule(dtCushion, 'W', W);
 
@@ -341,7 +351,7 @@ function schedule = setUpSchedule(G0, rock, fluid, options)
     end
 
     % Handle remaining charge schedules
-    dtCharge = dtCharges(10:end-10);
+    dtCharge = dtCharges(10:end-9);
     W(1).val = rateCharge(10);
     scheduleCharges{10} = simpleSchedule(dtCharge, 'W', W);
 
@@ -516,9 +526,6 @@ along with MRST.  If not, see <http://www.gnu.org/licenses/>.
         dt_final = [];
     end
        
-    if dt_final >= dt_init(1)
-        dt_final = dt_init(1);
-    end
     % Combined timesteps
     dT = [dt_init; dt_rem;sort(dt_init,'descend'); dt_final];
 end
