@@ -1,63 +1,90 @@
-============
 Installation
 ============
 
-The source code of H2sim can be installed using git. In this way, you can easily keep track of the
-last developments.
+Clone H2sim with its pinned dependencies, then initialize it from MATLAB.
+See :doc:`dependencies` for required and optional components.
 
-First, open a terminal and navigate to the directory where you would like to install H2sim. Then, clone the repository
-using the following command, which will include all the dependencies as submodules
+Clone the repository
+--------------------
 
 .. code-block:: shell
 
    git clone --recurse-submodules https://github.com/xavierr/h2-sim.git
+   cd h2-sim
 
-Then, open matlab and run
+For a checkout cloned without submodules:
+
+.. code-block:: shell
+
+   git submodule update --init --recursive
+
+Initialize MATLAB
+-----------------
+
+In the repository root:
 
 .. code-block:: matlab
-                
+
    startupH2sim
 
-Check your installation by running this simple example
+Use MATLAB R2021a or newer for the core examples. Startup adds H2sim modules
+and initializes dependencies. Do not add the complete MRST tree with ``genpath``.
+
+Check a small model
+-------------------
 
 .. code-block:: matlab
-                
-   simple1DBacterialExampleMetacet
 
+   result = exampleBlackOilH2Storage1D;
 
-.. _MRST: https://www.sintef.no/Projectweb/MRST/
+This compact black-oil injection example needs neither PHREEQC nor Parallel
+Computing Toolbox. Continue with :doc:`quickstart` or :doc:`examples`.
 
+Optional PHREEQC setup
+----------------------
 
-Update existing installation
-============================
+Install and register IPhreeqcCOM from the
+`USGS PHREEQC distribution <https://www.usgs.gov/software/phreeqc-version-3>`_
+on Windows. Test the COM interface and the bundled database:
 
-In the case where we alread have installed H2sim and you want to update to the latest version. As usual in git, you
-will do that by running
+.. code-block:: matlab
+
+   db = which('h2_biogeochemistry.dat');
+   assert(~isempty(db), 'Initialize H2sim first.');
+   iph = actxserver('IPhreeqcCOM.Object');
+   status = iph.LoadDatabase(db);
+   assert(status == 0);
+   delete(iph);
+
+Configure ``phreeqcComProgId`` if your COM installation uses a different
+identifier. ``phreeqcDatabaseFile`` must resolve to an absolute database path.
+
+The optional WSL wrapper launches Windows MATLAB:
+
+.. code-block:: shell
+
+   bash run_matlab_h2sim.sh "disp(version);"
+
+Set ``MATLAB_BIN`` to the executable's WSL path if necessary. The wrapper
+uses a Windows MATLAB installation and its normal licensing requirements.
+
+Update a checkout
+-----------------
 
 .. code-block:: shell
 
    git pull
+   git submodule update --init --recursive
 
-In addition to that, the dependencies that are given through git submodules. The are not updated often but, if it is the
-case, you will need to run in addition to the previous command,
+Re-run ``startupH2sim`` after updating.
+
+Build the website locally
+-------------------------
 
 .. code-block:: shell
 
-   git submodule update --recursive
+   python -m pip install -r doc/requirements.txt
+   python -m sphinx -W --keep-going -b html doc build/docs
 
-Dependencies
-============
-
-The depencies are included as submodules so that no special installation for those is needed.
-
-The package is built upon
-
-- **MATLAB**: Version R2021a or newer
-- **MRST**: MATLAB Reservoir Simulation Toolbox (2023b or newer), see `MRST`_
-- **MRST Modules**:
-
-  - ``compositional``
-  - ``ad-blackoil``
-  - ``ad-core``
-  - ``ad-props``
-
+The docs render saved notebook content and example figures without executing
+MATLAB. Open ``build/docs/index.html`` or serve that directory locally.

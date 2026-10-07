@@ -1,36 +1,51 @@
-=============================================================
-Hydrogen Storage Simulation in Aquifers using Black-Oil Model
-=============================================================
+Hydrogen storage in saline aquifers
+===================================
 
-This module provides simulation tools for modeling a Hydrogen and brine mixture within the
-**ad-blackoil** module in the **MATLAB Reservoir Simulation Toolbox (MRST)**.
+Black-oil models · ``h2-store``
 
-Our module includes tools for implementing the **Redlich-Kwong** (**RK**) equation of state (EoS)
-and generating tabulated PVT data for H₂-brine systems. Additionally, it provides solubility tables
-derived from **ePC-Saft** and **Henry's law** EoS for precise phase behavior calculations in
-hydrogen storage simulations.
+The storage module connects hydrogen–brine fluid properties to MRST's
+black-oil models. It provides solubility and PVT table-generation tools,
+relative-permeability utilities, and aquifer setup functions.
 
-Overview
-========
+Black-oil interpretation
+------------------------
 
-This module is developed to simulate the phase behavior and thermodynamic properties of hydrogen
-stored in saline aquifers, with specific consideration of temperature, pressure, and salinity
-effects on hydrogen solubility and fluid properties.
+In the two-phase examples, the MRST oil phase represents liquid brine and
+the gas phase represents hydrogen. ``DISGAS`` enables dissolved hydrogen;
+``VAPOIL`` enables vaporized liquid where supported by the supplied tables.
+The compact tutorial disables both to isolate immiscible displacement.
 
-Features
-========
+A small runnable example
+------------------------
 
-- **Implementation of RK Equation of State**: The module includes an implementation of the
-  Redlich-Kwong (RK) EoS for H₂-brine mixtures, allowing for quick thermodynamic calculations that
-  capture real gas behavior and temperature effects.
+.. code-block:: matlab
 
-- **Scripts for tabulating PVT Data for blackoil simulators**: Precomputed PVT tables facilitate
-  efficient simulation of H₂-brine mixtures in MRST's ad-blackoil module. The resulting tables are
-  also suitable for other blackoil simulators.
+   result = exampleBlackOilH2Storage1D('gridCells', 40, 'numSteps', 12);
 
-- **Solubility tables**: Estimate solubility from both ePC-Saft (data) and Henry-Setschnow
-  correlation.
+The model uses a 100 m horizontal column with an H₂ injector and a
+fixed-pressure outlet. Hydrogen gas density uses the module's Brill–Beggs
+correlation. Brine density and phase viscosities are fixed tutorial values;
+gravity is disabled. This is a code tutorial, not a field-scale prediction.
 
-- **Correlations** for estimating the properties of water and H₂ mixtures for different pressure,
-  temperature and salinity.
+.. figure:: _static/examples/blackoil_profiles.png
+   :alt: Hydrogen gas saturation and pressure along the tutorial column at three injection times.
+   :width: 100%
 
+   Serial black-oil injection tutorial. The full setup and state history
+   are returned in ``result``.
+
+.. button-ref:: notebooks/blackoil_storage
+   :color: primary
+
+   Open the black-oil notebook →
+
+Build fluid tables
+------------------
+
+``examplePVTGenerationH2Brine`` demonstrates component properties,
+solubility, and black-oil PVT table generation. Its NIST data-generation
+steps need network access. ``HenrySetschenowH2BrineEos`` evaluates the local
+hydrogen solubility correlation without downloading data.
+
+Use :doc:`thermodynamics` to understand units, inputs, and the difference
+between a property table and a compositional flash.
