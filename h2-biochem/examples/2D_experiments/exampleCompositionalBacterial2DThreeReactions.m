@@ -1,3 +1,4 @@
+function results=exampleCompositionalBacterial2DThreeReactions(varargin)
 %% 2D Compositional Hydrogen Storage with Three Reactions (MET, ACE, SRB)
 % =========================================================================
 % This example simulates hydrogen storage in a 2D dome-shaped saline aquifer.
@@ -22,176 +23,109 @@
 %   - Three‑reaction model: Shojaee et al., 2025 (compositional PHREEQC)
 % =========================================================================
 
-clearvars;
-mrstModule add ad-core ad-blackoil ad-props deckformat mrst-gui upr test-suite spe10
-mrstModule add compositional  
 
-%% Define case identifiers and Eclipse deck
-baseName = 'H2_STORAGE_DOME_TRAP_3RXN';
-dataPath = getDatasetPath('h2storage');
-dataFile = fullfile(dataPath, 'H2STORAGE_RS.DATA');
-deck = readEclipseDeck(dataFile);
-
-%% Warn about computational cost
-warning('ComputationalCost:High', ...
-    'This is a multiple-cycle example; consider reducing cycles for faster runs.');
-
-%% Set up black-oil model and schedule
-[~, ~, state0Bo, modelBo, scheduleBo, ~] = modelForSimple2DAquifer(deck, 'numcycles', 10);
-
-%% Convert black-oil to compositional model
-model = convertBlackOilModelToCompositionalModel(modelBo);
-state0 = convertBlackOilStateToCompositional(modelBo, state0Bo);
-
-%% Define compositional fluid with 6 components (including H2S and AceticAcid)
-compFluid = TableCompositionalMixture(...
-    {'Water', 'Hydrogen', 'CarbonDioxide', 'Methane', 'HydrogenSulfide', 'AceticAcid'}, ...
-    {'H2O',   'H2',       'CO2',           'C1',      'H2S',             'CH3COOH'});
-
-%% Define biochemical reactions – three reactions, default parameters
-reactNames = {'MethanogenicArchae', 'AcetogenicBacteria', 'SulfateReducingBacteria'};
-biomassNames = {'bactM', 'bactA', 'bactS'};
-biochemFluid = TableBioChemMixture(reactNames, biomassNames);
-% No overrides – uses default values from bioChemFluidsStructs.
-
-%% EOS – Soreide‑Whitson
-initialSO4 = 0.1;
-EOS = SoreideWhitsonEos(model.G, compFluid, ...
-    'msalt', 0, ...
-    'pH', 7.2, ...
-    'initial_NaCl', 0, ...
-    'initial_SO4', initialSO4, ...
-    'rho_water', 1000);
-model.EOSModel = EOS;
-
-nc = model.G.cells.num;
-T0 = 273.15 + 44.35;  % Initial temperature (from original deck)
-
-%% Initial global composition (from original deck: 84.8% H2O, 15.3% CH4, trace CO2/H2)
-% We need to adjust for the additional components (H2S and AceticAcid are zero initially)
-comp0 = repmat([0.8480, 1.0e-5, 1.0e-5, 0.1530, 0.0, 0.0], nc, 1);
-
-%% Bio‑clogging parameters
-bacteriamodel = true;
-
-%% Setup BiochemistryModel with three reactions
-diagonal_backend = DiagonalAutoDiffBackend('modifyOperators', true);
-arg = {model.G, model.rock, model.fluid, compFluid, biochemFluid, ...
-    false, diagonal_backend, 'oil', true, 'gas', true, ...
-    'bacteriamodel', bacteriamodel, ...
-    'bactDiffusion', false, ...
-    'chemotaxisEffect', false, ...
-    'molecularDiffusion', true, ...
-    'molecularDispersion', true, ...,
-    'liquidPhase', 'O', ...
-    'vaporPhase', 'G'};
-model = BiochemistryModel(arg{:});
-model.OutputStateFunctions{end+1} = 'ComponentPhaseDensity';
-model.gravity = modelBo.gravity;
-
-clogModel = true;  % will be toggled per scenario
-nbact0 = [15 15 15]; % Initial bacteria (normalized)
-nc_bact = [120, 120, 120];
-cp = [1.0, 1.0, 1.0];
-modelWithClog = setupBioCloggingModel(model, nbact0, nc_bact, cp, clogModel);
-
-%% Initialize compositional state (with tracers for sulfate)
-state0 = initCompositionalStateBacteria( ...
-    modelWithClog, state0.pressure, T0, state0.s, comp0, nbact0, EOS);
-
-% Add sulfate and bisulfide tracers (if SRB is active)
-% Note: modelWithClog.sulfateReduction will be set true because SRB reaction exists.
-if isa(modelWithClog.EOSModel, 'SoreideWhitsonEos') && modelWithClog.sulfateReduction
-    rho_water = 1000;    % kg/m3
-    state0.tracerSO4 = repmat(initialSO4 * rho_water, nc, 1);
-    state0.tracerHS  = zeros(nc, 1);
-    state0.h2sDissolvedLag = zeros(nc, 1);
+% Run this existing case with five cycles, preserving the original 0.5 m grid.
+% Defaults retain the three original scenarios and optional transport terms.
+% Select scenarios={'bacterial','abiotic'} and disable molecular transport for
+% the website comparison. All setups and accepted outputs are packed on disk.
+opt=merge_options(struct('numCycles',5,'gridSpacing',[0.5,0.5], ...
+ 'scenarios',{{'clogging','bacterial','abiotic'}}, ...
+ 'molecularDiffusion',true,'molecularDispersion',true, ...
+ 'maximumFlowSteps',inf,'plotResults',true,'deckFile','', ...
+ 'outputDirectory',fullfile(pwd,'build','compositional-2d-three-reactions')),varargin{:});
+validateattributes(opt.numCycles,{'numeric'},{'scalar','integer','positive'});
+validateattributes(opt.maximumFlowSteps,{'numeric'},{'scalar','positive'});
+mrstModule add ad-core ad-blackoil ad-props deckformat upr test-suite spe10 compositional
+if isempty(opt.deckFile)
+ root=fileparts(fileparts(fileparts(fileparts(mfilename('fullpath')))));
+ opt.deckFile=fullfile(root,'h2-store','examples','data','Aquifer2D','H2STORAGE_RS.DATA');
 end
-
-%% Update schedule controls for compositional injection
-schedule = scheduleBo;
-for i = 1:numel(schedule.control)
-    schedule.control(i).W.compi = [0, 1]; % Well components
-    if strcmp(schedule.control(i).W.name, 'cushion') && i<11
-        % Cushion gas injection: 10% H2, 90% CO2 (as in original)
-        schedule.control(i).W.components = [0.0, 0.1, 0.9, 0.0, 0.0, 0.0];
-    else
-        % Main H2 injection: 95% H2, 5% CO2
-        schedule.control(i).W.components = [0.0, 0.95, 0.05, 0.0, 0.0, 0.0];
-    end
-    schedule.control(i).W.T = T0; % Temperature
-    schedule.control(i).bc = [];   % Remove BCs from controls
+deck=readEclipseDeck(opt.deckFile);
+[description,setup,state0Bo,modelBo,schedule]=modelForSimple2DAquifer(deck, ...
+ 'numCycles',opt.numCycles,'gridSpacing',opt.gridSpacing);
+compFluid=h2BiochemCompositionalMixture( ...
+ {'Water','Hydrogen','CarbonDioxide','Methane','HydrogenSulfide','AceticAcid'}, ...
+ {'H2O','H2','CO2','C1','H2S','CH3COOH'});
+biochemFluid=TableBioChemMixture( ...
+ {'MethanogenicArchae','AcetogenicBacteria','SulfateReducingBacteria'}, ...
+ {'bactM','bactA','bactS'});
+initialSO4=0.1;T0=273.15+44.35;nbact0=[15,15,15];
+comp0=[0.8480,1e-5,1e-5,0.1530,0,0];comp0=comp0/sum(comp0);
+for k=1:numel(schedule.control)
+ W=schedule.control(k).W;
+ W.stage=W.name;W.name='Storage';W.compi=[0,1];
+ if strcmp(W.stage,'cushion') && k<11
+  W.components=[0,.1,.9,0,0,0];
+ else
+  W.components=[0,.95,.05,0,0,0];
+ end
+ W.T=T0;
+ if strcmp(W.stage,'discharge'),W.lims.bhp=35*barsa;end
+ schedule.control(k).W=W;schedule.control(k).bc=[];
 end
-modelWithClog.outputFluxes = false;
-
-%% Plot initial grid, porosity, and permeability
-fig = paperFigure([24, 10], '2D dome aquifer - rock properties');
-layout = tiledlayout(fig, 1, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
-ax = nexttile(layout); axes(ax); %#ok<LAXES>
-plotCellData(modelWithClog.G, model.rock.poro); hold(ax, 'on');
-plotGrid(modelWithClog.G, schedule.control(1).W.cells, ...
-    'FaceColor', 'red', 'LineStyle', 'none');
-title(ax, 'Porosity'); axis(ax, 'off', 'tight'); colorbar(ax);
-ax = nexttile(layout); axes(ax); %#ok<LAXES>
-plotCellData(modelWithClog.G, log10(model.rock.perm(:,1))); hold(ax, 'on');
-plotGrid(modelWithClog.G, schedule.control(1).W.cells, ...
-    'FaceColor', 'red', 'LineStyle', 'none');
-title(ax, 'Permeability (log_{10} mD)'); axis(ax, 'off', 'tight'); colorbar(ax);
-title(layout, '2D dome-shaped aquifer with three reactions');
-paperExport(fig, 'threeReactions_2D_rock_properties');
-
-%% Initialize solvers
-[nls,~] = setupOptimizedLinearSolver(modelWithClog, 'complexityLevel', 'high', ...
-    'solverTolerance', 1e-3, ...
-    'maxNonlinIter', 10, ...
-    'cprDamp', []);
-
-%% Pack and run simulations
-% --- Scenario 1: With bacteria and bio-clogging
-caseNameWithClogging = [baseName '_WITH_CLOGGING'];
-% Enable clogging
-problemWithClogging = packSimulationProblem(state0, modelWithClog, schedule, caseNameWithClogging, 'NonLinearSolver', nls);
-simulatePackedProblem(problemWithClogging);
-
-% --- Scenario 2: With bacteria but without clogging
-caseNameNoClogging = [baseName '_NO_CLOGGING_DIFF__DISP'];
-modelNoClog  = setupBioCloggingModel(model, nbact0, nc_bact, cp, false);
-[nlsNoClog, ~] = setupOptimizedLinearSolver(modelNoClog, ...
-    'complexityLevel', 'high', ...
-    'solverTolerance', 1e-3, ...
-    'maxNonlinIter', 10, ...
-    'cprDamp', []);
-problemNoClogging = packSimulationProblem( ...
-    state0, modelNoClog, schedule, caseNameNoClogging, ...
-    'NonLinearSolver', nlsNoClog);
-simulatePackedProblem(problemNoClogging);
-
-% --- Scenario 3: Abiotic (no bacteria)
-caseNameNoBact = [baseName '_NO_BACT_DIFF__DISP'];
-modelNoBact = modelNoClog;
-modelNoBact.bacteriamodel = false;
-state0NoBact = initCompositionalState(modelNoBact, state0.pressure, T0, state0.s, comp0, EOS);
-% The abiotic model has a different primary-variable layout.
-[nlsNoBact, ~] = setupOptimizedLinearSolver(modelNoBact, 'complexityLevel', 'high', ...
-    'solverTolerance', 1e-3, ...
-    'maxNonlinIter', 10, ...
-    'cprDamp', []);
-problemNoBact = packSimulationProblem(state0NoBact, modelNoBact, schedule, caseNameNoBact, 'NonLinearSolver', nlsNoBact);
-simulatePackedProblem(problemNoBact);
-
-%% Get and compare results
-[wsWithClog, statesWithClog] = getPackedSimulatorOutput(problemWithClogging);
-[wsNoClog, statesNoClog] = getPackedSimulatorOutput(problemNoClogging);
-[wsNoBact, statesNoBact] = getPackedSimulatorOutput(problemNoBact);
-
-% Interactive state explorers (plotToolbar / plotWellSols are GUIs and are
-% not exported by paperExport).
-figure('Name', 'States - with clogging');    plotToolbar(modelWithClog.G, statesWithClog);
-figure('Name', 'States - no clogging');      plotToolbar(modelWithClog.G, statesNoClog);
-figure('Name', 'States - abiotic');          plotToolbar(modelWithClog.G, statesNoBact);
-figure('Name', 'Well solutions');
-plotWellSols({wsWithClog, wsNoClog, wsNoBact}, ...
-    'datasetnames', {'with clogging', 'no clogging', 'abiotic'});
+if ~isfolder(opt.outputDirectory),mkdir(opt.outputDirectory);end
+caseResults=cell(1,numel(opt.scenarios));
+for j=1:numel(opt.scenarios)
+ scenario=validatestring(opt.scenarios{j},{'clogging','bacterial','abiotic'});
+ backend=DiagonalAutoDiffBackend('modifyOperators',true);
+ model=BiochemistryModel(modelBo.G,modelBo.rock,modelBo.fluid,compFluid, ...
+  biochemFluid,false,backend,'oil',true,'gas',true, ...
+  'bacteriamodel',~strcmp(scenario,'abiotic'),'bactDiffusion',false, ...
+  'chemotaxisEffect',false,'molecularDiffusion',opt.molecularDiffusion, ...
+  'molecularDispersion',opt.molecularDispersion,'liquidPhase','O','vaporPhase','G');
+ model.EOSModel=SoreideWhitsonEos(model.G,compFluid,'msalt',0,'pH',7.2, ...
+  'initial_NaCl',0,'initial_SO4',initialSO4,'rho_water',1000);
+ model.gravity=modelBo.gravity;model.outputFluxes=false;
+ model=setupBioCloggingModel(model,nbact0,[120,120,120],[1,1,1],strcmp(scenario,'clogging'));
+ model.OutputStateFunctions{end+1}='ComponentPhaseDensity';
+ if model.bacteriamodel
+  state0=initCompositionalStateBacteria(model,state0Bo.pressure,T0,state0Bo.s,comp0,nbact0,model.EOSModel);
+ else
+  state0=initCompositionalState(model,state0Bo.pressure,T0,state0Bo.s,comp0,model.EOSModel);
+ end
+ state0.tracerSO4=repmat(initialSO4*1000,model.G.cells.num,1);
+ state0.tracerHS=zeros(model.G.cells.num,1);state0.h2sDissolvedLag=zeros(model.G.cells.num,1);
+ state0.wellSol=initWellSolAD(schedule.control(1).W,model,state0);
+ state0.wellSol.bhp=max(state0.pressure(schedule.control(1).W.cells))+5*barsa;
+ [solver,~]=setupOptimizedLinearSolver(model,'complexityLevel','low', ...
+  'solverTolerance',1e-4,'maxNonlinIter',20);
+ solver.maxTimestepCuts=12;
+ problem=packH2simSimulationProblem(state0,model,schedule, ...
+  ['H2_COMPOSITIONAL_2D_THREE_REACTIONS_',upper(scenario)],'NonLinearSolver',solver);
+ % A setup check writes a valid prefix into the full packed case, allowing
+ % the full run to resume without changing its setup or cache identity.
+ resultFile=fullfile(opt.outputDirectory,[scenario,'_results.mat']);
+ if isfile(resultFile) && isinf(opt.maximumFlowSteps)
+  saved=loadH2simResults(resultFile,'result');
+  if saved.result.complete && strcmp(saved.result.packedProblem.Name,problem.Name) ...
+    && problem.OutputHandlers.reports.numelData()==numel(schedule.step.val)
+   caseResults{j}=saved.result;
+   fprintf('REUSED %s: %d saved physical states.\n',scenario,numel(saved.result.states));
+   continue
+  end
+  clear saved
+ end
+ runProblem=problem;limit=min(numel(schedule.step.val),opt.maximumFlowSteps);
+ if limit<numel(schedule.step.val)
+  runProblem.SimulatorSetup.schedule.step.val=schedule.step.val(1:limit);
+  runProblem.SimulatorSetup.schedule.step.control=schedule.step.control(1:limit);
+ end
+ timer=tic;ok=simulatePackedProblem(runProblem,'continueOnError',false);assert(ok,'Case failed: %s',scenario);
+ [ws,states,reports]=getH2simPackedPhysicalOutput(runProblem);
+ result=struct('name',scenario,'description',description,'setup',setup, ...
+  'model',model,'state0',state0,'schedule',runProblem.SimulatorSetup.schedule, ...
+  'states',{states},'wellSols',{ws},'reports',{reports}, ...
+  'packedProblem',problem,'elapsedSeconds',toc(timer),'complete',limit==numel(schedule.step.val));
+ caseResults{j}=result;
+ file=[tempname,'.mat'];save(file,'result','-v7.3');
+ copyfile(file,fullfile(opt.outputDirectory,[scenario,'_results.mat']),'f');delete(file);
+ fprintf('SAVED %s: %d cells, %d steps, %.1f seconds.\n',scenario,model.G.cells.num,numel(states),result.elapsedSeconds);
+end
+results=[caseResults{:}];
+if opt.plotResults && all([results.complete])
+ plotCompositionalBacterial2DThreeReactions(results,'outputDirectory',opt.outputDirectory);
+end
+end
 
 %% Copyright notice
 % <html>

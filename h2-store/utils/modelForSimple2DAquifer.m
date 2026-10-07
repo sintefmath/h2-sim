@@ -43,10 +43,10 @@ description = 'Conceptual model for Hydrogen storage with multiple Inj/Prod cycl
 K0    = 273.15 * Kelvin;  % Absolute temperature offset
 % Optional input arguments
 options = struct( ...
-    'rateCharge'   , 18 * kilogram/day   , ... % Hydrogen injection rate during charging
-    'rateIdle'     , 0.0 * kilogram/day  , ... % No injection during idle periods
-    'rateCushion'  , 10 * kilogram/day   , ... % Cushion gas injection rate (H₂)
-    'rateDischarge', 18 * kilogram/day   , ... % Hydrogen production rate during discharge
+    'rateCharge'   , 18 * meter^3/day   , ... % Gas surface-volume rate during charging (m^3/day)
+    'rateIdle'     , 0.0 * meter^3/day  , ... % No injection during idle periods
+    'rateCushion'  , 10 * meter^3/day   , ... % Cushion gas surface-volume rate (m^3/day)
+    'rateDischarge', 18 * meter^3/day   , ... % Gas surface-volume rate during discharge (m^3/day)
     'bhp'          , 35.0 * barsa        , ... % Bottom hole pressure during production
     'tempCharge'   , K0 + 40 * Kelvin    , ... % Injection temperature during charging
     'tempDischarge', K0 + 40 * Kelvin    , ... % Production temperature during discharge
@@ -363,7 +363,7 @@ function schedule = setUpSchedule(G0, rock, fluid, options)
 
     % Set up idle schedule
     W(1).type = 'rate';
-    W(1).val = 0*kilogram/meter^3;
+    W(1).val = 0*meter^3/day;
     W(1).name = 'shut';        
     W(1).T = options.tempCushion;
     W(1).sign = 0;
