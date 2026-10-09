@@ -18,7 +18,7 @@ This module extends MRST's capabilities by integrating a bio-chemistry model wit
 `setupH2StorageExampleWithSRB_benchmark` supports exactly two PHREEQC backends. Both require Windows, a registered
 `IPhreeqcCOM.Object` (or configured `phreeqcComProgId`), and an explicit absolute `phreeqcDatabaseFile` path to
 `h2_biogeochemistry.dat`. The database is bundled at
-[`h2-biochem/database/h2_biogeochemistry.dat`](database/h2_biogeochemistry.dat); since that folder is on the MATLAB path
+[`h2-biochem/database/h2_biogeochemistry.dat`](database/h2_biogeochemistry.dat).
 The database is a renamed, unmodified copy from [UGFACT](https://github.com/ahmadrezashojaee/UGFACT); [source revision and checksum](database/README.md) are recorded alongside it.
 After running `startupH2sim`, `which('h2_biogeochemistry.dat')` resolves it automatically.
 

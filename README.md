@@ -1,6 +1,6 @@
 # H2sim
 
-MATLAB and MRST tools for underground hydrogen storage.
+Open tools for underground hydrogen storage, built on the [MATLAB Reservoir Simulation Toolbox (MRST)](https://www.sintef.no/projectweb/mrst/).
 
 [Documentation](https://xavierr.github.io/h2-sim/) · [Installation](https://xavierr.github.io/h2-sim/installation.html) · [Examples](https://xavierr.github.io/h2-sim/examples.html)
 
@@ -26,6 +26,16 @@ Build the documentation with:
 ```sh
 python -m pip install -r doc/requirements.txt
 python -m sphinx -W --keep-going -b html doc build/docs
+python tools/check_documentation.py build/docs
 ```
 
 Documentation builds render notebooks without executing MATLAB. Generated simulations, profiler outputs, and local build files do not belong in source commits.
+
+Run the MATLAB regression suite after startup:
+
+```matlab
+checks = runtests(fullfile(pwd, 'h2-biochem', 'tests'));
+assertSuccess(checks);
+```
+
+Tests requiring IPhreeqcCOM are skipped when that interface is unavailable.

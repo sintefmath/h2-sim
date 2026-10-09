@@ -1,77 +1,32 @@
-import sys
+"""Preserve Sphinx cross-reference cells when exporting MATLAB notebooks."""
+import argparse
+import json
 import re
+from pathlib import Path
+
+SPHINX_ROLE = re.compile(r":(?:doc|ref|download):`[^`]+`")
+
 
 def fixH2simCells(inputstr):
+    """Convert Markdown cells containing explicit Sphinx roles to raw RST.
+
+    Parse the notebook as JSON so braces in cell text, metadata and attachments
+    remain intact. Ordinary Markdown and executable cells retain their types.
     """
-    Search each cell and make sure the cell type is set correctly in the cells that contain a battmo link
+    notebook = json.loads(inputstr)
+    for cell in notebook['cells']:
+        source = cell.get('source', [])
+        text = source if isinstance(source, str) else ''.join(source)
+        if cell.get('cell_type') == 'markdown' and SPHINX_ROLE.search(text):
+            cell['cell_type'] = 'raw'
+            cell.setdefault('metadata', {})['raw_mimetype'] = 'text/restructuredtext'
+    return json.dumps(notebook, indent=1, ensure_ascii=False) + '\n'
 
-    Parameters:
-    inputstr (str): string that has been obtained by parsing a ipynb notebook
 
-    Returns:
-    str : input string where the cells in markdown have been changed to raw format, which can be processes by nbsphinx
-    """
-
-    dofix = inputstr.find(':battmo', 0)
-    while dofix > 0:
-        [inputstr, pos] = switchCellToRaw(inputstr, dofix)
-        dofix = inputstr.find(':battmo', pos)
-    return inputstr
-
-def switchCellToRaw(inputstr, fix_position):
-
-    """Starts at the fix_position in the string inputstr. From there, finds the containing cell and changes its type and
-    metadata mimetype. Returns the modified inputstr and the position of the end of the cell.
-    """
-    
-    cell_start_pos = inputstr.rfind('"cell_type"', 0, fix_position)
-    pos = inputstr.find('"cell_type": "markdown"', cell_start_pos)
-
-    if pos < fix_position:
-        inputstr = inputstr[:cell_start_pos] + inputstr[cell_start_pos:].replace('markdown', 'raw', 1)
-        # inputstr = inputstr.replace('markdown', 'raw')
-        match = re.search('"metadata": {', inputstr[cell_start_pos:-1])
-        pos = cell_start_pos + match.end()
-        s = '\n"raw_mimetype": "text/restructuredtext"\n'
-        inputstr = inputstr[:pos] + s + inputstr[pos:]
-
-    cell_start_pos = inputstr.rfind('{', 0, cell_start_pos)
-
-    cell_end_pos = getMatchingBracketPosition(inputstr, cell_start_pos)
-
-    return inputstr, cell_end_pos
-
-def getMatchingBracketPosition(inputstr, startpos):
-
-    """ Utility function to find matching parenthesis which is used to find the end position of a cell"""
-    
-    inputstr = inputstr[startpos:]
-    count = 0
-    for i, s in enumerate(inputstr):
-        if s == '}':
-            count -= 1
-        elif s == '{':
-            count += 1
-        if count == 0:
-            return startpos + i + 1
-        
-        
-
-if __name__ == "__main__":
-
-    if len(sys.argv) == 1:
-        raise ValueError("No input file provided. Please provide the path to the input file as an argument.")
-    else:
-        input_filename = sys.argv[1]
-        if len(sys.argv) == 3:
-            output_filename = sys.argv[2]
-        else:
-            output_filename = input_filename
-            
-    with open(input_filename, 'r') as file:
-        inputstr = file.read()
-
-    inputstr = fixH2simCells(inputstr)
-
-    with open(output_filename, 'w') as file:
-        file.write(inputstr)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('input', type=Path)
+    parser.add_argument('output', type=Path, nargs='?')
+    args = parser.parse_args()
+    converted = fixH2simCells(args.input.read_text(encoding='utf-8'))
+    (args.output or args.input).write_text(converted, encoding='utf-8')

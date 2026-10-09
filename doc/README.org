@@ -9,6 +9,7 @@ From the repository root:
 #+begin_src shell
 python -m pip install -r doc/requirements.txt
 python -m sphinx -W --keep-going -b html doc build/docs
+python tools/check_documentation.py build/docs
 python -m http.server 8000 --directory build/docs
 #+end_src
 
