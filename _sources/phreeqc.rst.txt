@@ -176,10 +176,31 @@ flashes run serially by default; Parallel Computing Toolbox is optional.
 The separate ``simulateSequentialH2BiochemPhreeqc`` runner is an outer Picard
 scheme, distinct from this coarse-flow multirate example.
 
+The saved 20-cell comparison covers all 250 days of injection, storage, and
+production. Final microbial consumption is 46.41% for multirate and 38.86%
+for compositional PHREEQC, normalized by total prescribed H₂ injection.
+The workflows differ in kinetic ownership, biomass representation, and
+splitting; this is not a convergence test of reaction substepping alone.
+
+.. figure:: _static/examples/multirate_full_cycle_loss.png
+   :alt: Full 250-day multirate versus compositional PHREEQC hydrogen consumption and contributions from MET, ACE and SRB.
+   :width: 100%
+
+   Full-cycle hydrogen consumption. Dotted lines mark day 50 and day 200.
+   Percentages use total prescribed injection as a fixed denominator.
+
+.. figure:: _static/examples/multirate_full_cycle_chemistry_history.png
+   :alt: PHREEQC pH and dissolved inorganic carbon spatial medians and minimum–maximum ranges over 250 days.
+   :width: 100%
+
+   Chemistry histories: lines are spatial medians, shading is the cellwise
+   range. The notebook also compares pH and DIC space-time maps and reports
+   the available conservation diagnostics.
+
 .. button-ref:: notebooks/multirate_reactions
    :color: primary
 
-   Open the multirate notebook →
+   Open the full-cycle multirate comparison →
 
 Conservation diagnostics
 ------------------------

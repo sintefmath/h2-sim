@@ -451,7 +451,27 @@ no PHREEQC <code class="docutils literal notranslate"><span class="pre">RATES</s
 flashes run serially by default; Parallel Computing Toolbox is optional.
 The separate <code class="docutils literal notranslate"><span class="pre">simulateSequentialH2BiochemPhreeqc</span></code> runner is an outer Picard
 scheme, distinct from this coarse-flow multirate example.</p>
-<p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/multirate_reactions.html"><span class="doc">Open the multirate notebook →</span></a></p>
+<p>The saved 20-cell comparison covers all 250 days of injection, storage, and
+production. Final microbial consumption is 46.41% for multirate and 38.86%
+for compositional PHREEQC, normalized by total prescribed H₂ injection.
+The workflows differ in kinetic ownership, biomass representation, and
+splitting; this is not a convergence test of reaction substepping alone.</p>
+<figure class="align-default" id="id6">
+<img alt="Full 250-day multirate versus compositional PHREEQC hydrogen consumption and contributions from MET, ACE and SRB." src="_images/multirate_full_cycle_loss.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Full-cycle hydrogen consumption. Dotted lines mark day 50 and day 200.
+Percentages use total prescribed injection as a fixed denominator.</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id7">
+<img alt="PHREEQC pH and dissolved inorganic carbon spatial medians and minimum–maximum ranges over 250 days." src="_images/multirate_full_cycle_chemistry_history.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Chemistry histories: lines are spatial medians, shading is the cellwise
+range. The notebook also compares pH and DIC space-time maps and reports
+the available conservation diagnostics.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/multirate_reactions.html"><span class="doc">Open the full-cycle multirate comparison →</span></a></p>
 </section>
 <section id="conservation-diagnostics">
 <h2>Conservation diagnostics<a class="headerlink" href="#conservation-diagnostics" title="Link to this heading">¶</a></h2>

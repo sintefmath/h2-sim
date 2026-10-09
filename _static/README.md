@@ -7,3 +7,5 @@
 - `examples/` contains selected plots from saved example outputs. The corresponding public MATLAB plotting functions and notebooks describe the observables and normalization.
 
 - `phreeqc-icon.png` is a PNG conversion of the PHREEQC application icon from [the upstream USGS source](https://github.com/usgs-coupled/phreeqc3/blob/master/src/phreex.ico). It identifies PHREEQC and links to its official USGS software page.
+
+- `examples/multirate_full_cycle_*.png` are redrawn from the complete 250-day saved multirate and compositional PHREEQC diagnostics in `doc/data/multirate/`. Run `tools/plot_multirate_results.py` to regenerate them; checkpoint checksums and audit limitations are recorded with the data.
