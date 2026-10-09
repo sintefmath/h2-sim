@@ -46,18 +46,19 @@ PHREEQC validation
 
 .. grid:: 1
 
-   .. grid-item-card:: Compositional PHREEQC injection validation
+   .. grid-item-card:: Compositional PHREEQC full-cycle validation
       :link: notebooks/phreeqc_validation
       :link-type: doc
 
-      A 50-cell injection benchmark with a separate reference implementation.
-      Compare dissolved hydrogen, pH, and cumulative reaction consumption.
+      A 20-cell, 250-day injection–storage–production comparison with a separate
+      reference implementation. Compare H₂ consumption, dissolved hydrogen,
+      pH, DIC, and the three metabolic pathways.
 
-.. figure:: _static/examples/compositional_phreeqc_validation.png
-   :alt: Dissolved hydrogen, pH, and cumulative microbial consumption in the compositional PHREEQC injection validation and reference.
+.. figure:: _static/examples/phreeqc_validation_full_cycle.png
+   :alt: Full-cycle hydrogen consumption and dissolved-hydrogen evolution compared with the reference.
    :width: 100%
 
-   PHREEQC injection validation. The source of the reference and the differences
+   Complete-cycle PHREEQC validation. The source of the reference and the differences
    in chemistry splitting are described in the notebook.
 
 Short chemistry walkthroughs

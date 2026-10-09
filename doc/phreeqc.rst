@@ -25,31 +25,98 @@ partitioning, but assign microbial kinetics differently.
      - MRST local reaction substeps
      - Aqueous-only PHREEQC after each reaction substep
 
-Injection validation
---------------------
+Complete-cycle validation
+-------------------------
 
 .. code-block:: matlab
 
-   result = runPhreeqcValidation('ugfactRoot', referenceRoot);
+   result = runPhreeqcValidation('ugfactRoot', referenceRoot, ...
+       'gridCells', 20, 'totalDays', 250, 'rate', 'highrate');
    plotCompositionalPhreeqcValidation(result);
 
-The selected validation uses 50 cells over 50 m and the 50-day injection
-phase of a separate reference implementation. It compares dissolved hydrogen,
-pH, and cumulative hydrogen consumption using a common Soreide–Whitson EOS at 2.865 mol/kg salt molality and
-moderate kinetic rates. H2sim applies chemistry once per 2-day flow step;
-the reference uses five chemistry substeps within each flow step.
+The selected comparison uses a 20-cell, 50 m column and a complete 250-day
+cycle: 50 days of injection, 150 days of storage, and 50 days of production.
+Both implementations use Soreide–Whitson thermodynamics at 2.865 mol/kg NaCl
+and the high-rate MET/ACE/SRB parameter set. H2sim applies one chemistry split
+per 2-day flow step; the reference uses five chemistry substeps. Diffusion,
+dispersion, bacterial diffusion, chemotaxis, and bioclogging are disabled.
+Use a smaller even ``totalDays`` value for a prefix of this same schedule,
+for example ``totalDays=2`` to check the first flow/chemistry step.
+The saved full-cycle results replace the earlier 50-day, moderate-rate example.
 
-The saved comparison reproduces the dissolved-H2 plateau closely, while the
-pH front differs by about one cell. The reported consumption diagnostics
-differ substantially: about 27.9 mol for H2sim and 42.8 mol for the reference
-over 50 days. The reference curve integrates its reported end-of-step rates;
-H2sim accumulates accepted PHREEQC reaction amounts. This comparison does
-not establish matching kinetic histories or timestep convergence. H2sim
-tracks acetate as an EOS component; the reference includes nitrogen and
-carries aqueous organic carbon separately. These component-bookkeeping
-differences are retained in this cross-implementation benchmark. The run
-also reports small sulfur-balance residuals above the configured audit
-tolerance, with a maximum absolute residual of about 2.9e-7 mol.
+All consumption percentages use the **total prescribed hydrogen injection**
+as a fixed denominator, including at earlier times. The prescribed gas
+volume is converted to a nominal ideal-gas amount at the facility reference
+conditions (101325 Pa and 288.15 K). This differs from normalization by
+cumulative injection at each plotted time. Consumption is a reaction-source
+quadrature diagnostic, not an independent well-inventory deficit; dissolution
+and unrecovered gas are excluded.
+
+.. figure:: _static/examples/phreeqc_validation_full_cycle.png
+   :alt: Full 250-day hydrogen consumption comparison and dissolved-hydrogen space-time maps for compositional PHREEQC and the reference.
+   :width: 100%
+
+   Hydrogen consumption and dissolved-H₂ evolution over the complete cycle.
+   Vertical lines mark the day-50 and day-200 control changes.
+
+.. list-table:: Consumed hydrogen (% of total prescribed injection)
+   :header-rows: 1
+
+   * - Implementation
+     - Day 50
+     - Day 200
+     - Day 250
+   * - Compositional PHREEQC
+     - 5.577
+     - 34.862
+     - 38.857
+   * - Reference
+     - 5.303
+     - 31.728
+     - 37.704
+
+Conversion continues during storage without fresh injection. The final
+compositional result exceeds the reference by 1.153 percentage points.
+These results retain the measured discrepancy; they do not demonstrate
+splitting or spatial convergence. H2sim tracks acetate as an EOS component,
+whereas the reference uses nitrogen and separate aqueous organic-carbon
+bookkeeping.
+
+Geochemical evolution
+~~~~~~~~~~~~~~~~~~~~~
+
+.. figure:: _static/examples/phreeqc_geochemistry_full_cycle.png
+   :alt: Full-period space-time maps of PHREEQC pH and total dissolved inorganic carbon for both implementations.
+   :width: 100%
+
+   pH and total dissolved inorganic carbon (DIC) over 250 days. Color limits
+   are shared between implementations for each observable. DIC is total
+   inorganic-carbon molality, not only dissolved CO₂; the reference records
+   it directly from PHREEQC selected output.
+
+The pH and DIC fronts show how reactive aqueous chemistry evolves throughout
+injection, storage, and production. Similar bulk consumption does not imply
+identical spatial chemistry. The compositional run records 87 cell-step
+element-audit failures, with a maximum absolute residual of 3.61 × 10⁻⁵ mol.
+The reference does not expose the same elemental audit. These limitations
+remain part of the comparison.
+
+Consumption by reaction
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. figure:: _static/examples/phreeqc_reaction_loss_full_cycle.png
+   :alt: Methanogenesis, acetogenesis, and sulfate-reduction hydrogen consumption compared over the full 250-day cycle.
+   :width: 100%
+
+   Separate MET, ACE, and SRB contributions, each normalized by total
+   prescribed hydrogen injection. Their sum equals the total-consumption
+   curve for the corresponding implementation.
+
+At day 250, the compositional contributions are 33.357% (MET), 5.092% (ACE),
+and 0.408% (SRB), compared with 32.439%, 4.879%, and 0.386% in the reference.
+All plots use the full 0–250-day interval. Setups and accepted outputs remain
+saved as packed simulations; the plotting function also exports the loss
+history as CSV and every figure as PNG and vector PDF.
 
 .. button-ref:: notebooks/phreeqc_validation
    :color: primary

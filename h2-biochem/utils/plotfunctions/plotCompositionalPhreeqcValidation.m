@@ -1,32 +1,67 @@
 function figures=plotCompositionalPhreeqcValidation(result,varargin)
-%PLOTCOMPOSITIONALPHREEQCVALIDATION Compare saved injection benchmark states.
+%PLOTCOMPOSITIONALPHREEQCVALIDATION Full-cycle reference and chemistry plots.
 opt=merge_options(struct('outputDirectory',''),varargin{:});
-a=result.h2sim;b=result.ugfact;
-x=a.model.G.cells.centroids(:,1);assert(isequal(x,b.model.G.cells.centroids(:,1)));
-t=cumsum(a.schedule.step.val)/day;assert(isequal(t,cumsum(b.schedule.step.val)/day));
-sa=a.states{end};sb=b.states{end};
-f=figure('Color','w','Units','centimeters','Position',[2,2,26,10]);
+if isfield(result,'diagnostics'),d=result.diagnostics;
+else,d=collectPhreeqcValidationDiagnostics(result);end
+a=d.h2sim;b=d.ugfact;t=double(a.timeDays(:));x=a.coordinates(:,1);
+assert(isequal(t,double(b.timeDays(:))) && isequal(x,b.coordinates(:,1)));
+f=figure('Color','w','Units','centimeters','Position',[2,2,29,11]);
 tiledlayout(1,3,'TileSpacing','compact','Padding','compact');
-ax=nexttile;plot(ax,x,sa.x(:,2),'-',x,sb.x(:,2),'--','LineWidth',1.8);xlabel(ax,'Distance (m)');ylabel(ax,'Aqueous H_2 mole fraction (-)');title(ax,sprintf('End of injection · day %g',t(end)));
-ax2=nexttile;plot(ax2,x,sa.phreeqcPH,'-',x,sb.Solution.pH,'--','LineWidth',1.8);xlabel(ax2,'Distance (m)');ylabel(ax2,'pH (-)');title(ax2,'Aqueous chemistry');
-[~,cum]=computeH2Consumption(a.states,a.schedule,a.model,1);consumed=sum(cum,1).';
-for j=2:3,[~,cum]=computeH2Consumption(a.states,a.schedule,a.model,j);consumed=consumed+sum(cum,1).';end
-ref=zeros(numel(t),1);
-for k=1:numel(t)
- s=b.states{k}.Solution;increment=sum((s.MET_Rate+s.ACE_Rate+s.SRB_Rate).*s.Water/1000)*b.schedule.step.val(k)/day;
- ref(k)=increment;if k>1,ref(k)=ref(k)+ref(k-1);end
+ax=nexttile;plot(ax,t,a.lossPercent,'-',t,b.lossPercent,'--','LineWidth',1.8);
+xlabel(ax,'Time (days)');ylabel(ax,'Consumed H_2 / total prescribed injection (%)');
+title(ax,'Hydrogen consumption');legend(ax,{'Compositional PHREEQC','Reference'},'Location','best');grid(ax,'on');
+maximum=max([a.h2(:);b.h2(:)]);
+for j=1:2
+ if j==1,r=a;name='Compositional PHREEQC';else,r=b;name='Reference';end
+ ax=nexttile;imagesc(ax,t,x,r.h2);set(ax,'YDir','normal');caxis(ax,[0,maximum]);
+ xlabel(ax,'Time (days)');ylabel(ax,'Distance (m)');title(ax,name);cb=colorbar(ax);ylabel(cb,'Aqueous H_2 mole fraction (-)');
 end
-ax3=nexttile;plot(ax3,t,consumed,'-',t,ref,'--','LineWidth',1.8);xlabel(ax3,'Time (days)');ylabel(ax3,'Cumulative H_2 reaction consumption (mol)');title(ax3,'Microbial consumption');
-for a=[ax,ax2,ax3]
- colororder(a,[.04,.5,.51;.85,.5,.2]);
- set(a,'FontName','Arial','FontSize',10);box(a,'on');grid(a,'on');
+g=figure('Color','w','Units','centimeters','Position',[2,2,26,18]);
+tiledlayout(2,2,'TileSpacing','compact','Padding','compact');
+fields={'pH','dic'};units={'pH (-)','DIC (mol/kg water)'};
+for c=1:2
+ lo=min([a.(fields{c})(:);b.(fields{c})(:)]);hi=max([a.(fields{c})(:);b.(fields{c})(:)]);
+ for j=1:2
+  if j==1,r=a;name='Compositional PHREEQC';else,r=b;name='Reference';end
+  ax=nexttile;imagesc(ax,t,x,r.(fields{c}));set(ax,'YDir','normal');caxis(ax,[lo,hi]);
+  xlabel(ax,'Time (days)');ylabel(ax,'Distance (m)');title(ax,[name,' · ',fields{c}]);
+  cb=colorbar(ax);ylabel(cb,units{c});
+ end
 end
-lg=legend(ax3,{'Compositional PHREEQC','Reference'},'Orientation','horizontal','FontSize',9);
-lg.Layout.Tile='south';
+h=figure('Color','w','Units','centimeters','Position',[2,2,29,11]);
+tiledlayout(1,3,'TileSpacing','compact','Padding','compact');names={'MET','ACE','SRB'};
+pa=100*reshape(sum(a.consumption,1),numel(t),3)/a.injectedMoles;
+pb=100*reshape(sum(b.consumption,1),numel(t),3)/b.injectedMoles;
+assert(max(abs(sum(pa,2)-a.lossPercent(:)))<1e-8);
+assert(max(abs(sum(pb,2)-b.lossPercent(:)))<1e-8);
+for c=1:3
+ ax=nexttile;plot(ax,t,pa(:,c),'-',t,pb(:,c),'--','LineWidth',1.8);
+ xlabel(ax,'Time (days)');ylabel(ax,'Consumed H_2 / total prescribed injection (%)');
+ title(ax,names{c});legend(ax,{'Compositional PHREEQC','Reference'},'Location','best');grid(ax,'on');
+end
+figures=[f,g,h];
+for fig=figures
+ axesList=findall(fig,'Type','axes');
+ for ax=reshape(axesList,1,[])
+  xlim(ax,[0,t(end)]);set(ax,'FontName','Arial','FontSize',10);box(ax,'on');
+  if t(end)>50,xline(ax,50,':','HandleVisibility','off');end
+  if t(end)>200,xline(ax,200,':','HandleVisibility','off');end
+ end
+end
+% Export once, after applying shared axes and stage markers.
+files={'phreeqc_validation_full_cycle','phreeqc_geochemistry_full_cycle','phreeqc_reaction_loss_full_cycle'};
+for j=1:3,exportPlot(figures(j),opt.outputDirectory,files{j});end
 if ~isempty(opt.outputDirectory)
- if ~isfolder(opt.outputDirectory),mkdir(opt.outputDirectory);end
- exportgraphics(f,fullfile(opt.outputDirectory,'compositional_phreeqc_validation.png'),'Resolution',200);
- exportgraphics(f,fullfile(opt.outputDirectory,'compositional_phreeqc_validation.pdf'),'ContentType','vector');
+ writetable(array2table([t,a.lossPercent(:),b.lossPercent(:),pa,pb], ...
+  'VariableNames',{'Time_days','H2sim_total_percent','Reference_total_percent', ...
+  'H2sim_MET_percent','H2sim_ACE_percent','H2sim_SRB_percent', ...
+  'Reference_MET_percent','Reference_ACE_percent','Reference_SRB_percent'}), ...
+  fullfile(opt.outputDirectory,'phreeqc_loss_history.csv'));
 end
-figures=f;
+end
+function exportPlot(f,folder,name)
+if isempty(folder),return;end
+if ~isfolder(folder),mkdir(folder);end
+exportgraphics(f,fullfile(folder,[name,'.png']),'Resolution',200);
+exportgraphics(f,fullfile(folder,[name,'.pdf']),'ContentType','vector');
 end
