@@ -2,8 +2,6 @@ Publications & presentations
 =============================
 
 Research behind the hydrogen-storage, thermodynamic, and biochemical workflows.
-This selection comes from `Elyes Ahmed’s NVA research profile <https://nva.sikt.no/research-profile/941125>`__;
-the profile contains the complete publication list.
 
 Papers & proceedings
 ---------------------
