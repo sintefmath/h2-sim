@@ -41,5 +41,8 @@ result=struct('description',description,'setup',setup,'model',model, ...
 if ~isfolder(opt.outputDirectory),mkdir(opt.outputDirectory);end
 file=[tempname,'.mat'];cleanup=onCleanup(@() delete(file)); %#ok<NASGU>
 save(file,'result','-v7');copyfile(file,fullfile(opt.outputDirectory,'aquifer_results.mat'),'f');
-if opt.plotResults,plotBlackOilAquifer2D(result,'outputDirectory',opt.outputDirectory);end
+if opt.plotResults
+ plotBlackOilAquifer2D(result,'outputDirectory',opt.outputDirectory);
+ plotAquiferFluidTables(result,'outputDirectory',opt.outputDirectory);
+end
 end
