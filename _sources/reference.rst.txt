@@ -1,7 +1,7 @@
 Code reference
 ==============
 
-Browse the `source repository <https://github.com/xavierr/h2-sim>`_, or use
+Browse the `source repository <https://github.com/sintefmath/h2-sim>`_, or use
 MATLAB's ``help`` and ``edit`` commands for local function documentation.
 
 Entry points

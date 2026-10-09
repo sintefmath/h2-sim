@@ -12,7 +12,7 @@ milestones. Explore :doc:`publications` for the related papers and presentations
     <h2>H2sim is getting ready to launch.</h2>
     <p>Built on the <strong>MATLAB Reservoir Simulation Toolbox (MRST)</strong>, H2sim brings together open tools for hydrogen storage in porous reservoirs: hydrogen–brine flow, microbial reactions, PHREEQC coupling, and thermodynamic models, with selected examples and guided MATLAB notebooks.</p>
     <p>Our first release is in preparation. The release date and download details will be announced here.</p>
-    <a class="primary-button" href="https://github.com/xavierr/h2-sim">Follow H2sim on GitHub ↗</a>
+    <a class="primary-button" href="https://github.com/sintefmath/h2-sim">Follow H2sim on GitHub ↗</a>
    </aside>
 
 Coming up · HydroGEMM 2026

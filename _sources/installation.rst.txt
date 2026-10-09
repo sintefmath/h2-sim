@@ -9,7 +9,7 @@ Clone the repository
 
 .. code-block:: shell
 
-   git clone --recurse-submodules https://github.com/xavierr/h2-sim.git
+   git clone --recurse-submodules https://github.com/sintefmath/h2-sim.git
    cd h2-sim
 
 For a checkout cloned without submodules:
