@@ -79,3 +79,10 @@ body[data-theme="dark"] .platform-note>.admonition-title {background:#244d50!imp
 .release-logos a {display:block;max-width:100%;padding:.65rem .8rem;background:white;border-radius:10px;}
 .release-logos .release-mrst-logo {display:block;width:300px;max-width:100%;height:auto;}
 @media(max-width:700px){.release-logos{gap:.7rem}.release-logos .release-mrst-logo{width:250px}}
+
+/* Discreet attribution in the homepage hero corner. */
+.home-hero {position:relative;padding-top:3.6rem}
+a.mrst-corner-badge {position:absolute;top:.85rem;right:1.1rem;display:inline-flex;gap:.35rem;align-items:center;padding:.3rem .6rem;border:1px solid #87d7ca55;border-radius:999px;color:#c3d6d8;font-size:.7rem;line-height:1.4;text-decoration:none}
+a.mrst-corner-badge strong {color:#b8ede0;font-weight:600}
+a.mrst-corner-badge:hover {background:#ffffff0d;border-color:#87d7ca}
+@media(max-width:480px){.home-hero {padding-top:3.6rem}}

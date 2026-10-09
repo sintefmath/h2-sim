@@ -1,6 +1,7 @@
 .. raw:: html
 
    <div class="home-hero">
+    <a class="mrst-corner-badge" href="https://www.sintef.no/projectweb/mrst/" title="MATLAB Reservoir Simulation Toolbox">Built on <strong>MRST ↗</strong></a>
     <div class="hero-copy">
      <p class="eyebrow">OPEN TOOLS FOR UNDERGROUND HYDROGEN STORAGE</p>
      <h1>Understand recovery.<br>Explore what changes it.</h1>
