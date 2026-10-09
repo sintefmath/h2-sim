@@ -332,7 +332,7 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <td><p>AMGCL CPR including bacterial and tracer unknowns; configurable native threads</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">loadH2simResults</span></code></p></td>
-<td><p>Load result MAT files; stage Windows UNC files locally for HDF5</p></td>
+<td><p>Load result MAT files; optionally stage network files locally for HDF5</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
 <td><p>Activate an optional locally compiled MRST gateway</p></td>
@@ -365,7 +365,7 @@ The mineral comparison returns one result per model configuration.</p>
 transient derivative/state-function caches. Complete restart states remain
 in the packed directory. A completed MAT result with matching packed setup
 can be reused without rereading every restart cache. Use <code class="docutils literal notranslate"><span class="pre">loadH2simResults</span></code>
-when loading large result files through a Windows WSL/network path; it
+when loading large result files through a network path; it
 stages a temporary local copy for HDF5 and removes it after loading.</p>
 <p>Plotting functions preserve values and export vector PDF and PNG figures.
 <code class="docutils literal notranslate"><span class="pre">outputDirectory=''</span></code> disables export. Dimensionless distance uses actual
@@ -380,7 +380,7 @@ unrecovered gas or a production recovery factor.</p>
 <span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>COM integration tests require Windows and a registered IPhreeqcCOM server.
+<p>COM integration tests require the IPhreeqcCOM setup described in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.
 A skipped test does not validate a backend on that platform. The serial
 fallback tests cover both available and missing optional toolbox checks.</p>
 <p>See <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> for the current conservation-audit limitations.</p>

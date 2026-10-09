@@ -13,7 +13,6 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=135d5bc6" />
     
@@ -316,39 +315,6 @@
 <p>The compositional run records <strong>87 cell-step elemental-audit failures</strong>, with maximum absolute residual <strong>3.61 × 10⁻⁵ mol</strong>. The multirate equilibrium backend has its elemental audit disabled; its saved EOS inventory checks report no failures. A passing EOS inventory check does not establish elemental conservation through the chemistry handoff.</p>
 <p>Both completed simulations retain their full states and packed setups locally. The website publishes only the numerical diagnostics needed to redraw these figures.</p>
 </section>
-<section id="Inspect-saved-results-in-MATLAB">
-<h2>Inspect saved results in MATLAB<a class="headerlink" href="#Inspect-saved-results-in-MATLAB" title="Link to this heading">¶</a></h2>
-<p>The CSV files distributed with this notebook’s repository contain full-cycle loss histories and cellwise pH/DIC. The code below reads them without calling PHREEQC or rerunning a simulation.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
-<span class="s">root</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fileparts</span><span class="p">(</span><span class="nb">which</span><span class="p">(</span><span class="s">'startupH2sim'</span><span class="p">));</span>
-<span class="n">dataDirectory</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="s">'doc'</span><span class="p">,</span><span class="w"> </span><span class="s">'data'</span><span class="p">,</span><span class="w"> </span><span class="s">'multirate'</span><span class="p">);</span>
-<span class="n">multirate</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">readtable</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">,</span><span class="w"> </span><span class="s">'multirate_history.csv'</span><span class="p">));</span>
-<span class="n">compositional</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">readtable</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">,</span><span class="w"> </span><span class="s">'compositional_history.csv'</span><span class="p">));</span>
-<span class="nb">figure</span><span class="p">;</span>
-<span class="nb">plot</span><span class="p">(</span><span class="n">multirate</span><span class="p">.</span><span class="n">time_days</span><span class="p">,</span><span class="w"> </span><span class="n">multirate</span><span class="p">.</span><span class="n">loss_percent</span><span class="p">,</span><span class="w"> </span><span class="s">'LineWidth'</span><span class="p">,</span><span class="w"> </span><span class="mf">1.8</span><span class="p">);</span>
-<span class="n">hold</span><span class="w"> </span><span class="s">on</span><span class="p">;</span>
-<span class="nb">plot</span><span class="p">(</span><span class="n">compositional</span><span class="p">.</span><span class="n">time_days</span><span class="p">,</span><span class="w"> </span><span class="n">compositional</span><span class="p">.</span><span class="n">loss_percent</span><span class="p">,</span><span class="w"> </span><span class="s">'LineWidth'</span><span class="p">,</span><span class="w"> </span><span class="mf">1.8</span><span class="p">);</span>
-<span class="nb">xlabel</span><span class="p">(</span><span class="s">'Time (days)'</span><span class="p">);</span>
-<span class="nb">ylabel</span><span class="p">(</span><span class="s">'H_2 consumed / total prescribed H_2 injection (%)'</span><span class="p">);</span>
-<span class="nb">legend</span><span class="p">(</span><span class="s">'Multirate PHREEQC'</span><span class="p">,</span><span class="w"> </span><span class="s">'Compositional PHREEQC'</span><span class="p">,</span><span class="w"> </span><span class="s">'Location'</span><span class="p">,</span><span class="w"> </span><span class="s">'best'</span><span class="p">);</span>
-<span class="nb">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">]);</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="s">on</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Redraw-the-website-figures">
-<h2>Redraw the website figures<a class="headerlink" href="#Redraw-the-website-figures" title="Link to this heading">¶</a></h2>
-<p>From the repository root, with NumPy and Matplotlib installed:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>tools/plot_multirate_results.py
-</pre></div>
-</div>
-<p>This reads <code class="docutils literal notranslate"><span class="pre">doc/data/multirate/</span></code>, writes the three website PNGs, and exports vector PDFs under <code class="docutils literal notranslate"><span class="pre">build/multirate-figures/</span></code>. The data directory records checkpoint checksums, normalization, and audit availability in <code class="docutils literal notranslate"><span class="pre">provenance.json</span></code>.</p>
-<p>To explore the multirate solver itself on Windows with IPhreeqcCOM configured, run <code class="docutils literal notranslate"><span class="pre">exampleSequentialBiochemistryPhreeqc1D</span></code> after startup. Its default grid has 50 cells; it is not the 20-cell saved comparison shown here. Serial pressure flashes do not require Parallel Computing Toolbox. PHREEQC inputs for this backend contain no <code class="docutils literal notranslate"><span class="pre">RATES</span></code> or <code class="docutils literal notranslate"><span class="pre">KINETICS</span></code> blocks.</p>
-</section>
 </section>
 
         </article>
@@ -408,8 +374,6 @@
 <li><a class="reference internal" href="#Chemistry-histories:-pH-and-inorganic-carbon">Chemistry histories: pH and inorganic carbon</a></li>
 <li><a class="reference internal" href="#Where-chemistry-changes">Where chemistry changes</a></li>
 <li><a class="reference internal" href="#Interpretation-and-diagnostics">Interpretation and diagnostics</a></li>
-<li><a class="reference internal" href="#Inspect-saved-results-in-MATLAB">Inspect saved results in MATLAB</a></li>
-<li><a class="reference internal" href="#Redraw-the-website-figures">Redraw the website figures</a></li>
 </ul>
 </li>
 </ul>

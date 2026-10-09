@@ -338,7 +338,11 @@ Toolbox.</p>
 </section>
 <section id="optional-phreeqc-setup">
 <h2>Optional PHREEQC setup<a class="headerlink" href="#optional-phreeqc-setup" title="Link to this heading">¶</a></h2>
-<p>This step is needed only for examples that couple H2sim to PHREEQC.</p>
+<p>This step is needed only for examples that couple H2sim to PHREEQC.
+The core storage and thermodynamic workflows do not require Windows.
+The two sequential PHREEQC backends currently use the Windows-only
+IPhreeqcCOM interface; they cannot run through that interface in MATLAB
+on Linux or macOS.</p>
 <p>Install and register IPhreeqcCOM from the
 <a class="reference external" href="https://www.usgs.gov/software/phreeqc-version-3">USGS PHREEQC distribution</a>
 on Windows. Test the COM interface and the bundled database:</p>

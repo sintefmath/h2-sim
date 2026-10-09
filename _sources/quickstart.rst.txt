@@ -35,7 +35,7 @@ well controls, microbial populations, and transport plots.
 Short PHREEQC mineral comparison
 --------------------------------
 
-On Windows with IPhreeqcCOM configured:
+With IPhreeqcCOM configured (see :doc:`installation`):
 
 .. code-block:: matlab
 

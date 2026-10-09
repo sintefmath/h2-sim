@@ -130,7 +130,7 @@ history as CSV and every figure as PNG and vector PDF.
 The reference implementation is
 `UGFACT <https://github.com/ahmadrezashojaee/UGFACT>`_ by Ahmadreza Shojaee.
 It remains a separate dependency for this comparison. Its sources are staged
-locally for Windows COM execution. The adapter uses the configured SW EOS
+locally for the reference COM interface. The adapter uses the configured SW EOS
 for its post-chemistry reflash and the matching methane component alias;
 the reference kinetic equations are retained.
 

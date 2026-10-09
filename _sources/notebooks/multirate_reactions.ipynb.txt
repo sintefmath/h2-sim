@@ -39,23 +39,6 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": "## Interpretation and diagnostics\n\nThis is a comparison of two configured workflows, not a timestep-convergence study or proof that either kinetic treatment is more accurate. Their kinetic ownership, biomass representation, and flow\u2013reaction splitting differ. The comparison therefore cannot isolate substepping alone.\n\nThe compositional run records **87 cell-step elemental-audit failures**, with maximum absolute residual **3.61 \u00d7 10\u207b\u2075 mol**. The multirate equilibrium backend has its elemental audit disabled; its saved EOS inventory checks report no failures. A passing EOS inventory check does not establish elemental conservation through the chemistry handoff.\n\nBoth completed simulations retain their full states and packed setups locally. The website publishes only the numerical diagnostics needed to redraw these figures."
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": "## Inspect saved results in MATLAB\n\nThe CSV files distributed with this notebook's repository contain full-cycle loss histories and cellwise pH/DIC. The code below reads them without calling PHREEQC or rerunning a simulation."
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": "startupH2sim\nroot = fileparts(which('startupH2sim'));\ndataDirectory = fullfile(root, 'doc', 'data', 'multirate');\nmultirate = readtable(fullfile(dataDirectory, 'multirate_history.csv'));\ncompositional = readtable(fullfile(dataDirectory, 'compositional_history.csv'));\nfigure;\nplot(multirate.time_days, multirate.loss_percent, 'LineWidth', 1.8);\nhold on;\nplot(compositional.time_days, compositional.loss_percent, 'LineWidth', 1.8);\nxlabel('Time (days)');\nylabel('H_2 consumed / total prescribed H_2 injection (%)');\nlegend('Multirate PHREEQC', 'Compositional PHREEQC', 'Location', 'best');\nxlim([0, 250]); grid on;"
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": "## Redraw the website figures\n\nFrom the repository root, with NumPy and Matplotlib installed:\n\n```sh\npython tools/plot_multirate_results.py\n```\n\nThis reads `doc/data/multirate/`, writes the three website PNGs, and exports vector PDFs under `build/multirate-figures/`. The data directory records checkpoint checksums, normalization, and audit availability in `provenance.json`.\n\nTo explore the multirate solver itself on Windows with IPhreeqcCOM configured, run `exampleSequentialBiochemistryPhreeqc1D` after startup. Its default grid has 50 cells; it is not the 20-cell saved comparison shown here. Serial pressure flashes do not require Parallel Computing Toolbox. PHREEQC inputs for this backend contain no `RATES` or `KINETICS` blocks."
   }
  ],
  "metadata": {

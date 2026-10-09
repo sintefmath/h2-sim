@@ -22,7 +22,7 @@ your selected model needs them.
      - Pinned Git submodule
    * - IPhreeqcCOM
      - The two sequential PHREEQC backends
-     - Windows COM installation and registration
+     - Platform-specific COM setup; see installation
    * - ``h2_biogeochemistry.dat``
      - Selected PHREEQC examples
      - Bundled under ``h2-biochem/database``
@@ -72,12 +72,13 @@ H2sim's acetate component parameters live in its own helper; no local edit
 to MRST's property table is required. Avoid recursively adding an entire MRST
 checkout to MATLAB's path. Its startup and module manager select the needed paths.
 
-PHREEQC platform requirements
------------------------------
+Platform requirements
+---------------------
 
-The COM workflows require MATLAB on Windows and a registered IPhreeqcCOM
-server. MATLAB on Linux or macOS cannot activate this Windows COM interface. See
-:doc:`installation` for the COM setup check.
+The core black-oil, compositional bacterial, and thermodynamic workflows do
+not depend on the Windows COM interface. The two sequential PHREEQC backends
+currently use IPhreeqcCOM; their platform requirement and setup check are
+documented in :doc:`installation`.
 
 Database source
 ---------------

@@ -316,7 +316,7 @@ your selected model needs them.</p>
 </tr>
 <tr class="row-odd"><td><p>IPhreeqcCOM</p></td>
 <td><p>The two sequential PHREEQC backends</p></td>
-<td><p>Windows COM installation and registration</p></td>
+<td><p>Platform-specific COM setup; see installation</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">h2_biogeochemistry.dat</span></code></p></td>
 <td><p>Selected PHREEQC examples</p></td>
@@ -366,11 +366,12 @@ git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w
 to MRST’s property table is required. Avoid recursively adding an entire MRST
 checkout to MATLAB’s path. Its startup and module manager select the needed paths.</p>
 </section>
-<section id="phreeqc-platform-requirements">
-<h2>PHREEQC platform requirements<a class="headerlink" href="#phreeqc-platform-requirements" title="Link to this heading">¶</a></h2>
-<p>The COM workflows require MATLAB on Windows and a registered IPhreeqcCOM
-server. MATLAB on Linux or macOS cannot activate this Windows COM interface. See
-<a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for the COM setup check.</p>
+<section id="platform-requirements">
+<h2>Platform requirements<a class="headerlink" href="#platform-requirements" title="Link to this heading">¶</a></h2>
+<p>The core black-oil, compositional bacterial, and thermodynamic workflows do
+not depend on the Windows COM interface. The two sequential PHREEQC backends
+currently use IPhreeqcCOM; their platform requirement and setup check are
+documented in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
 </section>
 <section id="database-source">
 <h2>Database source<a class="headerlink" href="#database-source" title="Link to this heading">¶</a></h2>
@@ -438,7 +439,7 @@ are preserved. Cite <a class="reference external" href="https://doi.org/10.1016/
 <li><a class="reference internal" href="#reference-validation">Reference validation</a></li>
 <li><a class="reference internal" href="#without-parallel-computing-toolbox">Without Parallel Computing Toolbox</a></li>
 <li><a class="reference internal" href="#dependency-revisions">Dependency revisions</a></li>
-<li><a class="reference internal" href="#phreeqc-platform-requirements">PHREEQC platform requirements</a></li>
+<li><a class="reference internal" href="#platform-requirements">Platform requirements</a></li>
 <li><a class="reference internal" href="#database-source">Database source</a></li>
 </ul>
 </li>

@@ -101,8 +101,8 @@ Start small. Build understanding.
 .. admonition:: A serial path for every selected example
    :class: platform-note
 
-   Parallel Computing Toolbox is optional. PHREEQC COM examples require
-   Windows MATLAB and a registered IPhreeqcCOM server; MRST-only examples do not.
+   Parallel Computing Toolbox is optional. Core storage examples run without
+   PHREEQC. Chemistry examples need the additional setup in :doc:`installation`.
 
 Research & community
 ====================
