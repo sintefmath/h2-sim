@@ -60,6 +60,18 @@ Henry–Setschenow supplies liquid hydrogen solubility, not gas-phase water.
    models; agreement with a reference curve does not validate every model
    over other temperatures, pressures, or salt concentrations.
 
+The same saved grid also shows the temperature response from 1 to 99 °C
+at 15 MPa, with zero added salt. Both panels use the same model definitions
+as the pressure comparison; the ePC-SAFT markers are tabulated reference
+values.
+
+.. figure:: _static/examples/temperature_partitioning.png
+   :alt: Dissolved hydrogen and gas-phase water mole fractions versus temperature at 15 MPa and zero added salt.
+   :width: 100%
+
+   Temperature-dependent hydrogen–water partitioning. Henry–Setschenow
+   provides only the dissolved-hydrogen curve.
+
 The second study holds temperature at 40 °C and pressure at 15 MPa while
 varying NaCl molality from zero to 5 mol/kg water. Absolute solubility and
 solubility normalized by the zero-salt value show the salting-out response
@@ -92,7 +104,7 @@ From phase behavior to black-oil PVT
 
 .. code-block:: matlab
 
-   getFluidH2BrineProps(solubilityTable, hydrogenTable, waterTable, ...
+   getFluidH2BrineProps(waterTable, hydrogenTable, solubilityTable, ...
        'rs', true, 'rv', false, 'plot', true, ...
        'outputPath', fullfile(pwd, 'build', 'pvt-tables'));
 
