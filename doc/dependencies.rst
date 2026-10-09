@@ -75,8 +75,8 @@ checkout to MATLAB's path. Its startup and module manager select the needed path
 PHREEQC platform requirements
 -----------------------------
 
-The COM workflows use Windows MATLAB even when launched from WSL. A Linux
-MATLAB installation cannot activate a Windows COM server. See
+The COM workflows require MATLAB on Windows and a registered IPhreeqcCOM
+server. MATLAB on Linux or macOS cannot activate this Windows COM interface. See
 :doc:`installation` for the COM setup check.
 
 Database source

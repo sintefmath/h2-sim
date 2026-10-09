@@ -21,7 +21,8 @@ For a checkout cloned without submodules:
 Initialize MATLAB
 -----------------
 
-In the repository root:
+Open MATLAB and set its current folder to the cloned ``h2-sim`` directory.
+Then run:
 
 .. code-block:: matlab
 
@@ -30,18 +31,20 @@ In the repository root:
 Use MATLAB R2021a or newer for the core examples. Startup adds H2sim modules
 and initializes dependencies. Do not add the complete MRST tree with ``genpath``.
 
-Check a small model
+Run a first example
 -------------------
 
 .. code-block:: matlab
 
    result = exampleBlackOilAquifer2D;
 
-This compact black-oil injection example needs neither PHREEQC nor Parallel
-Computing Toolbox. Continue with :doc:`quickstart` or :doc:`examples`.
+This two-dimensional saline-aquifer example uses the black-oil model and
+requires neither PHREEQC nor Parallel Computing Toolbox. Continue with :doc:`quickstart` or :doc:`examples`.
 
 Optional AMGCL acceleration
 ---------------------------
+
+This step is optional. The core examples can run without AMGCL.
 
 Large compositional cases can use MRST's AMGCL CPR solver. Configure a C++
 compiler with ``mex -setup C++``, load ``mrstModule add linearsolvers``,
@@ -66,6 +69,8 @@ Toolbox.
 Optional PHREEQC setup
 ----------------------
 
+This step is needed only for examples that couple H2sim to PHREEQC.
+
 Install and register IPhreeqcCOM from the
 `USGS PHREEQC distribution <https://www.usgs.gov/software/phreeqc-version-3>`_
 on Windows. Test the COM interface and the bundled database:
@@ -81,33 +86,3 @@ on Windows. Test the COM interface and the bundled database:
 
 Configure ``phreeqcComProgId`` if your COM installation uses a different
 identifier. ``phreeqcDatabaseFile`` must resolve to an absolute database path.
-
-The optional WSL wrapper launches Windows MATLAB:
-
-.. code-block:: shell
-
-   bash run_matlab_h2sim.sh "disp(version);"
-
-Set ``MATLAB_BIN`` to the executable's WSL path if necessary. The wrapper
-uses a Windows MATLAB installation and its normal licensing requirements.
-
-Update a checkout
------------------
-
-.. code-block:: shell
-
-   git pull
-   git submodule update --init --recursive
-
-Re-run ``startupH2sim`` after updating.
-
-Build the website locally
--------------------------
-
-.. code-block:: shell
-
-   python -m pip install -r doc/requirements.txt
-   python -m sphinx -W --keep-going -b html doc build/docs
-
-The docs render saved notebook content and example figures without executing
-MATLAB. Open ``build/docs/index.html`` or serve that directory locally.
