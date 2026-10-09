@@ -5,3 +5,5 @@
 - `mrst-logo.png` is the official MRST/SINTEF banner, retrieved from the [MRST website](https://www.sintef.no/projectweb/mrst/). Its exact source is recorded in `mrst-logo-source.txt`. The logo links back to MRST and identifies the underlying toolbox.
 - `elyes-ahmed-hydrogemm.jpg` is Elyes Ahmed’s portrait from the [official HydroGEMM 2026 invited-speaker page](https://hydrogemm-2026.sciencesconf.org/resource/page/id/1), reused for his event announcement.
 - `examples/` contains selected plots from saved example outputs. The corresponding public MATLAB plotting functions and notebooks describe the observables and normalization.
+
+- `phreeqc-icon.png` is a PNG conversion of the PHREEQC application icon from [the upstream USGS source](https://github.com/usgs-coupled/phreeqc3/blob/master/src/phreex.ico). It identifies PHREEQC and links to its official USGS software page.
