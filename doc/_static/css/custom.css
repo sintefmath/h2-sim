@@ -86,3 +86,10 @@ a.mrst-corner-badge {position:absolute;top:.85rem;right:1.1rem;display:inline-fl
 a.mrst-corner-badge strong {color:#b8ede0;font-weight:600}
 a.mrst-corner-badge:hover {background:#ffffff0d;border-color:#87d7ca}
 @media(max-width:480px){.home-hero {padding-top:3.6rem}}
+
+/* Upstream PHREEQC application identity on the chemistry page. */
+a.phreeqc-brand {display:inline-flex;align-items:center;gap:.7rem;padding:.65rem .9rem;margin:0 0 1rem;border:1px solid var(--color-background-border);border-radius:.7rem;text-decoration:none;background:var(--color-background-secondary)}
+.phreeqc-brand img {width:32px;height:32px;image-rendering:auto}
+.phreeqc-brand strong {display:block;font-size:1rem}
+.phreeqc-brand small {display:block;color:var(--color-foreground-secondary);font-size:.75rem}
+a.phreeqc-brand:hover {border-color:var(--color-brand-content)}

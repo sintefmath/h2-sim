@@ -1,6 +1,10 @@
 PHREEQC coupling
 ================
 
+.. raw:: html
+
+   <a class="phreeqc-brand" href="https://www.usgs.gov/software/phreeqc-version-3" aria-label="PHREEQC — official USGS software page"><img src="_static/phreeqc-icon.png" alt="PHREEQC application icon" width="32" height="32"><span><strong>PHREEQC</strong><small>USGS geochemical software ↗</small></span></a>
+
 Two supported chemistry workflows share MRST flow and EOS gas–liquid
 partitioning, but assign microbial kinetics differently.
 
