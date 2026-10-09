@@ -34,7 +34,7 @@ Entry points
    * - ``setupOptimizedLinearSolver``
      - AMGCL CPR including bacterial and tracer unknowns; configurable native threads
    * - ``loadH2simResults``
-     - Load result MAT files; stage Windows UNC files locally for HDF5
+     - Load result MAT files; optionally stage network files locally for HDF5
    * - ``activateH2simAMGCL``
      - Activate an optional locally compiled MRST gateway
    * - ``profilePhreeqcWorkflows``
@@ -64,7 +64,7 @@ The compositional 2D MAT results retain physical fields while omitting
 transient derivative/state-function caches. Complete restart states remain
 in the packed directory. A completed MAT result with matching packed setup
 can be reused without rereading every restart cache. Use ``loadH2simResults``
-when loading large result files through a Windows WSL/network path; it
+when loading large result files through a network path; it
 stages a temporary local copy for HDF5 and removes it after loading.
 
 Plotting functions preserve values and export vector PDF and PNG figures.
@@ -83,7 +83,7 @@ Tests
    checks = runtests('h2-biochem/tests');
    assertSuccess(checks);
 
-COM integration tests require Windows and a registered IPhreeqcCOM server.
+COM integration tests require the IPhreeqcCOM setup described in :doc:`installation`.
 A skipped test does not validate a backend on that platform. The serial
 fallback tests cover both available and missing optional toolbox checks.
 

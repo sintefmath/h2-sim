@@ -70,6 +70,10 @@ Optional PHREEQC setup
 ----------------------
 
 This step is needed only for examples that couple H2sim to PHREEQC.
+The core storage and thermodynamic workflows do not require Windows.
+The two sequential PHREEQC backends currently use the Windows-only
+IPhreeqcCOM interface; they cannot run through that interface in MATLAB
+on Linux or macOS.
 
 Install and register IPhreeqcCOM from the
 `USGS PHREEQC distribution <https://www.usgs.gov/software/phreeqc-version-3>`_

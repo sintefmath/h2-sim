@@ -70,7 +70,7 @@ This is a larger simulation than the introductory aquifer example. The [bacteria
 
 ## Use PHREEQC chemistry
 
-The sequential PHREEQC backends require **MATLAB on Windows** and a registered **IPhreeqcCOM** server from the [USGS PHREEQC distribution](https://www.usgs.gov/software/phreeqc-version-3). The COM interface is unavailable in MATLAB on Linux or macOS. Other storage workflows do not require this interface.
+H2sim’s core storage and thermodynamic workflows do not require Windows. The two sequential PHREEQC backends currently use **IPhreeqcCOM**, which requires MATLAB on Windows, and a registered server from the [USGS PHREEQC distribution](https://www.usgs.gov/software/phreeqc-version-3). See the [PHREEQC installation instructions](https://sintefmath.github.io/h2-sim/installation.html#optional-phreeqc-setup).
 
 After installing IPhreeqcCOM and running `startupH2sim`, check the interface and bundled database:
 
