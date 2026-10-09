@@ -1,0 +1,48 @@
+{
+  "duration_days": 250,
+  "grid_cells": 20,
+  "length_m": 50,
+  "flow_step_days": 2,
+  "reaction_substep_max_days": 0.4,
+  "schedule": {
+    "injection": [
+      0,
+      50
+    ],
+    "storage": [
+      50,
+      200
+    ],
+    "production": [
+      200,
+      250
+    ]
+  },
+  "normalization": "Cumulative reaction-source H2 consumption / total prescribed H2 injection, nominal ideal gas at 101325 Pa and 288.15 K",
+  "workflows": {
+    "compositional": {
+      "source_checkpoint": "validation_cp.mat",
+      "source_sha256": "61c5d00d93dcba32f37ab0ab4f039c3d868f14d56fc2078c4c86ffa36c82210c",
+      "injected_moles": 13284.902981457584,
+      "final_loss_percent": 38.85737804726577,
+      "runtime_seconds": 881.9819172,
+      "element_audit_available": true,
+      "element_audit_failures": 87,
+      "element_audit_max_absolute_residual_mol": 3.613308581407182e-05,
+      "eos_audit_available": false,
+      "eos_audit_failures": 0
+    },
+    "multirate": {
+      "source_checkpoint": "validation_mr.mat",
+      "source_sha256": "b351179fb4fce386658f75c7088b3c823f8884f5a7ca46ca6107eec971231601",
+      "injected_moles": 13284.902981457584,
+      "final_loss_percent": 46.40978347966853,
+      "runtime_seconds": 2245.8477244,
+      "element_audit_available": false,
+      "element_audit_failures": 0,
+      "element_audit_max_absolute_residual_mol": 0.0,
+      "eos_audit_available": true,
+      "eos_audit_failures": 0
+    }
+  }
+}

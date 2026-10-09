@@ -74,12 +74,12 @@ Short chemistry walkthroughs
       Four cells and two timesteps to check database loading, mineral
       inventories, pH, and saved output. A workflow check, not a spatial validation.
 
-   .. grid-item-card:: Multirate workflow walkthrough
+   .. grid-item-card:: Multirate full-cycle comparison
       :link: notebooks/multirate_reactions
       :link-type: doc
 
-      Two flow steps followed by local microbial reaction substeps.
-      MRST owns kinetics; PHREEQC supplies aqueous equilibrium feedback.
+      A complete 250-day comparison with compositional PHREEQC: hydrogen
+      consumption by reaction, pH, and dissolved inorganic carbon.
 
 Download the notebooks
 ----------------------
