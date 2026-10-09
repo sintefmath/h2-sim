@@ -2,10 +2,10 @@
 
 Open tools for underground hydrogen storage, built on the [MATLAB Reservoir Simulation Toolbox (MRST)](https://www.sintef.no/projectweb/mrst/).
 
-[Documentation](https://xavierr.github.io/h2-sim/) · [Installation](https://xavierr.github.io/h2-sim/installation.html) · [Examples](https://xavierr.github.io/h2-sim/examples.html)
+[Documentation](https://sintefmath.github.io/h2-sim/) · [Installation](https://sintefmath.github.io/h2-sim/installation.html) · [Examples](https://sintefmath.github.io/h2-sim/examples.html)
 
 ```sh
-git clone --recurse-submodules https://github.com/xavierr/h2-sim.git
+git clone --recurse-submodules https://github.com/sintefmath/h2-sim.git
 ```
 
 In MATLAB, from the repository root:

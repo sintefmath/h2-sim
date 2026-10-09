@@ -20,12 +20,12 @@ html_logo = '_static/h2sim-logo.svg'
 html_favicon = '_static/h2sim-icon.svg'
 html_static_path = ['_static']
 html_css_files = ['css/custom.css']
-html_baseurl = 'https://xavierr.github.io/h2-sim/'
+html_baseurl = 'https://sintefmath.github.io/h2-sim/'
 html_theme_options = {
  'sidebar_hide_name': True,
  'light_css_variables': {'color-brand-primary': '#087f82', 'color-brand-content': '#087579'},
  'dark_css_variables': {'color-brand-primary': '#6cddd2', 'color-brand-content': '#6cddd2'},
- 'source_repository': 'https://github.com/xavierr/h2-sim/',
+ 'source_repository': 'https://github.com/sintefmath/h2-sim/',
  'source_branch': 'master', 'source_directory': 'doc/',
 }
 html_show_sourcelink = False
