@@ -1,11 +1,11 @@
 function results=exampleCompositionalBacterial2DThreeReactions(varargin)
 %% 2D Compositional Hydrogen Storage with Three Reactions (MET, ACE, SRB)
 % =========================================================================
-% This example simulates hydrogen storage in a 2D dome-shaped saline aquifer.
+% This example simulates hydrogen storage in a 2D structural trap with residual methane.
 % It includes three microbial reactions:
 %   - Methanogenesis (MET):  4 H2 + CO2  -> CH4 + 2 H2O
 %   - Acetogenesis (ACE):    4 H2 + 2 CO2 -> CH3COOH + 2 H2O
-%   - Sulfate Reduction (SRB): 4 H2 + SO4^2- -> H2S + 2 H2O
+%   - Sulfate Reduction (SRB): 4 H2 + SO4^2- + 2 H+ -> H2S + 4 H2O
 %
 % All kinetic parameters are taken from the default database
 % (bioChemFluidsStructs.m) – no overrides.

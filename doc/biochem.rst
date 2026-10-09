@@ -46,12 +46,56 @@ is configurable through ``setupOptimizedLinearSolver``. See :doc:`installation`.
 
    Open the 2D bacterial storage notebook →
 
-.. figure:: _static/examples/compositional_2d_cycle_logs.png
+.. figure:: _static/examples/compositional_2d_well_logs_verified.png
    :alt: Five injection, idle, and withdrawal cycles compared with and without bacterial reactions.
    :width: 100%
 
-   Cycling well response. The well-cell gas fraction is a local sample,
-   not a flow-weighted production purity.
+   H₂, CO₂, and CH₄ component mass rates and bottom-hole pressure for the
+   bacterial and abiotic runs. Positive component rates denote injection;
+   negative rates denote production. These logs use the summed well
+   component fluxes rather than local cell compositions. Closed-well rates
+   are zero; BHP is shown only while the well is active, because saved
+   shut-in well records retain the preceding active-step values.
+
+Hydrogen consumption by three microbial reactions
+--------------------------------------------------
+
+The saved cumulative reaction diagnostics separate methanogenesis (MET),
+acetogenesis (ACE), and sulfate reduction (SRB). For each reaction we plot
+consumed hydrogen as a percentage of cumulative hydrogen injected up to
+that time:
+
+.. math::
+
+   L_r(t)=100\,\frac{\sum_c N^{\mathrm{consumed}}_{\mathrm{H_2},c,r}(t)}
+   {N^{\mathrm{injected}}_{\mathrm{H_2}}(t)}.
+
+The index :math:`c` denotes a grid cell and :math:`r` a reaction. The
+numerator comes from the converged reaction source terms; the denominator
+integrates positive H₂ well mass rates and converts them to moles. The total
+curve sums the three contributions. The percentage can fall during injection
+because its denominator increases, even though cumulative consumed moles
+never decrease. Dissolution and unrecovered gas are not counted as microbial
+consumption.
+
+.. figure:: _static/examples/compositional_2d_h2_consumption.png
+   :alt: Percentage of injected hydrogen consumed by methanogenesis, acetogenesis, and sulfate reduction over five cycles.
+   :width: 100%
+
+   Reaction-specific hydrogen consumption and its total over time.
+
+Hydrogen plume and microbial populations
+----------------------------------------
+
+.. figure:: _static/examples/compositional_2d_bacterial_maps.png
+   :alt: Two-dimensional hydrogen gas fraction and the three microbial population fields after build-up and fifth-cycle injection.
+   :width: 100%
+
+   H₂ gas fraction and ``nbact`` for MET, ACE, and SRB after build-up
+   (top) and at the end of fifth-cycle injection (bottom). Each column uses
+   the same color limits at both times. H₂ is masked where gas saturation
+   is below 0.001. ``nbact`` is the model's population variable; the plotted
+   values are not a calibrated cell count per volume.
 
 Introductory notebook
 ----------------------
