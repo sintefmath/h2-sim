@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Thermodynamics and PVT tabulation" href="thermodynamics.html"><link rel="prev" title="Hydrogen storage in depleted gas reservoirs" href="biochem.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Three-cycle reactive storage in 2D" href="phreeqc_2d.html"><link rel="prev" title="Hydrogen storage in depleted gas reservoirs" href="biochem.html">
         <link rel="canonical" href="https://sintefmath.github.io/h2-sim/phreeqc.html">
         <link rel="prefetch" href="_static/h2sim-logo.svg" as="image">
 
@@ -213,15 +213,18 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="store.html">Hydrogen storage in saline aquifers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="biochem.html">Hydrogen storage in depleted gas reservoirs</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">PHREEQC coupling</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">PHREEQC coupling</a><input aria-label="Toggle navigation of PHREEQC coupling" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="phreeqc_2d.html">Three-cycle reactive storage in 2D</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Learn and explore</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="thermodynamics.html">Thermodynamics and PVT tabulation</a><input aria-label="Toggle navigation of Thermodynamics and PVT tabulation" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="thermodynamics.html">Thermodynamics and PVT tabulation</a><input aria-label="Toggle navigation of Thermodynamics and PVT tabulation" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/thermodynamics.html">Hydrogen–brine phase behavior</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Selected examples and notebooks</a><input aria-label="Toggle navigation of Selected examples and notebooks" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Selected examples and notebooks</a><input aria-label="Toggle navigation of Selected examples and notebooks" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/blackoil_storage.html">2D hydrogen storage in an aquifer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/bacterial_storage_2d.html">2D compositional storage with three reactions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nblinks/simple1DBacterialExampleMetacet.html">1D Compositional Simulation with Bio-Clogging (MRST-style, release-ready)</a></li>
@@ -473,6 +476,22 @@ the available conservation diagnostics.</span><a class="headerlink" href="#id7" 
 </figure>
 <p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/multirate_reactions.html"><span class="doc">Open the full-cycle multirate comparison →</span></a></p>
 </section>
+<section id="three-cycle-2d-storage">
+<h2>Three-cycle 2D storage<a class="headerlink" href="#three-cycle-2d-storage" title="Link to this heading">¶</a></h2>
+<p>Explore the completed layered storage comparison with compositional PHREEQC:
+three cycles, hydrogen consumption by pathway, gas composition and pH maps,
+and an interactive animation of hydrogen and microbial evolution.</p>
+<figure class="align-default" id="id8">
+<img alt="Third-injection gas H2, CO2, methane and aqueous pH maps in the layered coupled model." src="_images/phreeqc_2d_chemistry.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Spatial chemistry after the third injection period. The full example
+distinguishes mobile microbial transport from cell-local PHREEQC kinetics.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="phreeqc_2d.html"><span class="doc">Explore the 2D results and animation →</span></a></p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
 <section id="conservation-diagnostics">
 <h2>Conservation diagnostics<a class="headerlink" href="#conservation-diagnostics" title="Link to this heading">¶</a></h2>
 <p>The compositional backend records per-cell elemental inventories and warns
@@ -500,12 +519,12 @@ Compare states and diagnostics before interpreting runtime improvements.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="thermodynamics.html">
+          <a class="next-page" href="phreeqc_2d.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Thermodynamics and PVT tabulation</div>
+                <div class="title">Three-cycle reactive storage in 2D</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -554,6 +573,7 @@ Compare states and diagnostics before interpreting runtime improvements.</p>
 </li>
 <li><a class="reference internal" href="#compositional-kinetic-coupling">Compositional kinetic coupling</a></li>
 <li><a class="reference internal" href="#multirate-aqueous-equilibrium">Multirate aqueous equilibrium</a></li>
+<li><a class="reference internal" href="#three-cycle-2d-storage">Three-cycle 2D storage</a></li>
 <li><a class="reference internal" href="#conservation-diagnostics">Conservation diagnostics</a></li>
 <li><a class="reference internal" href="#profiling-tools">Profiling tools</a></li>
 </ul>
