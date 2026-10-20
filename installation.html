@@ -342,12 +342,52 @@ can keep its existing solver paths. AMGCL does not require Parallel Computing
 Toolbox.</p>
 </section>
 <section id="optional-phreeqc-setup">
-<h2>Optional PHREEQC setup<a class="headerlink" href="#optional-phreeqc-setup" title="Link to this heading">¶</a></h2>
+<span id="id1"></span><h2>Optional PHREEQC setup<a class="headerlink" href="#optional-phreeqc-setup" title="Link to this heading">¶</a></h2>
 <p>This step is needed only for examples that couple H2sim to PHREEQC.
-The core storage and thermodynamic workflows do not require Windows.
-The two sequential PHREEQC backends currently use the Windows-only
-IPhreeqcCOM interface; they cannot run through that interface in MATLAB
-on Linux or macOS.</p>
+Both sequential backends support Linux MATLAB through the native IPhreeqc
+C library supplied by PhreeqcMatlab. Windows MATLAB continues to use
+IPhreeqcCOM. macOS sequential coupling is not supported.</p>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Native Linux coupling is available in the development checkout containing
+<code class="docutils literal notranslate"><span class="pre">createH2simIPhreeqc.m</span></code> and <code class="docutils literal notranslate"><span class="pre">H2simNativeIPhreeqc.m</span></code>. Earlier releases
+use Windows COM for both sequential backends. Check your checkout before
+following the Linux steps below. Full Linux MATLAB simulation validation
+is pending; native-interface chemistry has been tested with Windows DLLs.</p>
+</div>
+<p>Initialize the pinned submodules, then launch native Linux MATLAB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+<span class="nv">MATLAB_BIN</span><span class="o">=</span>/path/to/MATLAB/bin/matlab<span class="w"> </span>bash<span class="w"> </span>run_matlab_h2sim.sh<span class="w"> </span><span class="s2">"disp('Ready')"</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">matlab</span></code> is on PATH, <code class="docutils literal notranslate"><span class="pre">MATLAB_BIN</span></code> may be omitted. The launcher prefers
+Linux MATLAB and falls back to Windows MATLAB under WSL when none is found.
+It delegates to PhreeqcMatlab’s Linux launcher, which preloads the system
+<code class="docutils literal notranslate"><span class="pre">libstdc++.so.6</span></code> for its modern GCC binaries. Set
+<code class="docutils literal notranslate"><span class="pre">PHREEQCMATLAB_LIBSTDCPP</span></code> to override that library location if necessary.
+The system C++ runtime must provide <code class="docutils literal notranslate"><span class="pre">GLIBCXX_3.4.32</span></code> for the supplied
+3.8.6 binaries. MATLAB needs a configured supported C compiler for
+<code class="docutils literal notranslate"><span class="pre">loadlibrary</span></code> (<code class="docutils literal notranslate"><span class="pre">mex</span> <span class="pre">-setup</span> <span class="pre">C</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> initializes PhreeqcMatlab, which resolves the shared
+libraries from its <code class="docutils literal notranslate"><span class="pre">libs/</span></code> directory, a local install specified by
+<code class="docutils literal notranslate"><span class="pre">PHREEQCMATLAB_LIB_PATH</span></code> (or <code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code>), or release downloads.
+For offline installations, provide the libraries before startup.
+No COM registration is needed on Linux. Use the same explicit absolute
+<code class="docutils literal notranslate"><span class="pre">phreeqcDatabaseFile</span></code> path to <code class="docutils literal notranslate"><span class="pre">h2_biogeochemistry.dat</span></code> as on Windows;
+<code class="docutils literal notranslate"><span class="pre">phreeqcComProgId</span></code> is only used on Windows.</p>
+<p>Verify chemistry and cell batching after initialization:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">iph</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">createH2simIPhreeqc</span><span class="p">(</span><span class="s">'IPhreeqcCOM.Object'</span><span class="p">);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="n">iph</span><span class="p">.</span><span class="n">LoadDatabase</span><span class="p">(</span><span class="nb">which</span><span class="p">(</span><span class="s">'h2_biogeochemistry.dat'</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="nb">delete</span><span class="p">(</span><span class="n">iph</span><span class="p">);</span>
+<span class="n">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'h2-biochem/tests/CompositionalPhreeqcBatchTest.m'</span><span class="p">);</span>
+<span class="n">assertSuccess</span><span class="p">(</span><span class="n">results</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h3>
 <p>Install and register IPhreeqcCOM from the
 <a class="reference external" href="https://www.usgs.gov/software/phreeqc-version-3">USGS PHREEQC distribution</a>
 on Windows. Test the COM interface and the bundled database:</p>
@@ -361,6 +401,7 @@ on Windows. Test the COM interface and the bundled database:</p>
 </div>
 <p>Configure <code class="docutils literal notranslate"><span class="pre">phreeqcComProgId</span></code> if your COM installation uses a different
 identifier. <code class="docutils literal notranslate"><span class="pre">phreeqcDatabaseFile</span></code> must resolve to an absolute database path.</p>
+</section>
 </section>
 </section>
 
@@ -420,7 +461,11 @@ identifier. <code class="docutils literal notranslate"><span class="pre">phreeqc
 <li><a class="reference internal" href="#initialize-matlab">Initialize MATLAB</a></li>
 <li><a class="reference internal" href="#run-a-first-example">Run a first example</a></li>
 <li><a class="reference internal" href="#optional-amgcl-acceleration">Optional AMGCL acceleration</a></li>
-<li><a class="reference internal" href="#optional-phreeqc-setup">Optional PHREEQC setup</a></li>
+<li><a class="reference internal" href="#optional-phreeqc-setup">Optional PHREEQC setup</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

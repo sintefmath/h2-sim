@@ -290,6 +290,14 @@
         <article role="main" id="furo-main-content">
           <section id="phreeqc-coupling">
 <h1>PHREEQC coupling<a class="headerlink" href="#phreeqc-coupling" title="Link to this heading">¶</a></h1>
+<section id="platform-support">
+<h2>Platform support<a class="headerlink" href="#platform-support" title="Link to this heading">¶</a></h2>
+<p>The development integration supports both sequential backends on <strong>Linux
+MATLAB</strong> through PhreeqcMatlab’s native IPhreeqc library and on <strong>Windows
+MATLAB</strong> through IPhreeqcCOM. Linux does not need a COM server.
+Earlier releases use Windows COM; native Linux simulation validation is
+pending. See <a class="reference internal" href="installation.html#optional-phreeqc-setup"><span class="std std-ref">Optional PHREEQC setup</span></a> for installation, runtime
+requirements, and a verification command.</p>
 <a class="phreeqc-brand" href="https://www.usgs.gov/software/phreeqc-version-3" aria-label="PHREEQC — official USGS software page"><img src="_static/phreeqc-icon.png" alt="PHREEQC application icon" width="32" height="32"><span><strong>PHREEQC</strong><small>USGS geochemical software ↗</small></span></a><p>Two supported chemistry workflows share MRST flow and EOS gas–liquid
 partitioning, but assign microbial kinetics differently.</p>
 <img alt="Compositional PHREEQC assigns local kinetics to PHREEQC; multirate PHREEQC retains MRST kinetics and calls aqueous equilibrium after reaction substeps." src="_images/workflows.svg" style="width: 100%;" />
@@ -323,6 +331,7 @@ partitioning, but assign microbial kinetics differently.</p>
 </tbody>
 </table>
 </div>
+</section>
 <section id="complete-cycle-validation">
 <h2>Complete-cycle validation<a class="headerlink" href="#complete-cycle-validation" title="Link to this heading">¶</a></h2>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="s">'ugfactRoot'</span><span class="p">,</span><span class="w"> </span><span class="n">referenceRoot</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
@@ -435,7 +444,7 @@ Aqueous tracers remain transported in MRST.</p>
 <span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s">'maximumFlowSteps'</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Batches reduce COM overhead. The default batch size is 50; use
+<p>Batches reduce IPhreeqc call overhead. The default batch size is 50; use
 <code class="docutils literal notranslate"><span class="pre">sequentialCompositionalPhreeqcBatchSize=1</span></code> for individual cell calls.
 Inactive-cell skipping records an explicit execution mask; a skipped identity
 update is not an independently evaluated chemistry audit.</p>
@@ -568,6 +577,7 @@ Compare states and diagnostics before interpreting runtime improvements.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">PHREEQC coupling</a><ul>
+<li><a class="reference internal" href="#platform-support">Platform support</a></li>
 <li><a class="reference internal" href="#complete-cycle-validation">Complete-cycle validation</a><ul>
 <li><a class="reference internal" href="#geochemical-evolution">Geochemical evolution</a></li>
 <li><a class="reference internal" href="#consumption-by-reaction">Consumption by reaction</a></li>
