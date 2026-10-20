@@ -334,11 +334,14 @@ partitioning, but assign microbial kinetics differently.</p>
 </section>
 <section id="complete-cycle-validation">
 <h2>Complete-cycle validation<a class="headerlink" href="#complete-cycle-validation" title="Link to this heading">¶</a></h2>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="s">'ugfactRoot'</span><span class="p">,</span><span class="w"> </span><span class="n">referenceRoot</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s">'totalDays'</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="s">'rate'</span><span class="p">,</span><span class="w"> </span><span class="s">'highrate'</span><span class="p">);</span>
 <span class="n">plotCompositionalPhreeqcValidation</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>The command above runs H2sim without an external checkout. The reference
+curves on this page are retained comparison data; reproducing that external
+run is optional, as described below.</p>
 <p>The selected comparison uses a 20-cell, 50 m column and a complete 250-day
 cycle: 50 days of injection, 150 days of storage, and 50 days of production.
 Both implementations use Soreide–Whitson thermodynamics at 2.865 mol/kg NaCl
@@ -426,12 +429,18 @@ All plots use the full 0–250-day interval. Setups and accepted outputs remain
 saved as packed simulations; the plotting function also exports the loss
 history as CSV and every figure as PNG and vector PDF.</p>
 <p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/phreeqc_validation.html"><span class="doc">Open PHREEQC validation →</span></a></p>
-<p>The reference implementation is
+<p>The external reference data shown on this page were generated with
 <a class="reference external" href="https://github.com/ahmadrezashojaee/UGFACT">UGFACT</a> by Ahmadreza Shojaee.
-It remains a separate dependency for this comparison. Its sources are staged
-locally for the reference COM interface. The adapter uses the configured SW EOS
-for its post-chemistry reflash and the matching methane component alias;
-the reference kinetic equations are retained.</p>
+The standalone case and <code class="docutils literal notranslate"><span class="pre">runThreeBackendComparison</span></code> require no external
+checkout. To reproduce those external reference data, explicitly request the
+optional comparison:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">comparison</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="s">'referenceRoot'</span><span class="p">,</span><span class="w"> </span><span class="n">referenceRoot</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s">'totalDays'</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="s">'rate'</span><span class="p">,</span><span class="w"> </span><span class="s">'highrate'</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Only this optional reference uses a separate checkout and Windows COM. Its
+files and platform are checked before H2sim simulations start. Sources are
+staged locally, and the adapter retains the reference kinetic equations.</p>
 </section>
 </section>
 <section id="compositional-kinetic-coupling">

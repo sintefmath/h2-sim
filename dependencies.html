@@ -344,9 +344,11 @@ your selected model needs them.</p>
 </div>
 <section id="reference-validation">
 <h2>Reference validation<a class="headerlink" href="#reference-validation" title="Link to this heading">¶</a></h2>
-<p>The PHREEQC validation case additionally uses a separate UGFACT checkout.
-Pass its root directory as <code class="docutils literal notranslate"><span class="pre">ugfactRoot</span></code> to <code class="docutils literal notranslate"><span class="pre">runPhreeqcValidation</span></code>.
-All selected examples and the reference run use serial execution.</p>
+<p>The three-backend comparison and standalone PHREEQC validation use only
+H2sim and the bundled database. No external reference checkout is required.
+To reproduce an optional external comparison, pass its checkout explicitly
+as <code class="docutils literal notranslate"><span class="pre">referenceRoot</span></code> to <code class="docutils literal notranslate"><span class="pre">runPhreeqcValidation</span></code>. The reference files and
+platform are checked before simulation starts. All cases run serially.</p>
 </section>
 <section id="without-parallel-computing-toolbox">
 <h2>Without Parallel Computing Toolbox<a class="headerlink" href="#without-parallel-computing-toolbox" title="Link to this heading">¶</a></h2>

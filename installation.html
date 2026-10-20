@@ -312,6 +312,20 @@ Then run:</p>
 </div>
 <p>Use MATLAB R2021a or newer for the core examples. Startup adds H2sim modules
 and initializes dependencies. Do not add the complete MRST tree with <code class="docutils literal notranslate"><span class="pre">genpath</span></code>.</p>
+<p>H2sim uses its own biochemistry implementation, registered as
+<code class="docutils literal notranslate"><span class="pre">h2sim-biochem</span></code>. Initialize it with <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code>; do not use
+<code class="docutils literal notranslate"><span class="pre">mrstModule</span> <span class="pre">add</span> <span class="pre">h2-biochem</span></code> to initialize this toolbox. That name belongs
+to MRST’s separate module. H2sim startup removes the upstream module’s
+paths and mapping for the current MATLAB session, then selects this
+checkout’s implementation. Other MRST modules remain available.</p>
+<p>If you have already created model objects with MRST’s upstream module,
+restart MATLAB and initialize H2sim before constructing new models.
+You can check which implementation is selected:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">which</span><span class="w"> </span><span class="n">BiochemistryModel</span>
+<span class="n">mrstPath</span><span class="p">(</span><span class="s">'search'</span><span class="p">,</span><span class="w"> </span><span class="s">'h2sim-biochem'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Both paths should point into this H2sim checkout’s <code class="docutils literal notranslate"><span class="pre">h2-biochem</span></code> folder.</p>
 </section>
 <section id="run-a-first-example">
 <h2>Run a first example<a class="headerlink" href="#run-a-first-example" title="Link to this heading">¶</a></h2>
