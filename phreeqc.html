@@ -507,6 +507,26 @@ no PHREEQC <code class="docutils literal notranslate"><span class="pre">RATES</s
 <span class="w">    </span><span class="s">'phreeqcReflashParallel'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>The example uses 50 cells over 50 m. Biomass starts at <code class="docutils literal notranslate"><span class="pre">N/N0=1</span></code> with
+<code class="docutils literal notranslate"><span class="pre">N0=1e9</span> <span class="pre">cells/kgw</span></code>, first-order decay and <code class="docutils literal notranslate"><span class="pre">Nmax/N0=1e4</span></code>. Time options use
+seconds; MRST’s <code class="docutils literal notranslate"><span class="pre">day</span></code> converts days to seconds. The default complete schedule
+contains 125 two-day flow steps with reaction substeps of at most 0.4 day.</p>
+<p>Matching packed results are reused. <code class="docutils literal notranslate"><span class="pre">maximumFlowSteps</span></code> truncates the schedule
+before packing, so changing the limit selects a different cache identity rather
+than extending the previous run. <code class="docutils literal notranslate"><span class="pre">simulationDirectory</span></code> selects a packed-output
+root; leaving it empty uses the normal H2sim output directory. Runtime includes
+packing, simulation/cache access and output loading, excluding setup and plots.
+A short run checks execution and does not reproduce a complete storage cycle.</p>
+<p>To retain and redraw the returned summary explicitly:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">save</span><span class="p">(</span><span class="s">'multirate_summary.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'summary'</span><span class="p">,</span><span class="w"> </span><span class="s">'-v7'</span><span class="p">);</span>
+<span class="n">saved</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">load</span><span class="p">(</span><span class="s">'multirate_summary.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'summary'</span><span class="p">);</span>
+<span class="n">plotSequentialBiochemistryPhreeqc</span><span class="p">(</span><span class="n">saved</span><span class="p">.</span><span class="n">summary</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">pwd</span><span class="p">,</span><span class="w"> </span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'multirate-figures'</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Summary hydrogen quantities are mol; <code class="docutils literal notranslate"><span class="pre">h2LossPercent</span></code> uses total prescribed
+injection over the selected schedule as its denominator. The two plotted figures
+show final flow/chemistry profiles and cumulative biological consumption.</p>
 <p><code class="docutils literal notranslate"><span class="pre">reactionSubstepMaxDt</span></code> controls the local reaction cadence. Pressure
 flashes run serially by default; Parallel Computing Toolbox is optional.
 The separate <code class="docutils literal notranslate"><span class="pre">simulateSequentialH2BiochemPhreeqc</span></code> runner is an outer Picard
