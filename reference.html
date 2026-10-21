@@ -342,10 +342,13 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
 <td><p>Activate an optional locally compiled MRST gateway</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
+<td><p>Redraw saved mineral-case consumption and pH; return two figures</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
 <td><p>Redraw saved backend metrics; return profile, time-series and spatial figures</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
 <td><p>Paired profiling and state comparisons</p></td>
 </tr>
 </tbody>
@@ -365,6 +368,23 @@ The base names are <code class="docutils literal notranslate"><span class="pre">
 and <code class="docutils literal notranslate"><span class="pre">backends_H2_consumption_space</span></code>. Labels, units and normalization are
 preserved from the scenario metrics; corresponding snapshot times must match.
 See <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> for the save/reload workflow and backend interpretation.</p>
+</section>
+<section id="saved-mineral-figures">
+<h2>Saved mineral figures<a class="headerlink" href="#saved-mineral-figures" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison(comparison)</span></code> redraws the mineral examples’
+metrics without running simulations. It returns two open figures: reaction-wise
+consumption with final cellwise pH, then consumption histories with optional
+spatial contributions. Empty pH values are omitted; removing the spatial fields
+omits the spatial panels.</p>
+<p>Time histories use consumed H2 divided by injected H2 to date. Spatial values
+are per-cell contributions divided by total injected H2. These normalizations
+are supplied by the example metrics and are preserved by plotting.</p>
+<p><code class="docutils literal notranslate"><span class="pre">'dimension',</span> <span class="pre">2</span></code> changes titles and filenames, not the data or grid mapping.
+The default label is 1. PDF/PNG base names are
+<code class="docutils literal notranslate"><span class="pre">minerals_&lt;dimension&gt;D_consumption_pH</span></code> and
+<code class="docutils literal notranslate"><span class="pre">minerals_&lt;dimension&gt;D_H2_consumption</span></code>. Pass <code class="docutils literal notranslate"><span class="pre">'outputDirectory',</span> <span class="pre">''</span></code> to create
+figures without writing files; otherwise vector PDF and 300-dpi PNG exports go
+to the selected folder, defaulting to <code class="docutils literal notranslate"><span class="pre">build/phreeqc-figures</span></code> under pwd.</p>
 </section>
 <section id="shared-1d-storage-setup">
 <h2>Shared 1D storage setup<a class="headerlink" href="#shared-1d-storage-setup" title="Link to this heading">¶</a></h2>
@@ -482,6 +502,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#">Code reference</a><ul>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
+<li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#shared-1d-storage-setup">Shared 1D storage setup</a></li>
 <li><a class="reference internal" href="#output-and-replotting">Output and replotting</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
