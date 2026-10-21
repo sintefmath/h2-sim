@@ -349,6 +349,25 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 </table>
 </div>
 </section>
+<section id="shared-1d-storage-setup">
+<h2>Shared 1D storage setup<a class="headerlink" href="#shared-1d-storage-setup" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">setupH2StorageExampleWithSRB_benchmark</span></code> constructs the model, initial state
+and schedule without running a simulation. Its default reservoir is 50 m long,
+with 50 cells, porosity 0.20 and permeability 100 mD. Initial pressure is 150 bar
+and temperature is 333.15 K. The default <code class="docutils literal notranslate"><span class="pre">highrate</span></code> kinetics and 125 two-day
+steps cover injection (50 days), storage (150 days) and production (50 days).
+Use <code class="docutils literal notranslate"><span class="pre">'scheduleMode',</span> <span class="pre">'injection'</span></code> for the injection period alone.</p>
+<p>PHREEQC coupling is disabled by default. Selecting compositional PHREEQC adds
+local PHREEQC kinetics and equilibrium; the hybrid backend instead retains MRST
+microbial kinetics. For multirate execution, convert the hybrid model with
+<code class="docutils literal notranslate"><span class="pre">convertToSequentialBiochemistryPhreeqcModel</span></code> before simulation, as shown in
+<code class="docutils literal notranslate"><span class="pre">exampleSequentialBiochemistryPhreeqc1D</span></code>. The alternative outer Picard runner
+is <code class="docutils literal notranslate"><span class="pre">simulateSequentialH2BiochemPhreeqc</span></code>. These are distinct coupling workflows.</p>
+<p>The uncoupled <code class="docutils literal notranslate"><span class="pre">initialHCO3</span></code> default is <code class="docutils literal notranslate"><span class="pre">1.1119e-3</span> <span class="pre">mol/kgw</span></code>; coupled cases use
+<code class="docutils literal notranslate"><span class="pre">sequentialCompositionalPhreeqcInitialC4</span></code> (default <code class="docutils literal notranslate"><span class="pre">1.370e-3</span> <span class="pre">mol/kgw</span></code>).
+See MATLAB <code class="docutils literal notranslate"><span class="pre">help</span> <span class="pre">setupH2StorageExampleWithSRB_benchmark</span></code> for option defaults,
+biomass conventions and conservation tolerances.</p>
+</section>
 <section id="output-and-replotting">
 <h2>Output and replotting<a class="headerlink" href="#output-and-replotting" title="Link to this heading">¶</a></h2>
 <p>The aquifer, compositional 2D, validation, and short chemistry examples save their setup and accepted states with MRST
@@ -445,6 +464,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
             <ul>
 <li><a class="reference internal" href="#">Code reference</a><ul>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
+<li><a class="reference internal" href="#shared-1d-storage-setup">Shared 1D storage setup</a></li>
 <li><a class="reference internal" href="#output-and-replotting">Output and replotting</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
 </ul>
