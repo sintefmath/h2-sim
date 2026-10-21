@@ -342,16 +342,19 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
 <td><p>Activate an optional locally compiled MRST gateway</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotSequentialBiochemistryPhreeqc</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotCompositionalPhreeqcValidation</span></code></p></td>
+<td><p>Redraw validation maps and reaction loss with optional saved reference data</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotSequentialBiochemistryPhreeqc</span></code></p></td>
 <td><p>Redraw saved multirate flow/chemistry and consumption; return two figures</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
 <td><p>Redraw saved mineral-case consumption and pH; return two figures</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
 <td><p>Redraw saved backend metrics; return profile, time-series and spatial figures</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
 <td><p>Paired profiling and state comparisons</p></td>
 </tr>
 </tbody>
@@ -404,6 +407,25 @@ denominator is fixed over the selected schedule, including during injection.</p>
 is <code class="docutils literal notranslate"><span class="pre">build/phreeqc-figures</span></code> under pwd; pass <code class="docutils literal notranslate"><span class="pre">'outputDirectory',</span> <span class="pre">''</span></code> to disable
 export. Returned figures remain open for the caller to inspect or close.
 See <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> for saving and reloading the multirate summary.</p>
+</section>
+<section id="saved-validation-figures">
+<h2>Saved validation figures<a class="headerlink" href="#saved-validation-figures" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">plotCompositionalPhreeqcValidation(result)</span></code> returns three figures for hydrogen
+loss and aqueous H2, pH/DIC maps, and MET/ACE/SRB loss contributions. It uses cached
+<code class="docutils literal notranslate"><span class="pre">result.diagnostics</span></code> when supplied; otherwise it collects diagnostics from the
+saved H2sim model, schedule and states. Optional reference data add comparison
+curves and maps; no external checkout is needed to redraw saved data. Legacy
+<code class="docutils literal notranslate"><span class="pre">ugfact</span></code> fields remain readable without changing stored provenance.</p>
+<p>Time is in days, distance uses the first cell coordinate in metres, aqueous H2
+is a mole fraction and DIC is in mol/kg water. Loss uses total prescribed H2
+injection as its denominator throughout the selected schedule. Reference times
+and first coordinate columns must match exactly, and reaction contributions must sum to the
+total loss within the existing tolerance.</p>
+<p>Export is disabled by default. A nonempty <code class="docutils literal notranslate"><span class="pre">outputDirectory</span></code> receives three
+200-dpi PNGs, three vector PDFs and <code class="docutils literal notranslate"><span class="pre">phreeqc_loss_history.csv</span></code>. CSV reference
+columns appear only when reference diagnostics are present. Historical export
+base names end in <code class="docutils literal notranslate"><span class="pre">full_cycle</span></code> even for short datasets; filenames alone do
+not establish full-cycle coverage. The caller owns the returned open figures.</p>
 </section>
 <section id="shared-1d-storage-setup">
 <h2>Shared 1D storage setup<a class="headerlink" href="#shared-1d-storage-setup" title="Link to this heading">¶</a></h2>
@@ -523,6 +545,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
+<li><a class="reference internal" href="#saved-validation-figures">Saved validation figures</a></li>
 <li><a class="reference internal" href="#shared-1d-storage-setup">Shared 1D storage setup</a></li>
 <li><a class="reference internal" href="#output-and-replotting">Output and replotting</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
