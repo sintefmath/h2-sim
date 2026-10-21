@@ -449,6 +449,24 @@ The ProgID properties remain configuration metadata on Linux. Constructor
 validation does not establish runtime engine availability. Backend-specific
 coupling options are documented in the corresponding coupling utility.</p>
 </section>
+<section id="accepted-step-phreeqc-coupling">
+<h2>Accepted-step PHREEQC coupling<a class="headerlink" href="#accepted-step-phreeqc-coupling" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BiochemistryPhreeqcModel.updateAfterConvergence</span></code> finalizes each accepted
+nonlinear ministep, rather than each Newton iteration. It first calls the
+parent flow update, records H2sim reaction consumption when applicable, then
+dispatches the configured chemistry backend. Lagged dissolved H2S is cached
+after chemistry and reflash for the following EOS evaluation.</p>
+<p>Compositional PHREEQC owns reaction kinetics and consumption; the H2sim
+consumption-rate path is skipped. Hybrid PHREEQC records the converged H2sim
+source rate before chemistry changes the state and accumulates accepted
+reaction extents. Reaction-disabled flow stages record zero rate and carry
+existing cumulative hybrid consumption forward unchanged.</p>
+<p>The hybrid hook checks that the Picard or multirate driver is active; it does
+not perform a separate chemistry update. Direct <code class="docutils literal notranslate"><span class="pre">simulateScheduleAD</span></code> with
+an undriven hybrid model is rejected to prevent a lagged one-pass split.
+Coupling-disabled models skip chemistry dispatch. Existing consumption fields
+remain in accepted states and are carried through packed restarts.</p>
+</section>
 <section id="reaction-specific-h2-accounting">
 <h2>Reaction-specific H2 accounting<a class="headerlink" href="#reaction-specific-h2-accounting" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">[rate,</span> <span class="pre">cumulative]</span> <span class="pre">=</span> <span class="pre">computeH2Consumption(states,</span> <span class="pre">schedule,</span> <span class="pre">model,</span> <span class="pre">reaction)</span></code>
@@ -618,6 +636,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
 <li><a class="reference internal" href="#storage-cycle-validation-example">Storage-cycle validation example</a></li>
 <li><a class="reference internal" href="#phreeqc-model-configuration">PHREEQC model configuration</a></li>
+<li><a class="reference internal" href="#accepted-step-phreeqc-coupling">Accepted-step PHREEQC coupling</a></li>
 <li><a class="reference internal" href="#reaction-specific-h2-accounting">Reaction-specific H2 accounting</a></li>
 <li><a class="reference internal" href="#validation-diagnostics">Validation diagnostics</a></li>
 <li><a class="reference internal" href="#saved-validation-figures">Saved validation figures</a></li>
