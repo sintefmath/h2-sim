@@ -327,6 +327,25 @@ You can check which implementation is selected:</p>
 </div>
 <p>Both paths should point into this H2sim checkout’s <code class="docutils literal notranslate"><span class="pre">h2-biochem</span></code> folder.</p>
 </section>
+<section id="runtime-and-development-paths">
+<h2>Runtime and development paths<a class="headerlink" href="#runtime-and-development-paths" title="Link to this heading">¶</a></h2>
+<p>Startup adds the supported biochemistry module, storage module and toolbox
+utilities. Biochemistry tests live in <code class="docutils literal notranslate"><span class="pre">tests/biochemistry</span></code>; archived examples
+and older 3D studies live in <code class="docutils literal notranslate"><span class="pre">research/biochemistry</span></code>. These folders are
+outside the registered module root, so MRST module reactivation does not add
+them. Activation also removes paths left by their previous locations.
+Supported examples and model class locations are unchanged. Developer tools
+that share a supported example folder remain visible pending a separate review.</p>
+<p>Run tests by their explicit folder path from the repository root:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'tests/biochemistry'</span><span class="p">);</span>
+<span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To inspect an archived study, add only its selected folder explicitly after
+startup. Do not recursively add the entire repository. This separation covers
+the moved biochemistry groups; it does not classify local unpublished studies
+or reorganize the storage and calibration modules.</p>
+</section>
 <section id="run-a-first-example">
 <h2>Run a first example<a class="headerlink" href="#run-a-first-example" title="Link to this heading">¶</a></h2>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">;</span>
@@ -395,7 +414,7 @@ No COM registration is needed on Linux. Use the same explicit absolute
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">iph</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">createH2simIPhreeqc</span><span class="p">(</span><span class="s">'IPhreeqcCOM.Object'</span><span class="p">);</span>
 <span class="nb">assert</span><span class="p">(</span><span class="n">iph</span><span class="p">.</span><span class="n">LoadDatabase</span><span class="p">(</span><span class="nb">which</span><span class="p">(</span><span class="s">'h2_biogeochemistry.dat'</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
 <span class="nb">delete</span><span class="p">(</span><span class="n">iph</span><span class="p">);</span>
-<span class="n">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'h2-biochem/tests/CompositionalPhreeqcBatchTest.m'</span><span class="p">);</span>
+<span class="n">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'tests/biochemistry/CompositionalPhreeqcBatchTest.m'</span><span class="p">);</span>
 <span class="n">assertSuccess</span><span class="p">(</span><span class="n">results</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -473,6 +492,7 @@ identifier. <code class="docutils literal notranslate"><span class="pre">phreeqc
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#clone-the-repository">Clone the repository</a></li>
 <li><a class="reference internal" href="#initialize-matlab">Initialize MATLAB</a></li>
+<li><a class="reference internal" href="#runtime-and-development-paths">Runtime and development paths</a></li>
 <li><a class="reference internal" href="#run-a-first-example">Run a first example</a></li>
 <li><a class="reference internal" href="#optional-amgcl-acceleration">Optional AMGCL acceleration</a></li>
 <li><a class="reference internal" href="#optional-phreeqc-setup">Optional PHREEQC setup</a><ul>
