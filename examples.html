@@ -293,6 +293,24 @@
 <p>Run the MATLAB commands locally and inspect their saved results in the
 notebooks. Start with a representative storage or validation case, then use
 the smaller workflow checks to explore chemistry settings.</p>
+<section id="choose-how-to-run-an-example">
+<h2>Choose how to run an example<a class="headerlink" href="#choose-how-to-run-an-example" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Setup check:</strong> use <code class="docutils literal notranslate"><span class="pre">runPhreeqcValidation('totalDays',</span> <span class="pre">2,</span>
+<span class="pre">'plotResults',</span> <span class="pre">false)</span></code> or the four-cell mineral notebook to check dependencies.
+These short runs do not reproduce full-duration figures.</p></li>
+<li><p><strong>Tutorial run:</strong> follow a notebook’s stated grid, schedule, and physical
+switches. Storage examples can be substantially larger than setup checks.</p></li>
+<li><p><strong>Exact reproduction:</strong> use the configuration and source dataset identified
+for the displayed result. A default example with a different cycle count,
+grid, or kinetic model does not reproduce that figure.</p></li>
+<li><p><strong>Saved-result exploration:</strong> redraw the exported multirate histories or
+inspect the three-cycle animation. Their provenance records identify the
+saved inputs; the documentation build does not rerun MATLAB simulations.</p></li>
+</ul>
+<p>Open <code class="docutils literal notranslate"><span class="pre">h2-biochem/examples/Contents.m</span></code> in this checkout for the example
+catalogue. Initialize H2sim with <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> before running examples.</p>
+</section>
 <section id="storage-in-saline-aquifers">
 <h2>Storage in saline aquifers<a class="headerlink" href="#storage-in-saline-aquifers" title="Link to this heading">¶</a></h2>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
@@ -483,6 +501,7 @@ execute MATLAB or require a MATLAB notebook kernel.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Selected examples and notebooks</a><ul>
+<li><a class="reference internal" href="#choose-how-to-run-an-example">Choose how to run an example</a></li>
 <li><a class="reference internal" href="#storage-in-saline-aquifers">Storage in saline aquifers</a></li>
 <li><a class="reference internal" href="#storage-in-depleted-gas-reservoirs">Storage in depleted gas reservoirs</a></li>
 <li><a class="reference internal" href="#thermodynamics">Thermodynamics</a></li>
