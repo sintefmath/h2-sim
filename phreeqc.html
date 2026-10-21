@@ -467,6 +467,35 @@ Inactive-cell skipping records an explicit execution mask; a skipped identity
 update is not an independently evaluated chemistry audit.</p>
 <p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/mineral_comparison.html"><span class="doc">Open the mineral chemistry setup check →</span></a></p>
 </section>
+<section id="three-backend-comparison">
+<h2>Three-backend comparison<a class="headerlink" href="#three-backend-comparison" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">runThreeBackendComparison</span></code> runs three included H2sim formulations through
+injection, storage and production. Its default 50-cell, 250-day comparison is
+longer than a dependency check and requires no external reference checkout.
+The first case retains a reduced carbonate buffer with PHREEQC reactions off;
+the second uses PHREEQC microbial kinetics; the third uses multirate MRST
+microbial kinetics with PHREEQC equilibrium. Biomass and decay conventions also
+differ, so this comparison does not isolate mineral effects alone.</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">scenarios</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runThreeBackendComparison</span><span class="p">(</span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="nb">save</span><span class="p">(</span><span class="s">'three_backend_comparison.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'scenarios'</span><span class="p">,</span><span class="w"> </span><span class="s">'-v7'</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The first two cases use two-day flow steps. <code class="docutils literal notranslate"><span class="pre">flowTimestepMaxDt</span></code> and
+<code class="docutils literal notranslate"><span class="pre">reactionSubstepMaxDt</span></code> control only the multirate case (defaults: two days
+and 0.4 day). Result profiles use the last injection, last storage and final
+states. Aqueous H2 is a liquid mole fraction; DIC is in mol/kgw. The time-dependent
+hydrogen loss uses total scheduled injected H2 as its denominator, including
+during injection. Historical MRST-prefixed labels identify H2sim results here;
+they do not select MRST’s separate biochemistry module.</p>
+<p>Save the returned array explicitly to redraw without solving again:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">saved</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">load</span><span class="p">(</span><span class="s">'three_backend_comparison.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'scenarios'</span><span class="p">);</span>
+<span class="n">plotPhreeqcBackendComparison</span><span class="p">(</span><span class="n">saved</span><span class="p">.</span><span class="n">scenarios</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">pwd</span><span class="p">,</span><span class="w"> </span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'backend-figures'</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>The driver retains simulations in memory and exports three PDF/PNG figures
+when plotting is enabled; it does not write a packed simulation archive.</p>
+</section>
 <section id="multirate-aqueous-equilibrium">
 <h2>Multirate aqueous equilibrium<a class="headerlink" href="#multirate-aqueous-equilibrium" title="Link to this heading">¶</a></h2>
 <p>The multirate model follows each coarse flow step with bounded local MRST
@@ -601,6 +630,7 @@ Compare states and diagnostics before interpreting runtime improvements.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#compositional-kinetic-coupling">Compositional kinetic coupling</a></li>
+<li><a class="reference internal" href="#three-backend-comparison">Three-backend comparison</a></li>
 <li><a class="reference internal" href="#multirate-aqueous-equilibrium">Multirate aqueous equilibrium</a></li>
 <li><a class="reference internal" href="#three-cycle-2d-storage">Three-cycle 2D storage</a></li>
 <li><a class="reference internal" href="#conservation-diagnostics">Conservation diagnostics</a></li>
