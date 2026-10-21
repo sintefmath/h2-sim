@@ -342,13 +342,16 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
 <td><p>Activate an optional locally compiled MRST gateway</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotSequentialBiochemistryPhreeqc</span></code></p></td>
+<td><p>Redraw saved multirate flow/chemistry and consumption; return two figures</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
 <td><p>Redraw saved mineral-case consumption and pH; return two figures</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
 <td><p>Redraw saved backend metrics; return profile, time-series and spatial figures</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
 <td><p>Paired profiling and state comparisons</p></td>
 </tr>
 </tbody>
@@ -385,6 +388,22 @@ The default label is 1. PDF/PNG base names are
 <code class="docutils literal notranslate"><span class="pre">minerals_&lt;dimension&gt;D_H2_consumption</span></code>. Pass <code class="docutils literal notranslate"><span class="pre">'outputDirectory',</span> <span class="pre">''</span></code> to create
 figures without writing files; otherwise vector PDF and 300-dpi PNG exports go
 to the selected folder, defaulting to <code class="docutils literal notranslate"><span class="pre">build/phreeqc-figures</span></code> under pwd.</p>
+</section>
+<section id="saved-multirate-figures">
+<h2>Saved multirate figures<a class="headerlink" href="#saved-multirate-figures" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">plotSequentialBiochemistryPhreeqc(summary)</span></code> redraws a saved multirate summary
+without running simulations. It needs <code class="docutils literal notranslate"><span class="pre">model</span></code>, <code class="docutils literal notranslate"><span class="pre">states</span></code>, <code class="docutils literal notranslate"><span class="pre">schedule</span></code> and
+<code class="docutils literal notranslate"><span class="pre">injectedH2Moles</span></code>. The final state provides pressure, saturation, pH and biomass;
+reaction-wise consumption is computed from the saved state history.</p>
+<p>The two returned figures show final profiles (pressure in MPa, gas saturation,
+pH and biomass N/N0) and cumulative consumption (mol and percent of total
+scheduled injected H2). Time is in days and distance is x/L. The injection
+denominator is fixed over the selected schedule, including during injection.</p>
+<p>Exports use vector PDF and 300-dpi PNG with base names
+<code class="docutils literal notranslate"><span class="pre">multirate_final_profiles</span></code> and <code class="docutils literal notranslate"><span class="pre">multirate_H2_consumption</span></code>. The default folder
+is <code class="docutils literal notranslate"><span class="pre">build/phreeqc-figures</span></code> under pwd; pass <code class="docutils literal notranslate"><span class="pre">'outputDirectory',</span> <span class="pre">''</span></code> to disable
+export. Returned figures remain open for the caller to inspect or close.
+See <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> for saving and reloading the multirate summary.</p>
 </section>
 <section id="shared-1d-storage-setup">
 <h2>Shared 1D storage setup<a class="headerlink" href="#shared-1d-storage-setup" title="Link to this heading">¶</a></h2>
@@ -503,6 +522,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
+<li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
 <li><a class="reference internal" href="#shared-1d-storage-setup">Shared 1D storage setup</a></li>
 <li><a class="reference internal" href="#output-and-replotting">Output and replotting</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
