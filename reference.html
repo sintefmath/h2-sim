@@ -430,6 +430,25 @@ adapter requires Windows MATLAB with COM; standalone H2sim also supports Linux.
 Reference sources are adapted in a temporary copy, retaining the reference
 kinetic equations. This comparison is not a claim of identical reaction models.</p>
 </section>
+<section id="phreeqc-model-configuration">
+<h2>PHREEQC model configuration<a class="headerlink" href="#phreeqc-model-configuration" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BiochemistryPhreeqcModel</span></code> requires grid, rock, fluid, compositional mixture,
+biochemical mixture, water-phase flag and MRST AD backend as positional inputs.
+The AD backend is separate from <code class="docutils literal notranslate"><span class="pre">phreeqcBackend</span></code>, which selects chemistry.
+Coupling is disabled by default and does not activate the PHREEQC engine during
+construction. Backend names are trimmed and normalized to lower case.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">phreeqcTimestepCoupling</span></code> enabled, provide an absolute existing path to
+<code class="docutils literal notranslate"><span class="pre">h2_biogeochemistry.dat</span></code> through <code class="docutils literal notranslate"><span class="pre">phreeqcDatabaseFile</span></code> or, when that property
+is empty, <code class="docutils literal notranslate"><span class="pre">phreeqcCouplingOptions.databaseFile</span></code>. Both backends also require
+bacterial transport, the carbonate buffer and sulfate reduction. Compositional
+PHREEQC owns the reaction kinetics; hybrid PHREEQC retains H2sim kinetics and
+requires its Picard driver or the multirate split. Internal driver activation
+flags cannot be enabled through constructor options.</p>
+<p>Linux uses native IPhreeqc through PhreeqcMatlab; Windows defaults to COM.
+The ProgID properties remain configuration metadata on Linux. Constructor
+validation does not establish runtime engine availability. Backend-specific
+coupling options are documented in the corresponding coupling utility.</p>
+</section>
 <section id="reaction-specific-h2-accounting">
 <h2>Reaction-specific H2 accounting<a class="headerlink" href="#reaction-specific-h2-accounting" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">[rate,</span> <span class="pre">cumulative]</span> <span class="pre">=</span> <span class="pre">computeH2Consumption(states,</span> <span class="pre">schedule,</span> <span class="pre">model,</span> <span class="pre">reaction)</span></code>
@@ -598,6 +617,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
 <li><a class="reference internal" href="#storage-cycle-validation-example">Storage-cycle validation example</a></li>
+<li><a class="reference internal" href="#phreeqc-model-configuration">PHREEQC model configuration</a></li>
 <li><a class="reference internal" href="#reaction-specific-h2-accounting">Reaction-specific H2 accounting</a></li>
 <li><a class="reference internal" href="#validation-diagnostics">Validation diagnostics</a></li>
 <li><a class="reference internal" href="#saved-validation-figures">Saved validation figures</a></li>
