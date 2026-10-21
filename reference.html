@@ -342,12 +342,29 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
 <td><p>Activate an optional locally compiled MRST gateway</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
+<td><p>Redraw saved backend metrics; return profile, time-series and spatial figures</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
 <td><p>Paired profiling and state comparisons</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</section>
+<section id="saved-backend-figures">
+<h2>Saved backend figures<a class="headerlink" href="#saved-backend-figures" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison(scenarios)</span></code> redraws the metrics returned by
+<code class="docutils literal notranslate"><span class="pre">runThreeBackendComparison</span></code> without running simulations. Its three returned
+figure handles contain aqueous profiles, cumulative consumption over time and
+final spatial consumption, respectively. The caller may inspect or close them.</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">'outputDirectory',</span> <span class="pre">''</span></code> to create figures without export. Otherwise,
+three vector PDF and three 300-dpi PNG files are written under the selected
+folder (default <code class="docutils literal notranslate"><span class="pre">build/phreeqc-figures</span></code> under the current directory).
+The base names are <code class="docutils literal notranslate"><span class="pre">backends_aqueous_profiles</span></code>, <code class="docutils literal notranslate"><span class="pre">backends_H2_consumption_time</span></code>
+and <code class="docutils literal notranslate"><span class="pre">backends_H2_consumption_space</span></code>. Labels, units and normalization are
+preserved from the scenario metrics; corresponding snapshot times must match.
+See <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> for the save/reload workflow and backend interpretation.</p>
 </section>
 <section id="shared-1d-storage-setup">
 <h2>Shared 1D storage setup<a class="headerlink" href="#shared-1d-storage-setup" title="Link to this heading">¶</a></h2>
@@ -464,6 +481,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
             <ul>
 <li><a class="reference internal" href="#">Code reference</a><ul>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
+<li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#shared-1d-storage-setup">Shared 1D storage setup</a></li>
 <li><a class="reference internal" href="#output-and-replotting">Output and replotting</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
