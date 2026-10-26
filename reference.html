@@ -500,6 +500,30 @@ time increments, divided by the final reported kinetic time. The existing
 last-value fallback applies when that final time is nonpositive. Parsing does
 not convert the stored units or change kinetics, mineral correction or reflash.</p>
 </section>
+<section id="phreeqc-selected-output-definitions">
+<h2>PHREEQC selected-output definitions<a class="headerlink" href="#phreeqc-selected-output-definitions" title="Link to this heading">¶</a></h2>
+<p>Custom <code class="docutils literal notranslate"><span class="pre">USER_PUNCH</span></code> calculations precede the standard <code class="docutils literal notranslate"><span class="pre">SELECTED_OUTPUT</span></code>
+requests. The custom rate columns retain MET/ACE/SRB ordering, reading
+<code class="docutils literal notranslate"><span class="pre">GET</span></code> slots 1/3/2. They report H2-consumption rates on the unit-water basis;
+the coupling later converts these to per-cell rates and integrated moles.
+Species molalities and aqueous totals use mol/kg water; activities and pH
+are dimensionless. Gas and mineral outputs are inventories for the unit-water
+calculation and are rescaled by the coupling.</p>
+<p>The custom carbonate and gas diagnostic headings retain their existing
+expressions. In particular, <code class="docutils literal notranslate"><span class="pre">TOT_CO2</span></code> combines the reported gas CO2 amount
+with aqueous <code class="docutils literal notranslate"><span class="pre">MOL(&quot;CarbonateO2&quot;)</span></code>; <code class="docutils literal notranslate"><span class="pre">Dissolved_CO2</span></code> retains the carbonate
+speciation subtraction; <code class="docutils literal notranslate"><span class="pre">Z_Factor</span></code> retains
+<code class="docutils literal notranslate"><span class="pre">GAS_P*GAS_VM/TK/0.082057366080960</span></code>. Grouping the definitions introduces no
+header renaming, formula changes or unit conversion.</p>
+<p><code class="docutils literal notranslate"><span class="pre">REACTIVE_SYSTEM_H</span></code> counts hydrogen outside aqueous solvent H2O, then adds
+the net water change relative to the initial one kg and three implicit H
+atoms per acetate pseudo-element. These corrections apply to initial and
+final audit rows. Existing acetate and added-water tests check this accounting.</p>
+<p>Simulation and solution identifiers remain diagnostic metadata. Batch row
+association uses initial-row step signs and repeated kinetic-step sequences;
+kinetic time is retained for interval integration. Requested species, mineral
+phases, biomass names and column ordering remain part of the parser contract.</p>
+</section>
 <section id="phreeqc-shared-rate-definitions">
 <h2>PHREEQC shared rate definitions<a class="headerlink" href="#phreeqc-shared-rate-definitions" title="Link to this heading">¶</a></h2>
 <p>The shared <code class="docutils literal notranslate"><span class="pre">RATES</span></code> preamble defines methanogenesis (MET), sulfate reduction
@@ -810,6 +834,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#compositional-phreeqc-coupling-inputs">Compositional PHREEQC coupling inputs</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-batch-output">Compositional PHREEQC batch output</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-chemical-results">Compositional PHREEQC chemical results</a></li>
+<li><a class="reference internal" href="#phreeqc-selected-output-definitions">PHREEQC selected-output definitions</a></li>
 <li><a class="reference internal" href="#phreeqc-shared-rate-definitions">PHREEQC shared rate definitions</a></li>
 <li><a class="reference internal" href="#phreeqc-cell-input-blocks">PHREEQC cell input blocks</a></li>
 <li><a class="reference internal" href="#phreeqc-result-writeback">PHREEQC result writeback</a></li>
