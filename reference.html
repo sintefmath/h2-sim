@@ -469,6 +469,22 @@ configured. Selected-output row counts and kinetic-step sequences are checked
 before mapping results back to cells. Linux uses native IPhreeqc; Windows uses
 COM. Engine creation is deferred until at least one cell needs execution.</p>
 </section>
+<section id="compositional-phreeqc-batch-output">
+<h2>Compositional PHREEQC batch output<a class="headerlink" href="#compositional-phreeqc-batch-output" title="Link to this heading">¶</a></h2>
+<p>The coupling function retains ownership of its engine session through element
+auditing and state reconstruction. Its batch executor builds independent cell
+blocks, calls the engine and assigns parsed output back to the original grid
+indices. <code class="docutils literal notranslate"><span class="pre">sequentialCompositionalPhreeqcInputCell1String</span></code> contains the first
+executed batch, despite the historical field name; it is empty if no cells run.</p>
+<p>Selected-output validation requires one initial row and the configured number
+of kinetics rows per cell, a <code class="docutils literal notranslate"><span class="pre">step</span></code> column, and matching unique kinetics-step
+sequences across cells. Initial rows have negative step values; kinetics rows
+have nonnegative values. Rows can be grouped or interleaved, provided execution
+order is retained within each group. Mapping does not rely on PHREEQC’s <code class="docutils literal notranslate"><span class="pre">sim</span></code>
+or <code class="docutils literal notranslate"><span class="pre">soln</span></code> identifiers. A batch size of one still validates the output layout.
+Malformed multi-cell output retains the existing
+<code class="docutils literal notranslate"><span class="pre">H2Biochem:SequentialCompositionalPhreeqcBatchOutputMismatch</span></code> error.</p>
+</section>
 <section id="phreeqc-model-equation-assembly">
 <h2>PHREEQC model equation assembly<a class="headerlink" href="#phreeqc-model-equation-assembly" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BiochemistryPhreeqcModel.getModelEquations</span></code> assembles component conservation,
@@ -683,6 +699,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#storage-cycle-validation-example">Storage-cycle validation example</a></li>
 <li><a class="reference internal" href="#phreeqc-model-configuration">PHREEQC model configuration</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-coupling-inputs">Compositional PHREEQC coupling inputs</a></li>
+<li><a class="reference internal" href="#compositional-phreeqc-batch-output">Compositional PHREEQC batch output</a></li>
 <li><a class="reference internal" href="#phreeqc-model-equation-assembly">PHREEQC model equation assembly</a></li>
 <li><a class="reference internal" href="#accepted-step-phreeqc-coupling">Accepted-step PHREEQC coupling</a></li>
 <li><a class="reference internal" href="#reaction-specific-h2-accounting">Reaction-specific H2 accounting</a></li>
