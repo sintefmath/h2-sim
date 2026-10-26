@@ -500,6 +500,25 @@ time increments, divided by the final reported kinetic time. The existing
 last-value fallback applies when that final time is nonpositive. Parsing does
 not convert the stored units or change kinetics, mineral correction or reflash.</p>
 </section>
+<section id="phreeqc-state-initialization-and-restarts">
+<h2>PHREEQC state initialization and restarts<a class="headerlink" href="#phreeqc-state-initialization-and-restarts" title="Link to this heading">¶</a></h2>
+<p>State validation supplies missing fields only for enabled model features.
+It preserves existing biomass, tracer, pH and lagged sulfide values. Bacterial
+<code class="docutils literal notranslate"><span class="pre">nbact</span></code> is distinct from PHREEQC’s MET/ACE/SRB biomass fields. The latter
+use mol/kg water; mineral state inventories use mol per cell. Missing mineral
+fields start at zero, while existing inventories are retained.</p>
+<p>The compositional backend preserves its historical first-call biomass
+normalization by cell water mass. The state flag
+<code class="docutils literal notranslate"><span class="pre">sequentialCompositionalPhreeqcFirstStepBiomassConventionApplied</span></code> records
+that this conversion has occurred and controls first-call equilibration.
+Keep this flag with the biomass, aqueous chemistry and mineral fields when
+saving a restart. A state without the flag follows first-call behavior;
+there is no inference from simulation time or from nonzero biomass.</p>
+<p>Restart from the complete saved state, rather than copying pressure and
+composition alone. This also retains cumulative reaction accounting and
+element-audit warning history. Initialization does not reconstruct missing
+history or migrate partial states from other chemistry backends.</p>
+</section>
 <section id="phreeqc-audit-reporting-and-failure-files">
 <h2>PHREEQC audit reporting and failure files<a class="headerlink" href="#phreeqc-audit-reporting-and-failure-files" title="Link to this heading">¶</a></h2>
 <p>Element conservation is checked on every audited call using the existing
@@ -741,6 +760,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#compositional-phreeqc-coupling-inputs">Compositional PHREEQC coupling inputs</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-batch-output">Compositional PHREEQC batch output</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-chemical-results">Compositional PHREEQC chemical results</a></li>
+<li><a class="reference internal" href="#phreeqc-state-initialization-and-restarts">PHREEQC state initialization and restarts</a></li>
 <li><a class="reference internal" href="#phreeqc-audit-reporting-and-failure-files">PHREEQC audit reporting and failure files</a></li>
 <li><a class="reference internal" href="#phreeqc-model-equation-assembly">PHREEQC model equation assembly</a></li>
 <li><a class="reference internal" href="#accepted-step-phreeqc-coupling">Accepted-step PHREEQC coupling</a></li>
