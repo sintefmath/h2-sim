@@ -500,6 +500,33 @@ time increments, divided by the final reported kinetic time. The existing
 last-value fallback applies when that final time is nonpositive. Parsing does
 not convert the stored units or change kinetics, mineral correction or reflash.</p>
 </section>
+<section id="hybrid-and-multirate-chemistry-stages">
+<h2>Hybrid and multirate chemistry stages<a class="headerlink" href="#hybrid-and-multirate-chemistry-stages" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SequentialBiochemistryPhreeqcModel</span></code> advances one flow/transport stage, then
+<code class="docutils literal notranslate"><span class="pre">ceil(dt/reactionSubstepMaxDt)</span></code> equal local reaction substeps of duration
+<code class="docutils literal notranslate"><span class="pre">dt/nSub</span></code> seconds. The flow stage includes wells, boundary conditions and
+transport, with biological reaction sources disabled. The reaction stage
+has no external forcing and uses the bounded local integrator; the retained
+<code class="docutils literal notranslate"><span class="pre">reactionNonLinearSolver</span></code> property is for API compatibility.</p>
+<p>Before local reactions, the flow well solution is cleared so the well-free
+reaction facility can initialize its own state. Chemistry feedback is loaded
+into both the reaction model and its facility’s reservoir-model reference.
+Each successful local reaction update is followed by aqueous/mineral PHREEQC
+equilibrium and a feedback refresh, including the final substep. The flow
+well solution is restored on the accepted state for reporting.</p>
+<p>The hybrid equilibrium entry point validates the request, snapshots its
+post-reaction water/aqueous/mineral basis, and processes cells in order using
+the existing persistent IPhreeqc session. It supplies no gas phase or PHREEQC
+kinetics: MRST owns reaction kinetics and the EOS owns gas/liquid partitioning.
+<code class="docutils literal notranslate"><span class="pre">refreshOutputs=false</span></code> skips requested output-state-function evaluation;
+chemistry reconstruction and the volume-constrained reflash still occur.
+The independent hybrid element audit remains unavailable.</p>
+<p>Feedback uses PHREEQC molalities when present, with the existing tracer/EOS
+fallbacks otherwise. Aqueous feedback concentrations use mol/kg water; tracer
+fallbacks are converted from mol per liquid volume using EOS water density.
+pH and carbonate pKa1 are dimensionless. Existing defaults, validation,
+resource limits, reaction accounting and convergence policies are retained.</p>
+</section>
 <section id="phreeqc-selected-output-definitions">
 <h2>PHREEQC selected-output definitions<a class="headerlink" href="#phreeqc-selected-output-definitions" title="Link to this heading">¶</a></h2>
 <p>Custom <code class="docutils literal notranslate"><span class="pre">USER_PUNCH</span></code> calculations precede the standard <code class="docutils literal notranslate"><span class="pre">SELECTED_OUTPUT</span></code>
@@ -834,6 +861,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#compositional-phreeqc-coupling-inputs">Compositional PHREEQC coupling inputs</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-batch-output">Compositional PHREEQC batch output</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-chemical-results">Compositional PHREEQC chemical results</a></li>
+<li><a class="reference internal" href="#hybrid-and-multirate-chemistry-stages">Hybrid and multirate chemistry stages</a></li>
 <li><a class="reference internal" href="#phreeqc-selected-output-definitions">PHREEQC selected-output definitions</a></li>
 <li><a class="reference internal" href="#phreeqc-shared-rate-definitions">PHREEQC shared rate definitions</a></li>
 <li><a class="reference internal" href="#phreeqc-cell-input-blocks">PHREEQC cell input blocks</a></li>
