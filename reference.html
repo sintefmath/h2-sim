@@ -500,6 +500,22 @@ time increments, divided by the final reported kinetic time. The existing
 last-value fallback applies when that final time is nonpositive. Parsing does
 not convert the stored units or change kinetics, mineral correction or reflash.</p>
 </section>
+<section id="phreeqc-result-writeback">
+<h2>PHREEQC result writeback<a class="headerlink" href="#phreeqc-result-writeback" title="Link to this heading">¶</a></h2>
+<p>The compositional backend writes aqueous chemistry, mineral inventories and
+MET/ACE/SRB reaction results before reconstructing EOS composition. Aqueous
+molalities use mol/kg water; transported tracers use mol/m<sup>3</sup> liquid
+with the configured water density. Mineral inventories use mol per cell.
+Biomass remains separate from MRST’s <code class="docutils literal notranslate"><span class="pre">nbact</span></code>. Reaction rates retain the
+MET/ACE/SRB column order and are integrated over the coupling duration for
+per-cell H2 consumption.</p>
+<p>Inactive cells retain their previous chemistry, biomass and EOS component
+inventories; their reaction rates are zero. The EOS composition combines the
+reported aqueous and gas component inventories with the net water change.
+State-function caches are cleared before salinity feedback and EOS reflash;
+requested output state functions are refreshed afterwards. The ordering,
+nonnegative clipping and carbonate pKa fallback retain the existing behavior.</p>
+</section>
 <section id="phreeqc-state-initialization-and-restarts">
 <h2>PHREEQC state initialization and restarts<a class="headerlink" href="#phreeqc-state-initialization-and-restarts" title="Link to this heading">¶</a></h2>
 <p>State validation supplies missing fields only for enabled model features.
@@ -760,6 +776,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#compositional-phreeqc-coupling-inputs">Compositional PHREEQC coupling inputs</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-batch-output">Compositional PHREEQC batch output</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-chemical-results">Compositional PHREEQC chemical results</a></li>
+<li><a class="reference internal" href="#phreeqc-result-writeback">PHREEQC result writeback</a></li>
 <li><a class="reference internal" href="#phreeqc-state-initialization-and-restarts">PHREEQC state initialization and restarts</a></li>
 <li><a class="reference internal" href="#phreeqc-audit-reporting-and-failure-files">PHREEQC audit reporting and failure files</a></li>
 <li><a class="reference internal" href="#phreeqc-model-equation-assembly">PHREEQC model equation assembly</a></li>
