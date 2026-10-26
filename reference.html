@@ -500,6 +500,22 @@ time increments, divided by the final reported kinetic time. The existing
 last-value fallback applies when that final time is nonpositive. Parsing does
 not convert the stored units or change kinetics, mineral correction or reflash.</p>
 </section>
+<section id="phreeqc-shared-rate-definitions">
+<h2>PHREEQC shared rate definitions<a class="headerlink" href="#phreeqc-shared-rate-definitions" title="Link to this heading">¶</a></h2>
+<p>The shared <code class="docutils literal notranslate"><span class="pre">RATES</span></code> preamble defines methanogenesis (MET), sulfate reduction
+(SRB) and acetogenesis (ACE), followed by their biomass rates. Each chemistry
+builder keeps its own substrate limitation, temperature and pH response.
+All three retain the existing TDS suppression curve, using either PHREEQC’s
+solution-density estimate or the pinned brine TDS parameter.</p>
+<p>Chemistry rates write <code class="docutils literal notranslate"><span class="pre">PUT</span></code> slots 1, 2 and 3 for MET, SRB and ACE,
+respectively. The corresponding biomass definitions read those same slots
+through <code class="docutils literal notranslate"><span class="pre">GET</span></code>. Selected-output diagnostic columns retain the separate
+MET/ACE/SRB order. Growth and decay parameters supplied per day are converted
+to per second in the generated BASIC code.</p>
+<p>The biomass definitions share one template with explicit reaction name,
+slot, yield and decay parameters. Their existing <code class="docutils literal notranslate"><span class="pre">SAVE</span></code> sign convention,
+minimum biomass, carrying-capacity limit and numeric formatting are retained.</p>
+</section>
 <section id="phreeqc-cell-input-blocks">
 <h2>PHREEQC cell input blocks<a class="headerlink" href="#phreeqc-cell-input-blocks" title="Link to this heading">¶</a></h2>
 <p>Each cell contributes a solution, gas phase, kinetics and equilibrium-mineral
@@ -794,6 +810,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#compositional-phreeqc-coupling-inputs">Compositional PHREEQC coupling inputs</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-batch-output">Compositional PHREEQC batch output</a></li>
 <li><a class="reference internal" href="#compositional-phreeqc-chemical-results">Compositional PHREEQC chemical results</a></li>
+<li><a class="reference internal" href="#phreeqc-shared-rate-definitions">PHREEQC shared rate definitions</a></li>
 <li><a class="reference internal" href="#phreeqc-cell-input-blocks">PHREEQC cell input blocks</a></li>
 <li><a class="reference internal" href="#phreeqc-result-writeback">PHREEQC result writeback</a></li>
 <li><a class="reference internal" href="#phreeqc-state-initialization-and-restarts">PHREEQC state initialization and restarts</a></li>
