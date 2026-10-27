@@ -417,6 +417,24 @@ mol/s. Repeated perforations are summed into reservoir cells. The aqueous
 tracer API independently gates SRB reaction sources; the legacy bacterial
 and SO4/HS source APIs retain their caller-controlled reaction gating.</p>
 </section>
+<section id="stoichiometric-conversion-sources">
+<h2>Stoichiometric conversion sources<a class="headerlink" href="#stoichiometric-conversion-sources" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BactConvertionRate</span></code> retains its public class name and accumulates EOS
+component coefficients for MET, ACE, and SRB. The existing convention is
+<code class="docutils literal notranslate"><span class="pre">qbase</span> <span class="pre">=</span> <span class="pre">growth</span> <span class="pre">*</span> <span class="pre">BacterialMass</span> <span class="pre">/</span> <span class="pre">Y_H2</span></code> and
+<code class="docutils literal notranslate"><span class="pre">gamma_norm</span> <span class="pre">=</span> <span class="pre">nbactMax</span> <span class="pre">*</span> <span class="pre">gamma</span> <span class="pre">*</span> <span class="pre">molarMass</span> <span class="pre">/</span> <span class="pre">abs(gamma_H2)</span></code>.
+The reservoir inserts <code class="docutils literal notranslate"><span class="pre">qbiot</span> <span class="pre">/</span> <span class="pre">rhoL</span></code> into the component balances.
+<code class="docutils literal notranslate"><span class="pre">SRBTracerConvRate</span></code> uses the same density scaling for its mol/s sources,
+so comparisons with raw EOS coefficients must include that conversion.</p>
+<p>SRB consumes sulfate and produces total sulfide according to its reaction
+stoichiometry. The EOS H2S source receives the volatile fraction; the HS-
+tracer receives the complementary fraction. Optional kinetic anhydrite
+release is added separately to the sulfate source, so the net sulfate rate
+can be positive. Its existing smooth positive driving force, liquid
+saturation floor of <code class="docutils literal notranslate"><span class="pre">1e-8</span></code>, and cell-volume scaling are preserved.
+The compositional PHREEQC backend suppresses these in-step conversion
+sources because its post-convergence chemistry owns those reactions.</p>
+</section>
 <section id="saved-backend-figures">
 <h2>Saved backend figures<a class="headerlink" href="#saved-backend-figures" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison(scenarios)</span></code> redraws the metrics returned by
@@ -945,6 +963,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
 <li><a class="reference internal" href="#base-microbial-balances">Base microbial balances</a></li>
 <li><a class="reference internal" href="#microbial-rates-and-facility-sources">Microbial rates and facility sources</a></li>
+<li><a class="reference internal" href="#stoichiometric-conversion-sources">Stoichiometric conversion sources</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
