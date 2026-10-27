@@ -361,6 +361,35 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 </table>
 </div>
 </section>
+<section id="base-microbial-balances">
+<h2>Base microbial balances<a class="headerlink" href="#base-microbial-balances" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BiochemistryModel</span></code> is the base class for the microbial compositional
+models. It assembles EOS component balances first, then bacterial population
+balances and, when sulfate reduction is enabled, the SO4/HS tracer balances.
+Facility equations are appended last. The class does not call PHREEQC.</p>
+<p><code class="docutils literal notranslate"><span class="pre">BiochemicalFlowDiscretization</span></code> returns accumulation rates and internal-face
+fluxes separately. <code class="docutils literal notranslate"><span class="pre">BiochemistryModel</span></code> adds flux divergence, prescribed
+bacterial diffusion boundary fluxes, and reaction sources. Bacterial mass is
+<code class="docutils literal notranslate"><span class="pre">pv</span> <span class="pre">*</span> <span class="pre">sL</span> <span class="pre">*</span> <span class="pre">rhoL</span> <span class="pre">*</span> <span class="pre">nbact</span></code> in kg: <code class="docutils literal notranslate"><span class="pre">nbact</span></code> is a liquid mass fraction.
+<code class="docutils literal notranslate"><span class="pre">AqueousTracerMass</span></code> instead returns <code class="docutils literal notranslate"><span class="pre">pv</span> <span class="pre">*</span> <span class="pre">sL</span> <span class="pre">*</span> <span class="pre">concentration</span></code> in mol,
+with tracer concentrations in mol/m3 of liquid. Both mass state functions
+retain their existing liquid-saturation floor of <code class="docutils literal notranslate"><span class="pre">1e-8</span></code>.</p>
+<p>Microbial diffusion follows decreasing bacterial mass fraction; chemotaxis
+follows increasing dissolved-H2 mole fraction. When both mechanisms are
+active, their face fluxes are added. Prescribed bacterial boundary values
+contribute only when bacterial diffusion is active; <code class="docutils literal notranslate"><span class="pre">NaN</span></code> retains the
+natural no-flux condition. See <code class="docutils literal notranslate"><span class="pre">addBacterialBC</span></code> for boundary setup.</p>
+<p>In the base class, <code class="docutils literal notranslate"><span class="pre">reactionsEnabled</span> <span class="pre">=</span> <span class="pre">false</span></code> omits component-conversion
+sources and the bacterial/SRB facility source calls. Those facility calls
+combine reaction and well-advection sources, so the flag also omits their
+well contributions; internal-face transport remains active.
+<code class="docutils literal notranslate"><span class="pre">localReactionMode</span> <span class="pre">=</span> <span class="pre">true</span></code> omits spatial flux divergence and bacterial
+diffusion boundary contributions while retaining accumulation and enabled
+sources. The flag alone does not remove wells or component boundary sources.
+These switches support the multirate model’s separate flow and local-reaction
+stages, whose setup supplies the corresponding controls. Equation ordering
+and convergence tolerances are preserved.</p>
+</section>
 <section id="saved-backend-figures">
 <h2>Saved backend figures<a class="headerlink" href="#saved-backend-figures" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison(scenarios)</span></code> redraws the metrics returned by
@@ -887,6 +916,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
             <ul>
 <li><a class="reference internal" href="#">Code reference</a><ul>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
+<li><a class="reference internal" href="#base-microbial-balances">Base microbial balances</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
