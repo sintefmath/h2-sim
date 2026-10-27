@@ -397,6 +397,26 @@ liquid well outflow before advancing cell-local reactions. The existing
 zero tracer concentration assigned to injected liquid is unchanged.
 The shared <code class="docutils literal notranslate"><span class="pre">BiochemistryModel</span></code> behavior described above is unchanged.</p>
 </section>
+<section id="microbial-rates-and-facility-sources">
+<h2>Microbial rates and facility sources<a class="headerlink" href="#microbial-rates-and-facility-sources" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">GrowthBactRateSRC</span></code> returns a specific Monod growth coefficient in 1/s,
+not a mass source. Sulfate uses a liquid molar-fraction proxy, while the
+carbonate buffer supplies a pH-dependent CO2 proxy. Active hybrid chemistry
+feedback supplies its fixed sulfate and inorganic-carbon snapshot instead.
+<code class="docutils literal notranslate"><span class="pre">CarbonLimitedGrowthRate</span></code> separately applies the finite aqueous carbon
+budget before the facility forms a microbial mass source.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DecayBactRateSRC</span></code> returns <code class="docutils literal notranslate"><span class="pre">b</span></code> for first-order decay or
+<code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">*</span> <span class="pre">max(nbact,</span> <span class="pre">0)</span></code> for the legacy quadratic formulation. The facility
+applies the growth-minus-decay coefficient to <code class="docutils literal notranslate"><span class="pre">BacterialMass</span></code> in kg,
+retains the existing <code class="docutils literal notranslate"><span class="pre">1e-10</span> <span class="pre">*</span> <span class="pre">BacterialMass</span></code> regularization sink, and
+suppresses negative reaction sources at the active biomass floor.</p>
+<p><code class="docutils literal notranslate"><span class="pre">BiochemistryGenericFacilityModel</span></code> keeps reaction sources separate from
+well transport. Bacterial well rates include liquid density and have units
+kg/s; aqueous tracer well rates use molar concentrations and have units
+mol/s. Repeated perforations are summed into reservoir cells. The aqueous
+tracer API independently gates SRB reaction sources; the legacy bacterial
+and SO4/HS source APIs retain their caller-controlled reaction gating.</p>
+</section>
 <section id="saved-backend-figures">
 <h2>Saved backend figures<a class="headerlink" href="#saved-backend-figures" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison(scenarios)</span></code> redraws the metrics returned by
@@ -924,6 +944,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#">Code reference</a><ul>
 <li><a class="reference internal" href="#entry-points">Entry points</a></li>
 <li><a class="reference internal" href="#base-microbial-balances">Base microbial balances</a></li>
+<li><a class="reference internal" href="#microbial-rates-and-facility-sources">Microbial rates and facility sources</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
