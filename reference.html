@@ -435,6 +435,31 @@ saturation floor of <code class="docutils literal notranslate"><span class="pre"
 The compositional PHREEQC backend suppresses these in-step conversion
 sources because its post-convergence chemistry owns those reactions.</p>
 </section>
+<section id="transport-coefficients-and-face-fluxes">
+<h2>Transport coefficients and face fluxes<a class="headerlink" href="#transport-coefficients-and-face-fluxes" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DispersiveDiffusivity</span></code> and <code class="docutils literal notranslate"><span class="pre">TracerDiffusivity</span></code> combine the existing
+isotropic mechanical-dispersion approximation with optional molecular
+diffusion. Mechanical dispersion uses <code class="docutils literal notranslate"><span class="pre">(alphaL</span> <span class="pre">+</span> <span class="pre">2*alphaT)/3</span></code> times the
+reconstructed Darcy speed. EOS molecular diffusion retains its liquid
+reference data, gas-mixture rule, and pressure/temperature scaling; tracers
+use their fixed aqueous reference coefficients. The existing porosity,
+saturation, tortuosity, and diffusivity floors are preserved.</p>
+<p><code class="docutils literal notranslate"><span class="pre">MicrobialDiffusivity</span></code> returns <code class="docutils literal notranslate"><span class="pre">bactdiff</span> <span class="pre">*</span> <span class="pre">phi</span> <span class="pre">*</span> <span class="pre">max(sL,</span> <span class="pre">0)</span></code>.
+<code class="docutils literal notranslate"><span class="pre">MicrobialChemotaxis</span></code> includes the volume-filling factor
+<code class="docutils literal notranslate"><span class="pre">theta</span> <span class="pre">*</span> <span class="pre">(1-theta)</span></code>, with <code class="docutils literal notranslate"><span class="pre">theta</span></code> clipped to <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> from
+<code class="docutils literal notranslate"><span class="pre">nbact/bact_maxProp</span></code>. Non-positive configured coefficients retain their
+existing warning behavior and arithmetic; this cleanup adds no clamping.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DynamicFlowTransmissibility</span></code> converts these cell coefficients to TPFA
+face conductances using grid geometry and harmonic averaging. For
+diffusivity inputs the conductance has units m3/s. Numeric/AD conductivity
+uses the <code class="docutils literal notranslate"><span class="pre">allFaces</span></code> flag; legacy cell-array conductivity returns all grid
+faces regardless of that flag. Transport wrappers select internal faces.
+Component phase fluxes retain their correction for zero net diffusive phase
+mass flux; tracer fluxes use molar concentrations without a density factor.</p>
+<p>For direct state-function evaluations outside the solver, initialize AD
+variables through <code class="docutils literal notranslate"><span class="pre">model.AutoDiffBackend.initVariablesAD</span></code> so their type
+matches the model’s discrete operators.</p>
+</section>
 <section id="saved-backend-figures">
 <h2>Saved backend figures<a class="headerlink" href="#saved-backend-figures" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison(scenarios)</span></code> redraws the metrics returned by
@@ -964,6 +989,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#base-microbial-balances">Base microbial balances</a></li>
 <li><a class="reference internal" href="#microbial-rates-and-facility-sources">Microbial rates and facility sources</a></li>
 <li><a class="reference internal" href="#stoichiometric-conversion-sources">Stoichiometric conversion sources</a></li>
+<li><a class="reference internal" href="#transport-coefficients-and-face-fluxes">Transport coefficients and face fluxes</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
