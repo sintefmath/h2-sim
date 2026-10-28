@@ -298,10 +298,26 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">mrstModule</span><span class="w"> </span><span class="s">add</span><span class="w"> </span><span class="s">ad-core</span><span class="w"> </span><span class="s">ad-props</span><span class="w"> </span><span class="s">deckformat</span><span class="w"> </span><span class="s">mrst-gui</span>
-<span class="n">mrstModule</span><span class="w"> </span><span class="s">add</span><span class="w"> </span><span class="s">compositional</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% Initialize this checkout with startupH2sim, then run this script. Compare</span>
+<span class="c">% methanogenesis and acetogenesis with dynamic rock properties, with fixed</span>
+<span class="c">% rock properties, and without microbial reactions. PHREEQC is not used.</span>
+<span class="c">%</span>
+<span class="c">% The initial pressure is 82 bar, temperature is 313.15 K, and the component</span>
+<span class="c">% order is H2O, H2, CH4, CO2, acetate. Both wells are closed. The 400-step</span>
+<span class="c">% schedule is inherited from MRST's simplecomp dataset and shortened by a</span>
+<span class="c">% factor of three. This example requires that dataset and mrst-gui for the</span>
+<span class="c">% final interactive viewer; the other comparison figures are static plots.</span>
+<span class="c">%</span>
+<span class="c">% This is a script: model, state0, schedule, prob1/prob2/prob3, ws1/ws2/ws3</span>
+<span class="c">% and st1/st2/st3 remain in the caller workspace for inspection. The linked</span>
+<span class="c">% notebook is generated from this source without executing the simulation.</span>
+<span class="c">% Related model publication:</span>
+<span class="c">% https://www.sciencedirect.com/science/article/pii/S0360319925039473</span>
+
+<span class="n">mrstModule</span><span class="w"> </span><span class="s">add</span><span class="w"> </span><span class="s">ad-core</span><span class="w"> </span><span class="s">ad-props</span><span class="w"> </span><span class="s">deckformat</span><span class="w"> </span><span class="s">mrst-gui</span><span class="p">;</span>
+<span class="n">mrstModule</span><span class="w"> </span><span class="s">add</span><span class="w"> </span><span class="s">compositional</span><span class="p">;</span>
 <span class="n">mrstVerbose</span><span class="w"> </span><span class="s">off</span><span class="p">;</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <section id="Prepare-the-grid,-fluid-and-schedule">
@@ -311,14 +327,16 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">~</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">schedule</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">setupSimpleCompositionalExample</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% Increase boundary-cell porosity to mimic well-adjacent storage. Retain</span>
+<span class="c">% the original gas/liquid reference densities in kg/m^3.</span>
+<span class="p">[</span><span class="o">~</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">schedule</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">setupSimpleCompositionalExample</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
 <span class="n">model</span><span class="p">.</span><span class="n">rock</span><span class="p">.</span><span class="n">poro</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">end</span><span class="p">])</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.90</span><span class="p">;</span>
 <span class="n">model</span><span class="p">.</span><span class="n">fluid</span><span class="p">.</span><span class="n">rhoGS</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.08988</span><span class="p">;</span>
 <span class="n">model</span><span class="p">.</span><span class="n">fluid</span><span class="p">.</span><span class="n">rhoOS</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">999.0140</span><span class="p">;</span>
-<span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="o">/</span><span class="mi">3</span><span class="p">;</span>
+<span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 <span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">400</span><span class="p">);</span>
 <span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">control</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">control</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">400</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -335,7 +353,7 @@
 <span class="n">sgmax</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.80</span><span class="p">;</span>
 <span class="n">model</span><span class="p">.</span><span class="n">fluid</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">modifyRelPermForResidualSaturations</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="n">model</span><span class="p">.</span><span class="n">fluid</span><span class="p">,</span><span class="w"> </span><span class="n">swc</span><span class="p">,</span><span class="w"> </span><span class="n">swmax</span><span class="p">,</span><span class="w"> </span><span class="n">sgr</span><span class="p">,</span><span class="w"> </span><span class="n">sor</span><span class="p">,</span><span class="w"> </span><span class="n">sgmax</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -346,16 +364,17 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">initComp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.90</span><span class="p">,</span><span class="w"> </span><span class="mf">0.045</span><span class="p">,</span><span class="w"> </span><span class="mf">0.005</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">];</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% The composition follows H2O, H2, CH4, CO2, acetate and sums to one.</span>
+<span class="n">initComp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.90</span><span class="p">,</span><span class="w"> </span><span class="mf">0.045</span><span class="p">,</span><span class="w"> </span><span class="mf">0.005</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">];</span>
 <span class="n">initTemp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">273.15</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">40</span><span class="p">;</span>
-<span class="n">initPress</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">82</span><span class="o">*</span><span class="n">barsa</span><span class="p">;</span>
+<span class="n">initPress</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">82</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">barsa</span><span class="p">;</span>
 <span class="n">biochemFluid</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">TableBioChemMixture</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="p">{</span><span class="s">'MethanogenicArchae'</span><span class="p">,</span><span class="w"> </span><span class="s">'AcetogenicBacteria'</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s">'nbactM'</span><span class="p">,</span><span class="w"> </span><span class="s">'nbactA'</span><span class="p">});</span>
 <span class="n">nbioreact</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">biochemFluid</span><span class="p">.</span><span class="n">nbioreact</span><span class="p">;</span>
-<span class="n">initBact</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">nbioreact</span><span class="p">)</span><span class="o">*</span><span class="mi">9</span><span class="p">;</span>
-<span class="n">nc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">nbioreact</span><span class="p">)</span><span class="o">*</span><span class="mi">180</span><span class="p">;</span>
+<span class="n">initBact</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">nbioreact</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span>
+<span class="n">nc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">nbioreact</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">180</span><span class="p">;</span>
 <span class="n">cp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">nbioreact</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -366,13 +385,16 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="n">nbioreact</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% Keep the original coefficients. In setupBioCloggingModel2bacts, cp=0</span>
+<span class="c">% leaves scale=1 and does not disable porosity/permeability changes. The</span>
+<span class="c">% fixed-rock comparison below explicitly restores poro0 and perm0.</span>
+<span class="k">if</span><span class="w"> </span><span class="n">nbioreact</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">    </span><span class="p">[</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">poro0</span><span class="p">,</span><span class="w"> </span><span class="n">perm0</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">setupBioCloggingModel</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">        </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">initBact</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">nc</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">cp</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
 <span class="k">else</span>
 <span class="w">    </span><span class="p">[</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">poro0</span><span class="p">,</span><span class="w"> </span><span class="n">perm0</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">setupBioCloggingModel2bacts</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">initBact</span><span class="p">,</span><span class="w"> </span><span class="n">nc</span><span class="p">,</span><span class="w"> </span><span class="n">cp</span><span class="p">);</span>
 <span class="k">end</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -383,7 +405,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">compFluid</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">h2BiochemCompositionalMixture</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% BiochemistryModel constructs its own Soreide-Whitson EOS. Its default</span>
+<span class="c">% msalt=0 is the effective setting retained from the original simulation;</span>
+<span class="c">% assigning a different EOS to the precursor model would be overwritten.</span>
+<span class="n">compFluid</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">h2BiochemCompositionalMixture</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="p">{</span><span class="s">'Water'</span><span class="p">,</span><span class="w"> </span><span class="s">'Hydrogen'</span><span class="p">,</span><span class="w"> </span><span class="s">'Methane'</span><span class="p">,</span><span class="w"> </span><span class="s">'CarbonDioxide'</span><span class="p">,</span><span class="w"> </span><span class="s">'AceticAcid'</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="p">{</span><span class="s">'H2O'</span><span class="p">,</span><span class="w"> </span><span class="s">'H2'</span><span class="p">,</span><span class="w"> </span><span class="s">'C1'</span><span class="p">,</span><span class="w"> </span><span class="s">'CO2'</span><span class="p">,</span><span class="w"> </span><span class="s">'CH3COOH'</span><span class="p">});</span>
 <span class="n">backend</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">DiagonalAutoDiffBackend</span><span class="p">(</span><span class="s">'modifyOperators'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
@@ -391,7 +416,7 @@
 <span class="w">    </span><span class="n">biochemFluid</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">backend</span><span class="p">,</span><span class="w"> </span><span class="s">'water'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">'oil'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="s">'gas'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'bacteriamodel'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="s">'moleculardiffusion'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'liquidPhase'</span><span class="p">,</span><span class="w"> </span><span class="s">'O'</span><span class="p">,</span><span class="w"> </span><span class="s">'vaporPhase'</span><span class="p">,</span><span class="w"> </span><span class="s">'G'</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -402,7 +427,9 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">schedule</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">W</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">components</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="mf">0.948</span><span class="p">,</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">];</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% Retain valid placeholder well compositions even though rates are zero</span>
+<span class="c">% and status is false. This is not an injection/production comparison.</span>
+<span class="n">schedule</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">W</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">components</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="mf">0.948</span><span class="p">,</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">];</span>
 <span class="n">schedule</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">W</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">components</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="mf">0.948</span><span class="p">,</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">];</span>
 <span class="n">schedule</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">W</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'rate'</span><span class="p">;</span>
 <span class="n">schedule</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">W</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -414,7 +441,7 @@
 <span class="c">% Keep the original strict well-composition check alongside shared validation.</span>
 <span class="nb">assert</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="nb">arrayfun</span><span class="p">(@(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">components</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-12</span><span class="p">,</span><span class="w"> </span><span class="n">schedule</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">W</span><span class="p">)));</span>
 <span class="n">validateH2simSimulationInputs</span><span class="p">(</span><span class="n">state0</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">schedule</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -428,7 +455,7 @@
 <span class="n">prob1</span><span class="p">.</span><span class="n">SimulatorSetup</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">OutputStateFunctions</span><span class="p">{</span><span class="k">end</span><span class="p">}</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'ComponentPhaseMass'</span><span class="p">;</span>
 <span class="n">simulatePackedProblem</span><span class="p">(</span><span class="n">prob1</span><span class="p">);</span>
 <span class="p">[</span><span class="n">ws1</span><span class="p">,</span><span class="w"> </span><span class="n">st1</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">getPackedSimulatorOutput</span><span class="p">(</span><span class="n">prob1</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -446,7 +473,7 @@
 <span class="n">prob2</span><span class="p">.</span><span class="n">SimulatorSetup</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">OutputStateFunctions</span><span class="p">{</span><span class="k">end</span><span class="p">}</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'ComponentPhaseMass'</span><span class="p">;</span>
 <span class="n">simulatePackedProblem</span><span class="p">(</span><span class="n">prob2</span><span class="p">);</span>
 <span class="p">[</span><span class="n">ws2</span><span class="p">,</span><span class="w"> </span><span class="n">st2</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">getPackedSimulatorOutput</span><span class="p">(</span><span class="n">prob2</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -463,7 +490,7 @@
 <span class="n">prob3</span><span class="p">.</span><span class="n">SimulatorSetup</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">OutputStateFunctions</span><span class="p">{</span><span class="k">end</span><span class="p">}</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'ComponentPhaseMass'</span><span class="p">;</span>
 <span class="n">simulatePackedProblem</span><span class="p">(</span><span class="n">prob3</span><span class="p">);</span>
 <span class="p">[</span><span class="n">ws3</span><span class="p">,</span><span class="w"> </span><span class="n">st3</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">getPackedSimulatorOutput</span><span class="p">(</span><span class="n">prob3</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -477,16 +504,16 @@
 <span class="n">idxH2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">find</span><span class="p">(</span><span class="nb">strcmp</span><span class="p">(</span><span class="n">compNames</span><span class="p">,</span><span class="w"> </span><span class="s">'H2'</span><span class="p">));</span>
 <span class="n">idxCO2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">find</span><span class="p">(</span><span class="nb">strcmp</span><span class="p">(</span><span class="n">compNames</span><span class="p">,</span><span class="w"> </span><span class="s">'CO2'</span><span class="p">));</span>
 <span class="n">idxCH4</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">find</span><span class="p">(</span><span class="nb">strcmp</span><span class="p">(</span><span class="n">compNames</span><span class="p">,</span><span class="w"> </span><span class="s">'C1'</span><span class="p">));</span>
-<span class="n">timeDays</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">cumsum</span><span class="p">(</span><span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="p">)</span><span class="o">/</span><span class="nb">day</span><span class="p">;</span>
-<span class="n">timeYrs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">timeDays</span><span class="o">/</span><span class="mi">365</span><span class="p">;</span>
+<span class="n">timeDays</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">cumsum</span><span class="p">(</span><span class="n">schedule</span><span class="p">.</span><span class="n">step</span><span class="p">.</span><span class="n">val</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">day</span><span class="p">;</span>
+<span class="n">timeYrs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">timeDays</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">365</span><span class="p">;</span>
 <span class="n">scenarios</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb">struct</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span><span class="w"> </span><span class="s">'Bio-Clog'</span><span class="p">,</span><span class="w"> </span><span class="s">'model'</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="s">'states'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">st1</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
-<span class="w">           </span><span class="s">'color'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="s">'line'</span><span class="p">,</span><span class="w"> </span><span class="s">'-'</span><span class="p">),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="nb">struct</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span><span class="w"> </span><span class="s">'Bio-NoClog'</span><span class="p">,</span><span class="w"> </span><span class="s">'model'</span><span class="p">,</span><span class="w"> </span><span class="n">model2</span><span class="p">,</span><span class="w"> </span><span class="s">'states'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">st2</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
-<span class="w">           </span><span class="s">'color'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7</span><span class="p">],</span><span class="w"> </span><span class="s">'line'</span><span class="p">,</span><span class="w"> </span><span class="s">'--'</span><span class="p">),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="nb">struct</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span><span class="w"> </span><span class="s">'Abiotic'</span><span class="p">,</span><span class="w"> </span><span class="s">'model'</span><span class="p">,</span><span class="w"> </span><span class="n">model3</span><span class="p">,</span><span class="w"> </span><span class="s">'states'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">st3</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
-<span class="w">           </span><span class="s">'color'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="s">'line'</span><span class="p">,</span><span class="w"> </span><span class="s">':'</span><span class="p">)};</span>
-</pre></div>
+<span class="w">             </span><span class="nb">struct</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span><span class="w"> </span><span class="s">'Bio-Clog'</span><span class="p">,</span><span class="w"> </span><span class="s">'model'</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="s">'states'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">st1</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                 </span><span class="s">'color'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="s">'line'</span><span class="p">,</span><span class="w"> </span><span class="s">'-'</span><span class="p">),</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                 </span><span class="nb">struct</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span><span class="w"> </span><span class="s">'Bio-NoClog'</span><span class="p">,</span><span class="w"> </span><span class="s">'model'</span><span class="p">,</span><span class="w"> </span><span class="n">model2</span><span class="p">,</span><span class="w"> </span><span class="s">'states'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">st2</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                 </span><span class="s">'color'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7</span><span class="p">],</span><span class="w"> </span><span class="s">'line'</span><span class="p">,</span><span class="w"> </span><span class="s">'--'</span><span class="p">),</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                 </span><span class="nb">struct</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span><span class="w"> </span><span class="s">'Abiotic'</span><span class="p">,</span><span class="w"> </span><span class="s">'model'</span><span class="p">,</span><span class="w"> </span><span class="n">model3</span><span class="p">,</span><span class="w"> </span><span class="s">'states'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">st3</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                 </span><span class="s">'color'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="s">'line'</span><span class="p">,</span><span class="w"> </span><span class="s">':'</span><span class="p">)};</span>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -500,7 +527,7 @@
 <span class="n">plotBacterialEffects</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span><span class="w"> </span><span class="n">timeYrs</span><span class="p">,</span><span class="w"> </span><span class="n">poro0</span><span class="p">,</span><span class="w"> </span><span class="n">perm0</span><span class="p">);</span>
 <span class="n">plotPressureAndSaturation</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span><span class="w"> </span><span class="n">timeYrs</span><span class="p">);</span>
 <span class="n">plotComponentComparison</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span><span class="w"> </span><span class="n">timeYrs</span><span class="p">,</span><span class="w"> </span><span class="n">idxH2</span><span class="p">,</span><span class="w"> </span><span class="n">idxCO2</span><span class="p">,</span><span class="w"> </span><span class="n">idxCH4</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -511,9 +538,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">plotToolbar</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">st1</span><span class="p">,</span><span class="w"> </span><span class="s">'plot1d'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="s">'field'</span><span class="p">,</span><span class="w"> </span><span class="s">'pressure'</span><span class="p">);</span>
+<div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% This final viewer is intended for a MATLAB desktop session.</span>
+<span class="n">plotToolbar</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">st1</span><span class="p">,</span><span class="w"> </span><span class="s">'plot1d'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="s">'field'</span><span class="p">,</span><span class="w"> </span><span class="s">'pressure'</span><span class="p">);</span>
 <span class="nb">title</span><span class="p">(</span><span class="s">'Bio-Clogging Scenario - Pressure'</span><span class="p">);</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -527,62 +555,47 @@
 <span class="c">% &lt;p&gt;&lt;font size="-1"&gt;</span>
 <span class="c">% Copyright 2009-2026 SINTEF Digital, Mathematics &amp; Cybernetics.</span>
 <span class="c">% &lt;/font&gt;&lt;/p&gt;</span>
-
-
 <span class="c">% &lt;p&gt;&lt;font size="-1"&gt;</span>
 <span class="c">% This file is part of The MATLAB Reservoir Simulation Toolbox (MRST).</span>
 <span class="c">% &lt;/font&gt;&lt;/p&gt;</span>
-
-
 <span class="c">% &lt;p&gt;&lt;font size="-1"&gt;</span>
 <span class="c">% MRST is free software: you can redistribute it and/or modify</span>
 <span class="c">% it under the terms of the GNU General Public License as published by</span>
 <span class="c">% the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c">% (at your option) any later version.</span>
 <span class="c">% &lt;/font&gt;&lt;/p&gt;</span>
-
-
 <span class="c">% &lt;p&gt;&lt;font size="-1"&gt;</span>
 <span class="c">% MRST is distributed in the hope that it will be useful,</span>
 <span class="c">% but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c">% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c">% GNU General Public License for more details.</span>
 <span class="c">% &lt;/font&gt;&lt;/p&gt;</span>
-
-
 <span class="c">% &lt;p&gt;&lt;font size="-1"&gt;</span>
 <span class="c">% You should have received a copy of the GNU General Public License</span>
 <span class="c">% along with MRST.  If not, see</span>
 <span class="c">% &lt;a href="http://www.gnu.org/licenses/"&gt;http://www.gnu.org/licenses&lt;/a&gt;.</span>
 <span class="c">% &lt;/font&gt;&lt;/p&gt;</span>
-
-
 <span class="c">% &lt;/html&gt;</span>
-
 
 <span class="cm">%{</span>
 <span class="cm">Copyright 2009-2026 SINTEF Digital, Mathematics &amp; Cybernetics.</span>
 
-
 <span class="cm">This file is part of h2sim.</span>
-
 
 <span class="cm">h2sim is free software: you can redistribute it and/or modify</span>
 <span class="cm">it under the terms of the GNU General Public License as published by</span>
 <span class="cm">the Free Software Foundation, either version 3 of the License, or</span>
 <span class="cm">(at your option) any later version.</span>
 
-
 <span class="cm">h2sim is distributed in the hope that it will be useful,</span>
 <span class="cm">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="cm">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="cm">GNU General Public License for more details.</span>
 
-
 <span class="cm">You should have received a copy of the GNU General Public License</span>
 <span class="cm">along with h2sim.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="cm">%}</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
