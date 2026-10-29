@@ -208,6 +208,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -310,8 +311,14 @@ Then run:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
 </pre></div>
 </div>
-<p>Use MATLAB R2021a or newer for the core examples. Startup adds H2sim modules
-and initializes dependencies. Do not add the complete MRST tree with <code class="docutils literal notranslate"><span class="pre">genpath</span></code>.</p>
+<p>The stated minimum for core examples is MATLAB R2021a. The latest recorded
+regression environment is R2026a Update 5; earlier releases were not retested
+in that record. See <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a> for tested environments and limits.</p>
+<p>Startup adds H2sim modules and initializes dependencies. It currently also
+checks PhreeqcMatlab native libraries for core-only workflows and may download
+them on first startup. Offline use requires those libraries and the pinned
+submodule contents to be present beforehand. Optional chemistry initialization
+is not yet implemented. Do not add the complete MRST tree with <code class="docutils literal notranslate"><span class="pre">genpath</span></code>.</p>
 <p>H2sim uses its own biochemistry implementation, registered as
 <code class="docutils literal notranslate"><span class="pre">h2sim-biochem</span></code>. Initialize it with <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code>; do not use
 <code class="docutils literal notranslate"><span class="pre">mrstModule</span> <span class="pre">add</span> <span class="pre">h2-biochem</span></code> to initialize this toolbox. That name belongs
@@ -334,25 +341,30 @@ utilities. Biochemistry tests live in <code class="docutils literal notranslate"
 and older 3D studies live in <code class="docutils literal notranslate"><span class="pre">research/biochemistry</span></code>. These folders are
 outside the registered module root, so MRST module reactivation does not add
 them. Activation also removes paths left by their previous locations.
-Supported examples and model class locations are unchanged. Developer tools
-that share a supported example folder remain visible pending a separate review.</p>
+Older storage prototypes live in <code class="docutils literal notranslate"><span class="pre">research/h2store/prototypes</span></code>. Supported
+entry points remain in the module example folders; tests and research code
+are added explicitly only when needed.</p>
 <p>Run tests by their explicit folder path from the repository root:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'tests/biochemistry'</span><span class="p">);</span>
 <span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>To inspect an archived study, add only its selected folder explicitly after
-startup. Do not recursively add the entire repository. This separation covers
-the moved biochemistry groups; it does not classify local unpublished studies
-or reorganize the storage and calibration modules.</p>
+startup. Do not recursively add the entire repository. See the README files
+under <code class="docutils literal notranslate"><span class="pre">research/</span></code> for the scope and limitations of
+archived studies and prototypes. These are separate from supported tutorials.</p>
 </section>
 <section id="run-a-first-example">
 <h2>Run a first example<a class="headerlink" href="#run-a-first-example" title="Link to this heading">¶</a></h2>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">;</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'gridSpacing'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">],</span><span class="w"> </span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">plotBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>This two-dimensional saline-aquifer example uses the black-oil model and
-requires neither PHREEQC nor Parallel Computing Toolbox. Continue with <a class="reference internal" href="quickstart.html"><span class="doc">Quick start</span></a> or <a class="reference internal" href="examples.html"><span class="doc">Selected examples and notebooks</span></a>.</p>
+<p>This coarse, one-cycle saline-aquifer configuration uses the black-oil model
+and bundled property tables. Its flow calculation needs neither a PHREEQC
+engine nor Parallel Computing Toolbox; startup still performs the library
+check described above. Continue with <a class="reference internal" href="quickstart.html"><span class="doc">Quick start</span></a> or <a class="reference internal" href="examples.html"><span class="doc">Selected examples and notebooks</span></a>.</p>
 </section>
 <section id="optional-amgcl-acceleration">
 <h2>Optional AMGCL acceleration<a class="headerlink" href="#optional-amgcl-acceleration" title="Link to this heading">¶</a></h2>
@@ -384,11 +396,11 @@ IPhreeqcCOM. macOS sequential coupling is not supported.</p>
 <h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Native Linux coupling is available in the development checkout containing
-<code class="docutils literal notranslate"><span class="pre">createH2simIPhreeqc.m</span></code> and <code class="docutils literal notranslate"><span class="pre">H2simNativeIPhreeqc.m</span></code>. Earlier releases
-use Windows COM for both sequential backends. Check your checkout before
-following the Linux steps below. Full Linux MATLAB simulation validation
-is pending; native-interface chemistry has been tested with Windows DLLs.</p>
+<p>The current source includes native Linux coupling. Full native-Linux
+MATLAB regression validation is not recorded in the latest verification
+record; native-interface chemistry has also been tested with Windows DLLs.
+See <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a> for the distinction between implemented support
+and recorded platform validation.</p>
 </div>
 <p>Initialize the pinned submodules, then launch native Linux MATLAB:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
@@ -435,6 +447,44 @@ on Windows. Test the COM interface and the bundled database:</p>
 <p>Configure <code class="docutils literal notranslate"><span class="pre">phreeqcComProgId</span></code> if your COM installation uses a different
 identifier. <code class="docutils literal notranslate"><span class="pre">phreeqcDatabaseFile</span></code> must resolve to an absolute database path.</p>
 </section>
+</section>
+<section id="update-an-existing-checkout">
+<h2>Update an existing checkout<a class="headerlink" href="#update-an-existing-checkout" title="Link to this heading">¶</a></h2>
+<p>From a clean checkout on the repository’s <code class="docutils literal notranslate"><span class="pre">master</span></code> branch:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>pull<span class="w"> </span>--ff-only
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+</pre></div>
+</div>
+<p>Preserve local work before changing branches or updating. Restart MATLAB after
+an update and run <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> before creating model objects. Do not update
+submodules with <code class="docutils literal notranslate"><span class="pre">--remote</span></code>: the repository pins the revisions used for its
+verification record.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Missing dependencies after downloading a ZIP:</strong> use the Git clone command
+above. GitHub source ZIPs omit submodule contents, and startup cannot fetch
+pinned dependencies automatically outside a Git checkout.</p></li>
+<li><p><strong>A different BiochemistryModel is selected:</strong> restart MATLAB and initialize
+this checkout before loading models. Check <code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">BiochemistryModel</span></code>;
+avoid recursively adding MRST or the complete repository to the path.</p></li>
+<li><p><strong>First startup fails while downloading chemistry libraries:</strong> startup currently
+checks those files even for core-only simulations. Provide the pinned
+PhreeqcMatlab libraries before startup for offline use. A PHREEQC engine is
+only used by chemistry workflows, but this startup check is unconditional.</p></li>
+<li><p><strong>Linux reports a GLIBCXX or loadlibrary error:</strong> launch through
+<code class="docutils literal notranslate"><span class="pre">run_matlab_h2sim.sh</span></code>, check the runtime requirement in the Linux section,
+and configure MATLAB’s supported C compiler with <code class="docutils literal notranslate"><span class="pre">mex</span> <span class="pre">-setup</span> <span class="pre">C</span></code>.</p></li>
+<li><p><strong>No MATLAB executable is found by the launcher:</strong> set <code class="docutils literal notranslate"><span class="pre">MATLAB_BIN</span></code> to the
+executable for your installation. Under WSL, a Windows executable needs its
+WSL path; native Linux MATLAB is preferred when available.</p></li>
+<li><p><strong>An optional backend test is incomplete:</strong> inspect its dependency message.
+A skipped test does not validate that backend. See <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a>.</p></li>
+</ul>
+<p>For support, include the H2sim revision, MATLAB version, operating system,
+selected backend and complete error stack. Use the repository’s bug-report
+form for reproducible failures or <a class="reference internal" href="community.html"><span class="doc">Community &amp; support</span></a> for setup questions.</p>
 </section>
 </section>
 
@@ -500,6 +550,8 @@ identifier. <code class="docutils literal notranslate"><span class="pre">phreeqc
 <li><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#update-an-existing-checkout">Update an existing checkout</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 </ul>

@@ -209,6 +209,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -297,7 +298,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
-<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">(</span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">(</span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 
 <span class="c">% Redraw saved accepted states.</span>
 <span class="n">plotBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>

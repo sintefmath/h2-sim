@@ -209,6 +209,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -299,7 +300,7 @@ cells and the complete 50-day injection schedule.</p>
 </div>
 <div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
 <span class="s">comparison</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleCompositionalBacterial1DPhreeqcMinerals</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s">'maximumFlowSteps'</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s">'maximumFlowSteps'</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 <span class="n">state</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">comparison</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">states</span><span class="p">{</span><span class="k">end</span><span class="p">};</span>
 <span class="n">pH</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">phreeqcPH</span><span class="p">;</span>
 <span class="n">elementChecks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">phreeqcElementBalancePass</span><span class="p">;</span>

@@ -209,6 +209,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -299,7 +300,8 @@
 <div class="input_area highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
 <span class="s">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">'scenarios'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s">'bacterial'</span><span class="p">,</span><span class="s">'abiotic'</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">'molecularDiffusion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">'molecularDispersion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'molecularDiffusion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">'molecularDispersion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 
 <span class="n">plotCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="n">results</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">pwd</span><span class="p">,</span><span class="w"> </span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'bacterial-cycle-figures'</span><span class="p">));</span>

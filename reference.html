@@ -208,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -328,7 +329,7 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <td><p>Existing 2D reservoir case with MET, ACE, SRB, packed cycles, and selectable scenarios</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">runPhreeqcValidation</span></code></p></td>
-<td><p>Compositional PHREEQC injection benchmark against an external reference</p></td>
+<td><p>Standalone compositional PHREEQC storage cycle; optional external reference</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exampleH2BrineSolubilityStudy</span></code></p></td>
 <td><p>Phase-partition and salting-out comparisons</p></td>
@@ -938,7 +939,9 @@ unrecovered gas or a production recovery factor.</p>
 <span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>COM integration tests require the IPhreeqcCOM setup described in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.
+<p>PHREEQC integration tests require the native Linux or Windows COM setup
+described in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>. See <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a> for all local test
+commands, the recorded environment and the distinction from documentation CI.
 A skipped test does not validate a backend on that platform. The serial
 fallback tests cover both available and missing optional toolbox checks.</p>
 <p>See <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> for the current conservation-audit limitations.</p>

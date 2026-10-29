@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Hydrogen storage in saline aquifers" href="store.html"><link rel="prev" title="Dependencies" href="dependencies.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Local verification" href="verification.html"><link rel="prev" title="Dependencies" href="dependencies.html">
         <link rel="canonical" href="https://sintefmath.github.io/h2-sim/quickstart.html">
         <link rel="prefetch" href="_static/h2sim-logo.svg" as="image">
 
@@ -208,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -295,21 +296,25 @@ All examples below use serial execution.</p>
 <section id="hydrogen-storage-in-saline-aquifers">
 <h2>Hydrogen storage in saline aquifers<a class="headerlink" href="#hydrogen-storage-in-saline-aquifers" title="Link to this heading">¶</a></h2>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
-<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">;</span>
+<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'gridSpacing'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">],</span><span class="w"> </span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 <span class="n">lastState</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">states</span><span class="p">{</span><span class="k">end</span><span class="p">};</span>
 <span class="n">gasSaturation</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">lastState</span><span class="p">.</span><span class="n">s</span><span class="p">(:,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 <span class="n">plotBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>The example uses a 2D structural trap with hydrogen build-up and five storage
-cycles. Gravity, capillarity, and dissolved hydrogen use the existing aquifer
+<p>This introductory configuration uses a coarse 2D structural trap with hydrogen
+build-up and one storage cycle. Run <code class="docutils literal notranslate"><span class="pre">exampleBlackOilAquifer2D()</span></code> for the
+default grid and five cycles; that command plots automatically. The coarse
+introductory configuration is not the configuration of the archived figures. Gravity, capillarity, and dissolved hydrogen use the existing aquifer
 model and input tables. See <a class="reference internal" href="store.html"><span class="doc">Hydrogen storage in saline aquifers</span></a> and <a class="reference internal" href="thermodynamics.html"><span class="doc">Thermodynamics and PVT tabulation</span></a>.</p>
 </section>
 <section id="hydrogen-storage-in-depleted-gas-reservoirs">
 <h2>Hydrogen storage in depleted gas reservoirs<a class="headerlink" href="#hydrogen-storage-in-depleted-gas-reservoirs" title="Link to this heading">¶</a></h2>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">'scenarios'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s">'bacterial'</span><span class="p">,</span><span class="w"> </span><span class="s">'abiotic'</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">'molecularDiffusion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">'molecularDispersion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'molecularDiffusion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">'molecularDispersion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 <span class="n">plotCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="n">results</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -318,9 +323,10 @@ well controls, microbial populations, and transport plots.</p>
 </section>
 <section id="short-phreeqc-mineral-comparison">
 <h2>Short PHREEQC mineral comparison<a class="headerlink" href="#short-phreeqc-mineral-comparison" title="Link to this heading">¶</a></h2>
-<p>With IPhreeqcCOM configured (see <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>):</p>
+<p>After configuring native IPhreeqc on Linux or IPhreeqcCOM on Windows
+(see <a class="reference internal" href="installation.html#optional-phreeqc-setup"><span class="std std-ref">Optional PHREEQC setup</span></a>):</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">comparison</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleCompositionalBacterial1DPhreeqcMinerals</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s">'maximumFlowSteps'</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s">'maximumFlowSteps'</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 <span class="n">pH</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">comparison</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">states</span><span class="p">{</span><span class="k">end</span><span class="p">}.</span><span class="n">phreeqcPH</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -339,12 +345,12 @@ interpreting a backend comparison as a sensitivity to mineral chemistry.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="store.html">
+          <a class="next-page" href="verification.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Hydrogen storage in saline aquifers</div>
+                <div class="title">Local verification</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

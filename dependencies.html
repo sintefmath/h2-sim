@@ -208,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
@@ -290,7 +291,9 @@
         <article role="main" id="furo-main-content">
           <section id="dependencies">
 <h1>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h1>
-<p>The standard workflows run serially. Install optional components only when
+<p>The standard workflows run serially. Startup currently checks native
+PhreeqcMatlab libraries even when the chosen simulation does not use PHREEQC;
+see <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for first-startup downloads and offline setup. Install optional components only when
 your selected model needs them.</p>
 <div class="table-wrapper colwidths-given docutils container" id="id1">
 <table class="docutils align-default" id="id1">
@@ -316,7 +319,7 @@ your selected model needs them.</p>
 <td><p>Pinned Git submodule; initialized by <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>PhreeqcMatlab</p></td>
-<td><p>Included chemistry integration tools</p></td>
+<td><p>Startup library checks and optional chemistry integration tools</p></td>
 <td><p>Pinned Git submodule</p></td>
 </tr>
 <tr class="row-odd"><td><p>IPhreeqc (Linux) / IPhreeqcCOM (Windows)</p></td>
