@@ -314,11 +314,21 @@ Then run:</p>
 <p>The stated minimum for core examples is MATLAB R2021a. The latest recorded
 regression environment is R2026a Update 5; earlier releases were not retested
 in that record. See <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a> for tested environments and limits.</p>
-<p>Startup adds H2sim modules and initializes dependencies. It currently also
-checks PhreeqcMatlab native libraries for core-only workflows and may download
-them on first startup. Offline use requires those libraries and the pinned
-submodule contents to be present beforehand. Optional chemistry initialization
-is not yet implemented. Do not add the complete MRST tree with <code class="docutils literal notranslate"><span class="pre">genpath</span></code>.</p>
+<p>Default startup initializes MRST and H2sim modules only. It does not fetch,
+initialize or check PhreeqcMatlab or its libraries. Core workflows can use a
+checkout with only the MRST submodule initialized:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive<span class="w"> </span>--<span class="w"> </span>submodules/mrst
+</pre></div>
+</div>
+<p>Chemistry initialization is explicit:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span><span class="p">(</span><span class="s">'phreeqc'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or enable it after a core startup with <code class="docutils literal notranslate"><span class="pre">initializeH2simPhreeqc</span></code>. This explicit
+request may fetch the pinned PhreeqcMatlab submodule and download missing native
+libraries. Supply them beforehand for offline chemistry use. Repeating core
+startup does not unload an already initialized chemistry session. Do not add
+the complete MRST tree with <code class="docutils literal notranslate"><span class="pre">genpath</span></code>.</p>
 <p>H2sim uses its own biochemistry implementation, registered as
 <code class="docutils literal notranslate"><span class="pre">h2sim-biochem</span></code>. Initialize it with <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code>; do not use
 <code class="docutils literal notranslate"><span class="pre">mrstModule</span> <span class="pre">add</span> <span class="pre">h2-biochem</span></code> to initialize this toolbox. That name belongs
@@ -334,6 +344,22 @@ You can check which implementation is selected:</p>
 </div>
 <p>Both paths should point into this H2sim checkout’s <code class="docutils literal notranslate"><span class="pre">h2-biochem</span></code> folder.</p>
 </section>
+<section id="terminal-startup-profiles">
+<h2>Terminal startup profiles<a class="headerlink" href="#terminal-startup-profiles" title="Link to this heading">¶</a></h2>
+<p>The launcher uses the same core-only default:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>run_matlab_h2sim.sh<span class="w"> </span><span class="s2">"disp('Core ready')"</span>
+</pre></div>
+</div>
+<p>For chemistry, initialize the PhreeqcMatlab submodule and request runtime setup:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive<span class="w"> </span>--<span class="w"> </span>submodules/PhreeqcMatlab
+bash<span class="w"> </span>run_matlab_h2sim.sh<span class="w"> </span>--phreeqc<span class="w"> </span><span class="s2">"disp('Chemistry ready')"</span>
+</pre></div>
+</div>
+<p>The flag supplies the Linux library preloader and calls
+<code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code>. It is not needed for core batch workflows.
+On Windows/WSL it selects the same explicit MATLAB initialization without
+using the Linux preloader. <code class="docutils literal notranslate"><span class="pre">MATLAB_BIN</span></code> selects the executable in either mode.</p>
+</section>
 <section id="runtime-and-development-paths">
 <h2>Runtime and development paths<a class="headerlink" href="#runtime-and-development-paths" title="Link to this heading">¶</a></h2>
 <p>Startup adds the supported biochemistry module, storage module and toolbox
@@ -345,7 +371,8 @@ Older storage prototypes live in <code class="docutils literal notranslate"><spa
 entry points remain in the module example folders; tests and research code
 are added explicitly only when needed.</p>
 <p>Run tests by their explicit folder path from the repository root:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'tests/biochemistry'</span><span class="p">);</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span><span class="p">(</span><span class="s">'phreeqc'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+<span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'tests/biochemistry'</span><span class="p">);</span>
 <span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -363,8 +390,8 @@ archived studies and prototypes. These are separate from supported tutorials.</p
 </div>
 <p>This coarse, one-cycle saline-aquifer configuration uses the black-oil model
 and bundled property tables. Its flow calculation needs neither a PHREEQC
-engine nor Parallel Computing Toolbox; startup still performs the library
-check described above. Continue with <a class="reference internal" href="quickstart.html"><span class="doc">Quick start</span></a> or <a class="reference internal" href="examples.html"><span class="doc">Selected examples and notebooks</span></a>.</p>
+engine nor Parallel Computing Toolbox. Core startup does not check chemistry
+libraries. Continue with <a class="reference internal" href="quickstart.html"><span class="doc">Quick start</span></a> or <a class="reference internal" href="examples.html"><span class="doc">Selected examples and notebooks</span></a>.</p>
 </section>
 <section id="optional-amgcl-acceleration">
 <h2>Optional AMGCL acceleration<a class="headerlink" href="#optional-amgcl-acceleration" title="Link to this heading">¶</a></h2>
@@ -404,25 +431,28 @@ and recorded platform validation.</p>
 </div>
 <p>Initialize the pinned submodules, then launch native Linux MATLAB:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
-<span class="nv">MATLAB_BIN</span><span class="o">=</span>/path/to/MATLAB/bin/matlab<span class="w"> </span>bash<span class="w"> </span>run_matlab_h2sim.sh<span class="w"> </span><span class="s2">"disp('Ready')"</span>
+<span class="nv">MATLAB_BIN</span><span class="o">=</span>/path/to/MATLAB/bin/matlab<span class="w"> </span>bash<span class="w"> </span>run_matlab_h2sim.sh<span class="w"> </span>--phreeqc<span class="w"> </span><span class="s2">"disp('Ready')"</span>
 </pre></div>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">matlab</span></code> is on PATH, <code class="docutils literal notranslate"><span class="pre">MATLAB_BIN</span></code> may be omitted. The launcher prefers
 Linux MATLAB and falls back to Windows MATLAB under WSL when none is found.
-It delegates to PhreeqcMatlab’s Linux launcher, which preloads the system
+With <code class="docutils literal notranslate"><span class="pre">--phreeqc</span></code> it delegates to PhreeqcMatlab’s Linux launcher, which preloads the system
 <code class="docutils literal notranslate"><span class="pre">libstdc++.so.6</span></code> for its modern GCC binaries. Set
 <code class="docutils literal notranslate"><span class="pre">PHREEQCMATLAB_LIBSTDCPP</span></code> to override that library location if necessary.
 The system C++ runtime must provide <code class="docutils literal notranslate"><span class="pre">GLIBCXX_3.4.32</span></code> for the supplied
 3.8.6 binaries. MATLAB needs a configured supported C compiler for
 <code class="docutils literal notranslate"><span class="pre">loadlibrary</span></code> (<code class="docutils literal notranslate"><span class="pre">mex</span> <span class="pre">-setup</span> <span class="pre">C</span></code>).</p>
-<p><code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> initializes PhreeqcMatlab, which resolves the shared
+<p><code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code> initializes PhreeqcMatlab, which resolves the shared
 libraries from its <code class="docutils literal notranslate"><span class="pre">libs/</span></code> directory, a local install specified by
 <code class="docutils literal notranslate"><span class="pre">PHREEQCMATLAB_LIB_PATH</span></code> (or <code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code>), or release downloads.
 For offline installations, provide the libraries before startup.
 No COM registration is needed on Linux. Use the same explicit absolute
 <code class="docutils literal notranslate"><span class="pre">phreeqcDatabaseFile</span></code> path to <code class="docutils literal notranslate"><span class="pre">h2_biogeochemistry.dat</span></code> as on Windows;
 <code class="docutils literal notranslate"><span class="pre">phreeqcComProgId</span></code> is only used on Windows.</p>
-<p>Verify chemistry and cell batching after initialization:</p>
+<p>For an existing MATLAB session with the required runtime configured, run
+<code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code> or <code class="docutils literal notranslate"><span class="pre">initializeH2simPhreeqc</span></code> before these
+checks. The launcher flag performs this initialization automatically. Verify
+chemistry and cell batching:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">iph</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">createH2simIPhreeqc</span><span class="p">(</span><span class="s">'IPhreeqcCOM.Object'</span><span class="p">);</span>
 <span class="nb">assert</span><span class="p">(</span><span class="n">iph</span><span class="p">.</span><span class="n">LoadDatabase</span><span class="p">(</span><span class="nb">which</span><span class="p">(</span><span class="s">'h2_biogeochemistry.dat'</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
 <span class="nb">delete</span><span class="p">(</span><span class="n">iph</span><span class="p">);</span>
@@ -435,7 +465,8 @@ No COM registration is needed on Linux. Use the same explicit absolute
 <h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h3>
 <p>Install and register IPhreeqcCOM from the
 <a class="reference external" href="https://www.usgs.gov/software/phreeqc-version-3">USGS PHREEQC distribution</a>
-on Windows. Test the COM interface and the bundled database:</p>
+on Windows, then initialize with <code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code>. Test the
+COM interface and bundled database:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">which</span><span class="p">(</span><span class="s">'h2_biogeochemistry.dat'</span><span class="p">);</span>
 <span class="nb">assert</span><span class="p">(</span><span class="o">~</span><span class="nb">isempty</span><span class="p">(</span><span class="n">db</span><span class="p">),</span><span class="w"> </span><span class="s">'Initialize H2sim first.'</span><span class="p">);</span>
 <span class="n">iph</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">actxserver</span><span class="p">(</span><span class="s">'IPhreeqcCOM.Object'</span><span class="p">);</span>
@@ -469,12 +500,11 @@ pinned dependencies automatically outside a Git checkout.</p></li>
 <li><p><strong>A different BiochemistryModel is selected:</strong> restart MATLAB and initialize
 this checkout before loading models. Check <code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">BiochemistryModel</span></code>;
 avoid recursively adding MRST or the complete repository to the path.</p></li>
-<li><p><strong>First startup fails while downloading chemistry libraries:</strong> startup currently
-checks those files even for core-only simulations. Provide the pinned
-PhreeqcMatlab libraries before startup for offline use. A PHREEQC engine is
-only used by chemistry workflows, but this startup check is unconditional.</p></li>
+<li><p><strong>Explicit chemistry setup fails while downloading libraries:</strong> provide the
+pinned PhreeqcMatlab libraries beforehand for offline use. Plain
+<code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> skips chemistry setup and remains available for core workflows.</p></li>
 <li><p><strong>Linux reports a GLIBCXX or loadlibrary error:</strong> launch through
-<code class="docutils literal notranslate"><span class="pre">run_matlab_h2sim.sh</span></code>, check the runtime requirement in the Linux section,
+<code class="docutils literal notranslate"><span class="pre">run_matlab_h2sim.sh</span> <span class="pre">--phreeqc</span></code>, check the runtime requirement in the Linux section,
 and configure MATLAB’s supported C compiler with <code class="docutils literal notranslate"><span class="pre">mex</span> <span class="pre">-setup</span> <span class="pre">C</span></code>.</p></li>
 <li><p><strong>No MATLAB executable is found by the launcher:</strong> set <code class="docutils literal notranslate"><span class="pre">MATLAB_BIN</span></code> to the
 executable for your installation. Under WSL, a Windows executable needs its
@@ -542,6 +572,7 @@ form for reproducible failures or <a class="reference internal" href="community.
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#clone-the-repository">Clone the repository</a></li>
 <li><a class="reference internal" href="#initialize-matlab">Initialize MATLAB</a></li>
+<li><a class="reference internal" href="#terminal-startup-profiles">Terminal startup profiles</a></li>
 <li><a class="reference internal" href="#runtime-and-development-paths">Runtime and development paths</a></li>
 <li><a class="reference internal" href="#run-a-first-example">Run a first example</a></li>
 <li><a class="reference internal" href="#optional-amgcl-acceleration">Optional AMGCL acceleration</a></li>

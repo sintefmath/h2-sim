@@ -292,7 +292,8 @@
           <section id="Complete-cycle-PHREEQC-validation">
 <h1>Complete-cycle PHREEQC validation<a class="headerlink" href="#Complete-cycle-PHREEQC-validation" title="Link to this heading">¶</a></h1>
 <p>A 20-cell, 50 m column runs for 250 days: injection (0–50), storage (50–200), production (200–250). Both workflows use Soreide–Whitson and the high-rate parameter set. The reference uses five chemistry substeps per 2-day flow step; H2sim uses one split. Additional transport and clogging effects are disabled.</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span><span class="p">(</span><span class="s">'phreeqc'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+<span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
 <span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s">'totalDays'</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="s">'rate'</span><span class="p">,</span><span class="w"> </span><span class="s">'highrate'</span><span class="p">);</span>
 <span class="n">plotCompositionalPhreeqcValidation</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>

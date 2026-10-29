@@ -308,8 +308,8 @@ the test run. Initialize the submodule beforehand:</p>
 every test to pass without skips. It can also accept an existing pinned MRST
 checkout as its argument.</p>
 <p>For biochemistry tests, first follow <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> and initialize H2sim:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
-<span class="s">mrstModule</span><span class="w"> </span><span class="s">add</span><span class="w"> </span><span class="s">test-suite</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span><span class="p">(</span><span class="s">'phreeqc'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+<span class="n">mrstModule</span><span class="w"> </span><span class="s">add</span><span class="w"> </span><span class="s">test-suite</span>
 <span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">pwd</span><span class="p">,</span><span class="w"> </span><span class="s">'tests'</span><span class="p">,</span><span class="w"> </span><span class="s">'biochemistry'</span><span class="p">));</span>
 <span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
 </pre></div>
@@ -388,6 +388,40 @@ this environment with fresh output: 33 cells, 179 accepted control steps and
 one 220-day simulated build-up/storage cycle. Its explicit plotting call passed.
 This manual onboarding check is separate from the 338 MATLAB test results and
 uses a different grid and cycle count from the archived five-cycle figures.</p>
+</section>
+<section id="optional-startup-verification">
+<h2>Optional-startup verification<a class="headerlink" href="#optional-startup-verification" title="Link to this heading">¶</a></h2>
+<p>On 29 October 2026, startup change <code class="docutils literal notranslate"><span class="pre">4b86044</span></code> was checked in the same Windows
+MATLAB R2026a Update 5 environment, using archived pinned MRST and PhreeqcMatlab
+source files rather than locally edited dependency checkouts:</p>
+<ul class="simple">
+<li><p>With no PhreeqcMatlab directory, default startup completed three black-oil
+phase-transfer cases and a two-step compositional simulation. The chemistry
+checkout remained absent. A requested native interface reported
+<code class="docutils literal notranslate"><span class="pre">H2sim:PhreeqcNotInitialized</span></code> with explicit setup instructions.</p></li>
+<li><p>Default and explicit-false startup passed repeated-call and changed-working-
+directory checks without initializing chemistry.</p></li>
+<li><p>Explicit chemistry startup initialized the real IPhreeqc engine; both complete-
+cycle/reference/restart cases passed. Repeating core startup preserved the
+already initialized chemistry paths.</p></li>
+<li><p>All 126 biochemistry tests and 217 H2-store tests passed, with no failed or
+incomplete biochemistry tests. The five additional biochemistry tests cover
+startup options, explicit initialization and dependency errors.</p></li>
+<li><p>All 13 Python tooling tests passed. The six launcher checks exercise core
+startup without a chemistry checkout, opt-in Linux preloading, Windows routing,
+path quoting, argument errors and MATLAB exit-status propagation using fake
+executables. They do not execute native Linux MATLAB.</p></li>
+</ul>
+<p>The focused startup tests can also run without a chemistry checkout:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
+<span class="s">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">pwd</span><span class="p">,</span><span class="w"> </span><span class="s">'tests'</span><span class="p">,</span><span class="w"> </span><span class="s">'biochemistry'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'H2simPhreeqcStartupTest.m'</span><span class="p">));</span>
+<span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>No numerical references, chemistry parameters or solver acceptance bounds were
+changed for optional startup. The earlier dated record remains above for the
+EOS restart correction and reference provenance.</p>
 </section>
 <section id="platform-and-scientific-limits">
 <h2>Platform and scientific limits<a class="headerlink" href="#platform-and-scientific-limits" title="Link to this heading">¶</a></h2>
@@ -480,6 +514,7 @@ or relax its bounds simply to make a failing test pass.</p>
 <li><a class="reference internal" href="#">Local verification</a><ul>
 <li><a class="reference internal" href="#choose-the-checks-for-your-installation">Choose the checks for your installation</a></li>
 <li><a class="reference internal" href="#recorded-local-run">Recorded local run</a></li>
+<li><a class="reference internal" href="#optional-startup-verification">Optional-startup verification</a></li>
 <li><a class="reference internal" href="#platform-and-scientific-limits">Platform and scientific limits</a></li>
 <li><a class="reference internal" href="#record-a-new-environment">Record a new environment</a></li>
 </ul>

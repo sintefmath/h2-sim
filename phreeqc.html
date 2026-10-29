@@ -299,7 +299,11 @@ MATLAB</strong> through IPhreeqcCOM. Linux does not need a COM server.
 A full native-Linux MATLAB regression run is not recorded in the latest
 <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a> record. See <a class="reference internal" href="installation.html#optional-phreeqc-setup"><span class="std std-ref">Optional PHREEQC setup</span></a> for installation, runtime
 requirements, and a verification command.</p>
-<a class="phreeqc-brand" href="https://www.usgs.gov/software/phreeqc-version-3" aria-label="PHREEQC — official USGS software page"><img src="_static/phreeqc-icon.png" alt="PHREEQC application icon" width="32" height="32"><span><strong>PHREEQC</strong><small>USGS geochemical software ↗</small></span></a><p>Two supported chemistry workflows share MRST flow and EOS gas–liquid
+<a class="phreeqc-brand" href="https://www.usgs.gov/software/phreeqc-version-3" aria-label="PHREEQC — official USGS software page"><img src="_static/phreeqc-icon.png" alt="PHREEQC application icon" width="32" height="32"><span><strong>PHREEQC</strong><small>USGS geochemical software ↗</small></span></a><p>Initialize with <code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code> before running chemistry
+examples, or call <code class="docutils literal notranslate"><span class="pre">initializeH2simPhreeqc</span></code> after core startup. Linux batch
+runs should use <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">run_matlab_h2sim.sh</span> <span class="pre">--phreeqc</span> <span class="pre">&quot;MATLAB</span> <span class="pre">statements&quot;</span></code>
+to configure the native-library runtime before MATLAB starts.</p>
+<p>Two supported chemistry workflows share MRST flow and EOS gas–liquid
 partitioning, but assign microbial kinetics differently.</p>
 <img alt="Compositional PHREEQC assigns local kinetics to PHREEQC; multirate PHREEQC retains MRST kinetics and calls aqueous equilibrium after reaction substeps." src="_images/workflows.svg" style="width: 100%;" />
 <div class="table-wrapper colwidths-given docutils container" id="id1">

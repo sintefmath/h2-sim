@@ -308,7 +308,7 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code></p></td>
-<td><p>Initialize code and dependencies</p></td>
+<td><p>Initialize core code and MRST; optional chemistry setup</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">exampleBlackOilAquifer2D</span></code></p></td>
 <td><p>2D structural trapping and five storage cycles</p></td>
@@ -460,6 +460,18 @@ mass flux; tracer fluxes use molar concentrations without a density factor.</p>
 <p>For direct state-function evaluations outside the solver, initialize AD
 variables through <code class="docutils literal notranslate"><span class="pre">model.AutoDiffBackend.initVariablesAD</span></code> so their type
 matches the model’s discrete operators.</p>
+</section>
+<section id="startup-profiles">
+<h2>Startup profiles<a class="headerlink" href="#startup-profiles" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> selects the core modules and pinned MRST dependency only.
+<code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code> also initializes the pinned PhreeqcMatlab
+paths and checks its native libraries. <code class="docutils literal notranslate"><span class="pre">initializeH2simPhreeqc</span></code> enables this
+chemistry setup later in an existing core session. Default startup does not
+remove previously initialized chemistry paths or unload libraries.</p>
+<p>The batch launcher accepts <code class="docutils literal notranslate"><span class="pre">--phreeqc</span></code> to apply native Linux runtime setup
+before MATLAB starts. Without that flag it does not require the chemistry
+checkout or preload script. A native interface requested before initialization
+raises <code class="docutils literal notranslate"><span class="pre">H2sim:PhreeqcNotInitialized</span></code> with setup instructions.</p>
 </section>
 <section id="saved-backend-figures">
 <h2>Saved backend figures<a class="headerlink" href="#saved-backend-figures" title="Link to this heading">¶</a></h2>
@@ -1005,6 +1017,7 @@ fallback tests cover both available and missing optional toolbox checks.</p>
 <li><a class="reference internal" href="#microbial-rates-and-facility-sources">Microbial rates and facility sources</a></li>
 <li><a class="reference internal" href="#stoichiometric-conversion-sources">Stoichiometric conversion sources</a></li>
 <li><a class="reference internal" href="#transport-coefficients-and-face-fluxes">Transport coefficients and face fluxes</a></li>
+<li><a class="reference internal" href="#startup-profiles">Startup profiles</a></li>
 <li><a class="reference internal" href="#saved-backend-figures">Saved backend figures</a></li>
 <li><a class="reference internal" href="#saved-mineral-figures">Saved mineral figures</a></li>
 <li><a class="reference internal" href="#saved-multirate-figures">Saved multirate figures</a></li>
