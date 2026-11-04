@@ -3,12 +3,12 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="2D hydrogen storage in an aquifer" href="notebooks/blackoil_storage.html"><link rel="prev" title="Hydrogen–methane mixing" href="hydrogen-mixing.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Hydrogen storage in saline aquifers" href="store.html"><link rel="prev" title="Local verification" href="verification.html">
         <link rel="canonical" href="https://sintefmath.github.io/h2-sim/hydrogen-anticline.html">
         <link rel="prefetch" href="_static/h2sim-logo.svg" as="image">
 
     <link rel="shortcut icon" href="_static/h2sim-icon.svg"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Cyclic storage beneath an anticline - H2sim · Hydrogen storage modeling</title>
+        <title>Anticlinal hydrogen storage - H2sim · Hydrogen storage modeling</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -211,7 +211,8 @@
 <li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
-<ul>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Anticlinal hydrogen storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="store.html">Hydrogen storage in saline aquifers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="biochem.html">Hydrogen storage in depleted gas reservoirs</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="phreeqc.html">PHREEQC coupling</a><input aria-label="Toggle navigation of PHREEQC coupling" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -220,14 +221,13 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Learn and explore</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="thermodynamics.html">Thermodynamics and PVT tabulation</a><input aria-label="Toggle navigation of Thermodynamics and PVT tabulation" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/thermodynamics.html">Hydrogen–brine phase behavior</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="examples.html">Selected examples and notebooks</a><input aria-label="Toggle navigation of Selected examples and notebooks" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Selected examples and notebooks</a><input aria-label="Toggle navigation of Selected examples and notebooks" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="hydrogen-mixing.html">Hydrogen–methane mixing</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Cyclic storage beneath an anticline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/blackoil_storage.html">2D hydrogen storage in an aquifer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/bacterial_storage_2d.html">2D compositional storage with three reactions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nblinks/simple1DBacterialExampleMetacet.html">Closed-system microbial reactions in a 1D compositional model</a></li>
@@ -291,12 +291,14 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="cyclic-storage-beneath-an-anticline">
-<h1>Cyclic storage beneath an anticline<a class="headerlink" href="#cyclic-storage-beneath-an-anticline" title="Link to this heading">¶</a></h1>
+          <section id="anticlinal-hydrogen-storage">
+<h1>Anticlinal hydrogen storage<a class="headerlink" href="#anticlinal-hydrogen-storage" title="Link to this heading">¶</a></h1>
 <p>This small three-dimensional case adapts <strong>Problem 4 of Okoroafor et al.
 (2023)</strong>: a four-layer Gaussian structure with a storage well at its crest.
 An initially brine-saturated reservoir receives cushion hydrogen, rests during
-shut-in, and then alternates withdrawal and reinjection.</p>
+shut-in, and then alternates withdrawal and reinjection. This page combines
+an animation with figures drawn from the same saved simulation.</p>
+<p><strong>Black-oil flow · Four geological layers · 5625 cells · No PHREEQC required</strong></p>
 <video controls loop muted playsinline preload="metadata" style="width:100%;max-width:1280px" poster="_static/examples/hydrogen_anticline.png" aria-label="Simulated cushion injection and cyclic hydrogen storage in a four-layer anticline">
   <source src="_static/examples/hydrogen_anticline.mp4" type="video/mp4">
   <a href="_static/examples/hydrogen_anticline.gif">View the animated GIF</a>.
@@ -306,27 +308,72 @@ saturation. The central vertical section shows cell gas saturations above
 <code class="docutils literal notranslate"><span class="pre">0.005</span></code> against the four geological layers. The history panel shows hydrogen
 inventory in surface cubic metres. Both saturation panels use fixed color
 limits from zero to 0.8. Vertical exaggeration is fivefold on the 3D surface
-and twofold in the section. For this preview, up to 120 initial/accepted states are selected by physical time, retaining
+and twofold in the section. For this preview, up to 160 initial/accepted states are selected by physical time, retaining
 every operating-stage endpoint, without temporal interpolation. Labelled simulation times are uneven; playback is not real time.</p>
 <p>Download the <a class="reference download internal" download="" href="_downloads/255da5b4547bce10301a669fc67fdb2f/hydrogen_anticline.mp4"><code class="xref download docutils literal notranslate"><span class="pre">MP4</span></code></a>,
 <a class="reference download internal" download="" href="_downloads/b231bdfce8c2bb675865c3da26f548f6/hydrogen_anticline.gif"><code class="xref download docutils literal notranslate"><span class="pre">GIF</span></code></a> or
 <a class="reference download internal" download="" href="_downloads/39ae0314498d9ab4dfb89900a676758f/hydrogen_anticline_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">provenance</span> <span class="pre">record</span></code></a>.</p>
+<section id="geological-structure">
+<h2>Geological structure<a class="headerlink" href="#geological-structure" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id1">
+<img alt="Central section through the four-layer Gaussian structure with the shallow aquifer, cap rock, storage formation, underburden and storage well." src="_images/anticline_geology.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Geological layers and the central well. The well fully penetrates the
+20 m storage formation. Depth increases downward; vertical exaggeration is
+twofold. Layer properties are listed below.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/505d3a7e54a4f024e5ec7f83ea1d36c2/anticline_geology.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="plume-development">
+<h2>Plume development<a class="headerlink" href="#plume-development" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id2">
+<img alt="Six central-section gas saturation snapshots through cushion buildup, shut-in and the first withdrawal and reinjection." src="_images/anticline_plume_snapshots.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Gas migration through cushion injection, shut-in and the first storage
+cycle. Every panel uses the same saturation scale. Labels show actual
+accepted-state times, nearest the requested milestones. Cells below 0.005
+gas saturation are hidden; sections have twofold vertical exaggeration.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/c23237bf9ec42a42155ab1277beec9cb/anticline_plume_snapshots.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="operating-response-and-ten-storage-cycles">
+<h2>Operating response and ten storage cycles<a class="headerlink" href="#operating-response-and-ten-storage-cycles" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id3">
+<img alt="Stored hydrogen and integrated exchange, signed surface well rates, active well and completion brine pressure, and a detailed view of ten storage cycles." src="_images/anticline_operations.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Stored hydrogen agrees with integrated well and boundary exchange.
+Positive gas rate is injection; negative rate is withdrawal. Inactive-well
+BHP is omitted, while the mean saved brine-phase pressure in the completion cells remains
+visible.
+The cycle close-up shows all ten withdrawal/reinjection pairs: orange
+shading marks withdrawal and teal shading marks reinjection. Inventory
+is reported at the stated surface reference conditions.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/78c47f481ee307c5b95426c6a77ca35e/anticline_operations.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.
+The <a class="reference download internal" download="" href="_downloads/00e518426e54453a075e4d9f172acc86/anticline_figures_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">figure</span> <span class="pre">provenance</span></code></a>
+records the source states and export hashes. These are simulation figures,
+not measurements or external benchmark comparison curves.</p>
+</section>
 <section id="run-the-example">
 <h2>Run the example<a class="headerlink" href="#run-the-example" title="Link to this heading">¶</a></h2>
 <p>This example was added after <code class="docutils literal notranslate"><span class="pre">v0.1.0</span></code>. Use a development checkout containing
 <code class="docutils literal notranslate"><span class="pre">exampleHydrogenAnticline</span></code>. Supplementary previews on the release page do not
 change the original version tag’s source files.</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
-<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleHydrogenAnticline</span><span class="p">(</span><span class="s">'buildupDays'</span><span class="p">,</span><span class="w"> </span><span class="mi">730</span><span class="p">);</span>
+<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleHydrogenAnticline</span><span class="p">(</span><span class="s">'buildupDays'</span><span class="p">,</span><span class="w"> </span><span class="mi">730</span><span class="p">,</span><span class="w"> </span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
 <span class="n">animateHydrogenAnticline</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'anticline'</span><span class="p">),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">'frameRate'</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">'maxFrames'</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'frameRate'</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">'maxFrames'</span><span class="p">,</span><span class="w"> </span><span class="mi">160</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The simulation creates no files or figures. Save the result once to redraw it:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">save</span><span class="p">(</span><span class="s">'anticlineResults.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'result'</span><span class="p">,</span><span class="w"> </span><span class="s">'-v7'</span><span class="p">);</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">plotHydrogenAnticline</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'anticline'</span><span class="p">));</span>
+<span class="nb">save</span><span class="p">(</span><span class="s">'anticlineResults.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'result'</span><span class="p">,</span><span class="w"> </span><span class="s">'-v7'</span><span class="p">);</span>
 <span class="nb">load</span><span class="p">(</span><span class="s">'anticlineResults.mat'</span><span class="p">,</span><span class="w"> </span><span class="s">'result'</span><span class="p">);</span>
 <span class="n">animateHydrogenAnticline</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'anticline'</span><span class="p">),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">'frameRate'</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">'maxFrames'</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'frameRate'</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">'maxFrames'</span><span class="p">,</span><span class="w"> </span><span class="mi">160</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>A smaller complete-operation check uses:</p>
@@ -352,9 +399,9 @@ horizon follows</p>
 coarse grids therefore have a slightly deeper crest. The default grid has
 25 by 25 horizontal cells clustered toward the centre and nine vertical cells,
 for <strong>5625 cells</strong>. Four central well completions span the storage formation.</p>
-<div class="table-wrapper docutils container" id="id1">
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Layer properties, from shallow to deep</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<div class="table-wrapper docutils container" id="id4">
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Layer properties, from shallow to deep</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Layer</p></th>
 <th class="head"><p>Thickness (m)</p></th>
@@ -396,7 +443,8 @@ for 90 days, then performs five cycles of seven days of withdrawal and seven
 days of reinjection at 400,000 surface m³/day. Withdrawal controls the gas rate;
 reinjection is pure hydrogen. The default total duration is 525 days.
 The <strong>displayed preview extends cushion injection to 730 days</strong>, retaining the
-same rates, shut-in and five cycles, for a total of <strong>890 days</strong>. This injects
+same rates and 90-day shut-in, and uses <strong>ten storage cycles</strong>, for a total of
+<strong>960 days</strong>. This injects
 twice the cushion volume and allows the resolved plume to spread farther.
 At the end of cushion injection, the resolved plume radius at a cell gas
 saturation of at least 0.05 grows from approximately 429 m in the default run
@@ -441,23 +489,23 @@ GPL-3.0-or-later notice.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="notebooks/blackoil_storage.html">
+          <a class="next-page" href="store.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">2D hydrogen storage in an aquifer</div>
+                <div class="title">Hydrogen storage in saline aquifers</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="hydrogen-mixing.html">
+          <a class="prev-page" href="verification.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Hydrogen–methane mixing</div>
+                <div class="title">Local verification</div>
                 
               </div>
             </a>
@@ -487,7 +535,10 @@ GPL-3.0-or-later notice.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Cyclic storage beneath an anticline</a><ul>
+<li><a class="reference internal" href="#">Anticlinal hydrogen storage</a><ul>
+<li><a class="reference internal" href="#geological-structure">Geological structure</a></li>
+<li><a class="reference internal" href="#plume-development">Plume development</a></li>
+<li><a class="reference internal" href="#operating-response-and-ten-storage-cycles">Operating response and ten storage cycles</a></li>
 <li><a class="reference internal" href="#run-the-example">Run the example</a></li>
 <li><a class="reference internal" href="#geometry-and-operation">Geometry and operation</a></li>
 <li><a class="reference internal" href="#model-choices-and-limits">Model choices and limits</a></li>

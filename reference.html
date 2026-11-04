@@ -212,6 +212,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="hydrogen-anticline.html">Anticlinal hydrogen storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="store.html">Hydrogen storage in saline aquifers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="biochem.html">Hydrogen storage in depleted gas reservoirs</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="phreeqc.html">PHREEQC coupling</a><input aria-label="Toggle navigation of PHREEQC coupling" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -227,7 +228,6 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Selected examples and notebooks</a><input aria-label="Toggle navigation of Selected examples and notebooks" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="hydrogen-mixing.html">Hydrogen–methane mixing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hydrogen-anticline.html">Cyclic storage beneath an anticline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/blackoil_storage.html">2D hydrogen storage in an aquifer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/bacterial_storage_2d.html">2D compositional storage with three reactions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nblinks/simple1DBacterialExampleMetacet.html">Closed-system microbial reactions in a 1D compositional model</a></li>
@@ -322,54 +322,57 @@ MATLAB’s <code class="docutils literal notranslate"><span class="pre">help</sp
 <td><p>Export saved mixing states to MP4, GIF and a PNG poster</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exampleHydrogenAnticline</span></code></p></td>
-<td><p>Four-layer cushion injection and storage cycles; see <a class="reference internal" href="hydrogen-anticline.html"><span class="doc">Cyclic storage beneath an anticline</span></a></p></td>
+<td><p>Four-layer cushion injection and storage cycles; see <a class="reference internal" href="hydrogen-anticline.html"><span class="doc">Anticlinal hydrogen storage</span></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">animateHydrogenAnticline</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotHydrogenAnticline</span></code></p></td>
+<td><p>Redraw geology, matched-scale plume snapshots and storage-cycle histories</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">animateHydrogenAnticline</span></code></p></td>
 <td><p>Render a storage surface, central section and hydrogen inventory</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">simple1DBacterialExampleMetacet</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">simple1DBacterialExampleMetacet</span></code></p></td>
 <td><p>MRST compositional microbial example</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setupH2StorageExampleWithSRB_benchmark</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setupH2StorageExampleWithSRB_benchmark</span></code></p></td>
 <td><p>Configure a multi-reaction benchmark</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exampleCompositionalBacterial1DPhreeqcMinerals</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">exampleCompositionalBacterial1DPhreeqcMinerals</span></code></p></td>
 <td><p>Original MRST and three PHREEQC mineral configurations</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">exampleSequentialBiochemistryPhreeqc1D</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exampleSequentialBiochemistryPhreeqc1D</span></code></p></td>
 <td><p>Coarse-flow / local-reaction multirate example</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exampleCompositionalBacterial2DThreeReactions</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">exampleCompositionalBacterial2DThreeReactions</span></code></p></td>
 <td><p>Existing 2D reservoir case with MET, ACE, SRB, packed cycles, and selectable scenarios</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">runPhreeqcValidation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">runPhreeqcValidation</span></code></p></td>
 <td><p>Standalone compositional PHREEQC storage cycle; optional external reference</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exampleH2BrineSolubilityStudy</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">exampleH2BrineSolubilityStudy</span></code></p></td>
 <td><p>Phase-partition and salting-out comparisons</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setupOptimizedLinearSolver</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setupOptimizedLinearSolver</span></code></p></td>
 <td><p>AMGCL CPR including bacterial and tracer unknowns; configurable native threads</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">loadH2simResults</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">loadH2simResults</span></code></p></td>
 <td><p>Load result MAT files; optionally stage network files locally for HDF5</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">activateH2simAMGCL</span></code></p></td>
 <td><p>Activate an optional locally compiled MRST gateway</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotCompositionalPhreeqcValidation</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotCompositionalPhreeqcValidation</span></code></p></td>
 <td><p>Redraw validation maps and reaction loss with optional saved reference data</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotSequentialBiochemistryPhreeqc</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotSequentialBiochemistryPhreeqc</span></code></p></td>
 <td><p>Redraw saved multirate flow/chemistry and consumption; return two figures</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcMineralComparison</span></code></p></td>
 <td><p>Redraw saved mineral-case consumption and pH; return two figures</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotPhreeqcBackendComparison</span></code></p></td>
 <td><p>Redraw saved backend metrics; return profile, time-series and spatial figures</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">profilePhreeqcWorkflows</span></code></p></td>
 <td><p>Paired profiling and state comparisons</p></td>
 </tr>
 </tbody>
