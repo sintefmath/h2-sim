@@ -349,28 +349,16 @@ it does not isolate mineral chemistry alone.</p>
   <source src="_static/examples/phreeqc_storage.mp4" type="video/mp4">
   <a href="_static/examples/phreeqc_storage.gif">View the animated GIF</a>.
 </video><p>This is the compositional PHREEQC workflow from the comparison below.
-It uses the same fixed logarithmic map limits as the explorer, with no
-interpolated fields. The population fields are relative model scales, not
-calibrated cell counts. PHREEQC populations remain cell-local.</p>
+Its maps use fixed logarithmic limits throughout, without interpolated
+fields. Hydrogen is liquid-phase H₂ mole fraction, not gas saturation.
+Population fields are relative model scales, not calibrated cell counts.
+PHREEQC populations remain cell-local: their spatial changes represent
+growth and decay, rather than microbial transport or individual trajectories.
+The mobile comparison uses a different biomass representation, so equal
+relative values do not establish equal physical biomass.</p>
 <p>Download the <a class="reference download internal" download="" href="_downloads/fdaf00dd06614014a50af73e82a685af/phreeqc_storage.mp4"><code class="xref download docutils literal notranslate"><span class="pre">MP4</span></code></a>,
 <a class="reference download internal" download="" href="_downloads/42dbf8fb7d7e77cd2608fbb09c565a7d/phreeqc_storage.gif"><code class="xref download docutils literal notranslate"><span class="pre">GIF</span></code></a> or
 <a class="reference download internal" download="" href="_downloads/707ecd152ef07bf89ff7bf2bbf6635ba/phreeqc_gallery_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">gallery</span> <span class="pre">provenance</span></code></a>.</p>
-</section>
-<section id="explore-hydrogen-and-microbial-evolution">
-<h2>Explore hydrogen and microbial evolution<a class="headerlink" href="#explore-hydrogen-and-microbial-evolution" title="Link to this heading">¶</a></h2>
-<p>Choose a workflow, press <strong>Play</strong>, or move the time slider. Colors retain the
-same logarithmic limits through time and between workflows. The animation
-uses selected accepted states, with no interpolated spatial fields.</p>
-<iframe id="h2sim-field-explorer" src="_static/field2d/explorer.html" title="Interactive animation of dissolved hydrogen and three microbial populations over three cycles" loading="lazy" style="width:100%;height:1130px;border:0;border-radius:14px;"></iframe>
-<script>window.addEventListener("message",function(e){const f=document.getElementById("h2sim-field-explorer");if(f && e.origin===location.origin && e.source===f.contentWindow && e.data.type==="h2sim-field-height" && e.data.height>300 && e.data.height<4000){f.style.height=Math.ceil(e.data.height)+"px";}});</script><p>The hydrogen panel shows <strong>liquid-phase H₂ mole fraction</strong>, not gas saturation.
-Population panels show the model population scale relative to its initial
-value. They make fronts and localized activity visible, but the two kinetic
-formulations use different biomass representations. Equal colors do not
-establish equal physical biomass.</p>
-<p>In the PHREEQC workflow, populations remain <strong>cell-local</strong>: spatial changes
-represent growth and decay. Select the mobile workflow to see aqueous
-transport together with growth and decay. Neither animation depicts
-chemotaxis or follows individual bacteria.</p>
 </section>
 <section id="hydrogen-consumption-and-reaction-pathways">
 <span id="phreeqc-2d-loss"></span><h2>Hydrogen consumption and reaction pathways<a class="headerlink" href="#hydrogen-consumption-and-reaction-pathways" title="Link to this heading">¶</a></h2>
@@ -445,7 +433,7 @@ time order. The manifest contains local input paths and is not published.</p>
 python<span class="w"> </span>tools/plot_phreeqc_2d_results.py<span class="w"> </span>--manifest<span class="w"> </span>/path/to/manifest.json
 </pre></div>
 </div>
-<p>The exporter writes the movie, GIF, poster, PNG/PDF figures, explorer data,
+<p>The exporter writes the movie, GIF, poster, PNG/PDF figures, selected-field data,
 histories and source provenance. It overwrites those gallery assets. The
 source result files and packed states remain unchanged.</p>
 </section>
@@ -504,7 +492,6 @@ source result files and packed states remain unchanged.</p>
             <ul>
 <li><a class="reference internal" href="#">Three-cycle reactive storage in 2D</a><ul>
 <li><a class="reference internal" href="#movie-preview">Movie preview</a></li>
-<li><a class="reference internal" href="#explore-hydrogen-and-microbial-evolution">Explore hydrogen and microbial evolution</a></li>
 <li><a class="reference internal" href="#hydrogen-consumption-and-reaction-pathways">Hydrogen consumption and reaction pathways</a></li>
 <li><a class="reference internal" href="#gas-composition-and-aqueous-chemistry">Gas composition and aqueous chemistry</a></li>
 <li><a class="reference internal" href="#use-the-existing-example">Use the existing example</a></li>
