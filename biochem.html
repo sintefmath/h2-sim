@@ -300,6 +300,27 @@ family supports studying injected hydrogen mixed with residual reservoir
 gases. The selected 2D example uses the existing three-reaction reservoir case
 with residual methane and five storage cycles. A one-dimensional notebook
 remains available as an introduction.</p>
+<video controls loop muted playsinline preload="metadata" style="width:100%;max-width:1280px" poster="_static/examples/biochemistry_storage.png" aria-label="Hydrogen gas fraction and three microbial populations through five storage cycles">
+  <source src="_static/examples/biochemistry_storage.mp4" type="video/mp4">
+  <a href="_static/examples/biochemistry_storage.gif">View the animated GIF</a>.
+</video><p>The animation follows the presentation used for <a class="reference internal" href="hydrogen-anticline.html"><span class="doc">Anticlinal hydrogen storage</span></a>
+and <a class="reference internal" href="store.html"><span class="doc">Hydrogen storage in saline aquifers</span></a>. Four maps show gas-phase H₂ mole fraction and the MET, ACE
+and SRB population variables. H₂ is hidden where gas saturation is below
+<code class="docutils literal notranslate"><span class="pre">0.001</span></code>; it is a gas composition map, not a gas saturation map. Hydrogen
+uses fixed limits of zero to one. Each population has its own fixed scale,
+calculated over the entire saved history and shared with the static figures.
+<code class="docutils literal notranslate"><span class="pre">nbact</span></code> remains in model units, not calibrated cell counts per volume.</p>
+<p>The histories show cumulative reaction consumption as a percentage of
+cumulative injected hydrogen and signed H₂ component well rates. The percentage
+can decline while more hydrogen is injected. Initial and accepted states are
+selected by physical time, preserving every operating-stage endpoint without
+interpolation. Labelled simulation times are uneven; playback is not real time.
+The maps have no vertical exaggeration.</p>
+<p>Download the <a class="reference download internal" download="" href="_downloads/d1920b39b5ce90b7b95d1291c60f135d/biochemistry_storage.mp4"><code class="xref download docutils literal notranslate"><span class="pre">MP4</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/160a4c69b9ced577b0e1ada8ed971063/biochemistry_storage.gif"><code class="xref download docutils literal notranslate"><span class="pre">GIF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/eb6698f658dca9ec68d9cdf672087f1c/biochemistry_gallery_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">provenance</span> <span class="pre">record</span></code></a>.
+The visuals redraw the existing saved five-cycle bacterial/abiotic results;
+this presentation update does not change or rerun the physical models.</p>
 <section id="what-the-models-include">
 <h2>What the models include<a class="headerlink" href="#what-the-models-include" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -328,18 +349,61 @@ Accepted states, wells, reports, and full setups are saved for replotting.
 For this larger case, the optional AMGCL solver retains the compositional,
 bacterial, and aqueous-tracer cell unknowns together. Its native thread count
 is configurable through <code class="docutils literal notranslate"><span class="pre">setupOptimizedLinearSolver</span></code>. See <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
-<p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/bacterial_storage_2d.html"><span class="doc">Open the 2D bacterial storage notebook →</span></a></p>
+</section>
+<section id="geological-structure">
+<h2>Geological structure<a class="headerlink" href="#geological-structure" title="Link to this heading">¶</a></h2>
 <figure class="align-default" id="id1">
-<img alt="Five injection, idle, and withdrawal cycles compared with and without bacterial reactions." src="_images/compositional_2d_well_logs_verified.png" style="width: 100%;" />
+<img alt="Fine-grid reservoir, curved caprock, bedrock and well completions in the 50-m structural trap." src="_images/compositional_2d_geology.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Rock regions and completion cells from the 10,116-cell grid used by the
+saved comparison. The geometry is shared by the bacterial and abiotic runs.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/4e4d0a7379ff248d8e1a358c5c1807e7/compositional_2d_geology.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="bacterial-and-abiotic-gas-composition">
+<h2>Bacterial and abiotic gas composition<a class="headerlink" href="#bacterial-and-abiotic-gas-composition" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id2">
+<img alt="Gas-phase hydrogen, carbon dioxide and methane fractions in bacterial and abiotic cases after fifth-cycle injection." src="_images/compositional_2d_gas_maps.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Composition at the end of fifth-cycle injection (day 460). Every panel uses
+limits from zero to one and masks cells with gas saturation below 0.001.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/20c15b76ad1adcef3596e3c375c44187/compositional_2d_gas_maps.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="hydrogen-plume-and-microbial-populations">
+<h2>Hydrogen plume and microbial populations<a class="headerlink" href="#hydrogen-plume-and-microbial-populations" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id3">
+<img alt="Two-dimensional hydrogen gas fraction and the three microbial population fields after build-up and fifth-cycle injection." src="_images/compositional_2d_bacterial_maps.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">H₂ gas fraction and <code class="docutils literal notranslate"><span class="pre">nbact</span></code> for MET, ACE, and SRB after build-up
+(top) and at the end of fifth-cycle injection (bottom). Each column uses
+the animation’s fixed color limits, calculated over the entire saved
+history. H₂ is masked where gas saturation is below 0.001. <code class="docutils literal notranslate"><span class="pre">nbact</span></code> is the model’s population variable; the plotted
+values are not a calibrated cell count per volume.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/e4e604dacb6890759c4917391300ca4b/compositional_2d_bacterial_maps.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="operating-response">
+<h2>Operating response<a class="headerlink" href="#operating-response" title="Link to this heading">¶</a></h2>
+<p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/bacterial_storage_2d.html"><span class="doc">Open the 2D bacterial storage notebook →</span></a></p>
+<figure class="align-default" id="id4">
+<img alt="Five injection, idle, and withdrawal cycles compared with and without bacterial reactions." src="_images/compositional_2d_cycle_logs.png" style="width: 100%;" />
 <figcaption>
 <p><span class="caption-text">H₂, CO₂, and CH₄ component mass rates and bottom-hole pressure for the
 bacterial and abiotic runs. Positive component rates denote injection;
 negative rates denote production. These logs use the summed well
 component fluxes rather than local cell compositions. Closed-well rates
 are zero; BHP is shown only while the well is active, because saved
-shut-in well records retain the preceding active-step values.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+shut-in well records retain the preceding active-step values. Rates are
+shown over their actual completed schedule intervals.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/0d6aa6298c0dcb6d2aec8fa508c9f9fa/compositional_2d_cycle_logs.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/0e56366bca2d12010b6964520a40e86a/bacterial_well_logs.csv"><code class="xref download docutils literal notranslate"><span class="pre">bacterial</span> <span class="pre">well</span> <span class="pre">data</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/9b23b7b32d1ad46c9b1825aed6432b3d/abiotic_well_logs.csv"><code class="xref download docutils literal notranslate"><span class="pre">abiotic</span> <span class="pre">well</span> <span class="pre">data</span></code></a>.</p>
 </section>
 <section id="hydrogen-consumption-by-three-microbial-reactions">
 <h2>Hydrogen consumption by three microbial reactions<a class="headerlink" href="#hydrogen-consumption-by-three-microbial-reactions" title="Link to this heading">¶</a></h2>
@@ -359,25 +423,29 @@ curve sums the three contributions. The percentage can fall during injection
 because its denominator increases, even though cumulative consumed moles
 never decrease. Dissolution and unrecovered gas are not counted as microbial
 consumption.</p>
-<figure class="align-default" id="id2">
+<figure class="align-default" id="id5">
 <img alt="Percentage of injected hydrogen consumed by methanogenesis, acetogenesis, and sulfate reduction over five cycles." src="_images/compositional_2d_h2_consumption.png" style="width: 100%;" />
 <figcaption>
-<p><span class="caption-text">Reaction-specific hydrogen consumption and its total over time.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Reaction-specific hydrogen consumption and its total over time.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/432d517cbb6a25a7125f931f130617e4/compositional_2d_h2_consumption.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>
+or <a class="reference download internal" download="" href="_downloads/f1360280eb3151df0ec036f3cafa3850/compositional_2d_h2_consumption.csv"><code class="xref download docutils literal notranslate"><span class="pre">consumption</span> <span class="pre">data</span></code></a>.</p>
 </section>
-<section id="hydrogen-plume-and-microbial-populations">
-<h2>Hydrogen plume and microbial populations<a class="headerlink" href="#hydrogen-plume-and-microbial-populations" title="Link to this heading">¶</a></h2>
-<figure class="align-default" id="id3">
-<img alt="Two-dimensional hydrogen gas fraction and the three microbial population fields after build-up and fifth-cycle injection." src="_images/compositional_2d_bacterial_maps.png" style="width: 100%;" />
-<figcaption>
-<p><span class="caption-text">H₂ gas fraction and <code class="docutils literal notranslate"><span class="pre">nbact</span></code> for MET, ACE, and SRB after build-up
-(top) and at the end of fifth-cycle injection (bottom). Each column uses
-the same color limits at both times. H₂ is masked where gas saturation
-is below 0.001. <code class="docutils literal notranslate"><span class="pre">nbact</span></code> is the model’s population variable; the plotted
-values are not a calibrated cell count per volume.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
+<section id="reproduce-the-presentation">
+<h2>Reproduce the presentation<a class="headerlink" href="#reproduce-the-presentation" title="Link to this heading">¶</a></h2>
+<p>After running the comparison above, redraw the same result structures:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">output</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'biochemistry-gallery'</span><span class="p">);</span>
+<span class="n">bacterial</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">results</span><span class="p">(</span><span class="nb">strcmp</span><span class="p">({</span><span class="n">results</span><span class="p">.</span><span class="n">name</span><span class="p">},</span><span class="w"> </span><span class="s">'bacterial'</span><span class="p">));</span>
+<span class="n">animateCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="n">bacterial</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'frameRate'</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">'maxFrames'</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+<span class="n">plotCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="n">results</span><span class="p">,</span><span class="w"> </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">'writeVideo',</span> <span class="pre">false</span></code> if MPEG-4 VideoWriter is unavailable; GIF and PNG
+export remain available. Rendering reads saved states without running flow.
+The <a class="reference download internal" download="" href="_downloads/85e3912f3b123fb8cc261097a9730329/model-presentation.md"><code class="xref download docutils literal notranslate"><span class="pre">Model</span> <span class="pre">presentation</span> <span class="pre">guide</span></code></a> records the
+shared conventions for future Models pages.</p>
 </section>
 <section id="introductory-notebook">
 <h2>Introductory notebook<a class="headerlink" href="#introductory-notebook" title="Link to this heading">¶</a></h2>
@@ -459,8 +527,12 @@ microbial reactions; it is distinct from unrecovered gas during withdrawal.</p>
 <li><a class="reference internal" href="#">Hydrogen storage in depleted gas reservoirs</a><ul>
 <li><a class="reference internal" href="#what-the-models-include">What the models include</a></li>
 <li><a class="reference internal" href="#five-cycle-2d-example">Five-cycle 2D example</a></li>
-<li><a class="reference internal" href="#hydrogen-consumption-by-three-microbial-reactions">Hydrogen consumption by three microbial reactions</a></li>
+<li><a class="reference internal" href="#geological-structure">Geological structure</a></li>
+<li><a class="reference internal" href="#bacterial-and-abiotic-gas-composition">Bacterial and abiotic gas composition</a></li>
 <li><a class="reference internal" href="#hydrogen-plume-and-microbial-populations">Hydrogen plume and microbial populations</a></li>
+<li><a class="reference internal" href="#operating-response">Operating response</a></li>
+<li><a class="reference internal" href="#hydrogen-consumption-by-three-microbial-reactions">Hydrogen consumption by three microbial reactions</a></li>
+<li><a class="reference internal" href="#reproduce-the-presentation">Reproduce the presentation</a></li>
 <li><a class="reference internal" href="#introductory-notebook">Introductory notebook</a></li>
 <li><a class="reference internal" href="#equation-ownership">Equation ownership</a></li>
 </ul>
