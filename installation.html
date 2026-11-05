@@ -207,6 +207,7 @@
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model-selection.html">Choose a model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
@@ -293,10 +294,26 @@
         <article role="main" id="furo-main-content">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<p>Clone H2sim with its pinned dependencies, then initialize it from MATLAB.
-See <a class="reference internal" href="dependencies.html"><span class="doc">Dependencies</span></a> for required and optional components.</p>
-<section id="clone-the-repository">
-<h2>Clone the repository<a class="headerlink" href="#clone-the-repository" title="Link to this heading">¶</a></h2>
+<p>Install MATLAB and Git, clone H2sim with its pinned MRST dependency, then
+initialize it from MATLAB. No PHREEQC installation is needed for the first
+simulation. See <a class="reference internal" href="dependencies.html"><span class="doc">Dependencies</span></a> for the complete component list and
+<a class="reference internal" href="model-selection.html"><span class="doc">Choose a model</span></a> to choose a workflow.</p>
+<section id="choose-your-checkout">
+<h2>Choose your checkout<a class="headerlink" href="#choose-your-checkout" title="Link to this heading">¶</a></h2>
+<p>For a first core simulation (aquifer, anticline, gas mixing or biochemistry):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sintefmath/h2-sim.git
+<span class="nb">cd</span><span class="w"> </span>h2-sim
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive<span class="w"> </span>--<span class="w"> </span>submodules/mrst
+</pre></div>
+</div>
+<p>This is the recommended starting path. Add chemistry only when you need a
+PHREEQC example. These instructions follow the current <code class="docutils literal notranslate"><span class="pre">master</span></code> checkout;
+the website also covers examples added after the <code class="docutils literal notranslate"><span class="pre">v0.1.0</span></code> development tag.
+Individual example guides identify those additions.</p>
+</section>
+<section id="complete-checkout-including-optional-chemistry-source">
+<h2>Complete checkout (including optional chemistry source)<a class="headerlink" href="#complete-checkout-including-optional-chemistry-source" title="Link to this heading">¶</a></h2>
+<p>Alternatively, fetch both pinned dependencies from the start:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recurse-submodules<span class="w"> </span>https://github.com/sintefmath/h2-sim.git
 <span class="nb">cd</span><span class="w"> </span>h2-sim
 </pre></div>
@@ -372,12 +389,13 @@ them. Activation also removes paths left by their previous locations.
 Older storage prototypes live in <code class="docutils literal notranslate"><span class="pre">research/h2store/prototypes</span></code>. Supported
 entry points remain in the module example folders; tests and research code
 are added explicitly only when needed.</p>
-<p>Run tests by their explicit folder path from the repository root:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span><span class="p">(</span><span class="s">'phreeqc'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
-<span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">runtests</span><span class="p">(</span><span class="s">'tests/biochemistry'</span><span class="p">);</span>
-<span class="n">assertSuccess</span><span class="p">(</span><span class="n">checks</span><span class="p">);</span>
+<p>Check the core storage installation without chemistry dependencies:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">pwd</span><span class="p">,</span><span class="w"> </span><span class="s">'tests'</span><span class="p">,</span><span class="w"> </span><span class="s">'h2store'</span><span class="p">));</span>
+<span class="n">checks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runH2StoreTests</span><span class="p">();</span>
 </pre></div>
 </div>
+<p>For biochemistry, chemistry and restart checks, follow <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a>.
+Run test folders explicitly; they are outside the runtime module path.</p>
 <p>To inspect an archived study, add only its selected folder explicitly after
 startup. Do not recursively add the entire repository. See the README files
 under <code class="docutils literal notranslate"><span class="pre">research/</span></code> for the scope and limitations of
@@ -390,6 +408,11 @@ archived studies and prototypes. These are separate from supported tutorials.</p
 <span class="n">plotBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>The returned <code class="docutils literal notranslate"><span class="pre">result.states</span></code> contains accepted flow states;
+<code class="docutils literal notranslate"><span class="pre">result.states{end}.s(:,</span> <span class="pre">2)</span></code> contains final gas saturation. The plotting call
+shows plume snapshots, well response and dissolved hydrogen. The command
+uses a 10 m target spacing and one cycle, so it does not reproduce the finer,
+five-cycle website figures. See <a class="reference internal" href="examples.html#example-runtime-guide"><span class="std std-ref">Run sizes and recorded timings</span></a> for timing scope.</p>
 <p>This coarse, one-cycle saline-aquifer configuration uses the black-oil model
 and bundled property tables. Its flow calculation needs neither a PHREEQC
 engine nor Parallel Computing Toolbox. Core startup does not check chemistry
@@ -572,7 +595,8 @@ form for reproducible failures or <a class="reference internal" href="community.
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#clone-the-repository">Clone the repository</a></li>
+<li><a class="reference internal" href="#choose-your-checkout">Choose your checkout</a></li>
+<li><a class="reference internal" href="#complete-checkout-including-optional-chemistry-source">Complete checkout (including optional chemistry source)</a></li>
 <li><a class="reference internal" href="#initialize-matlab">Initialize MATLAB</a></li>
 <li><a class="reference internal" href="#terminal-startup-profiles">Terminal startup profiles</a></li>
 <li><a class="reference internal" href="#runtime-and-development-paths">Runtime and development paths</a></li>

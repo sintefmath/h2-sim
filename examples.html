@@ -207,6 +207,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model-selection.html">Choose a model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
@@ -294,8 +295,12 @@
           <section id="selected-examples-and-notebooks">
 <h1>Selected examples and notebooks<a class="headerlink" href="#selected-examples-and-notebooks" title="Link to this heading">¶</a></h1>
 <p>Run the MATLAB commands locally and inspect their saved results in the
-notebooks. Start with a representative storage or validation case, then use
-the smaller workflow checks to explore chemistry settings.</p>
+notebooks. Start with <a class="reference internal" href="model-selection.html"><span class="doc">Choose a model</span></a> and the small commands in
+<a class="reference internal" href="quickstart.html"><span class="doc">Quick start</span></a> before attempting full gallery runs.</p>
+<p>Each entry below identifies the run command, expected output, assumptions and
+MATLAB source. Run commands from the repository root after <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code>;
+use <code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code> for every chemistry entry. The notebook
+pages show saved figures; downloading one does not install a MATLAB kernel.</p>
 <section id="choose-how-to-run-an-example">
 <h2>Choose how to run an example<a class="headerlink" href="#choose-how-to-run-an-example" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -314,8 +319,75 @@ saved inputs; the documentation build does not rerun MATLAB simulations.</p></li
 <p>Open <code class="docutils literal notranslate"><span class="pre">h2-biochem/examples/Contents.m</span></code> in this checkout for the example
 catalogue. Initialize H2sim with <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> before running examples.</p>
 </section>
+<section id="run-sizes-and-recorded-timings">
+<span id="example-runtime-guide"></span><h2>Run sizes and recorded timings<a class="headerlink" href="#run-sizes-and-recorded-timings" title="Link to this heading">¶</a></h2>
+<p>These are execution-time observations, not performance guarantees. The two
+recorded times below come from the linked figure provenance, on Windows
+MATLAB R2026a Update 5. They describe the recorded simulation calls, excluding
+animation rendering; packed runs can reuse saved output. Processor details
+and a controlled cold-cache timing are not recorded. Measure your own run
+with <code class="docutils literal notranslate"><span class="pre">tic;</span> <span class="pre">result</span> <span class="pre">=</span> <span class="pre">...;</span> <span class="pre">toc</span></code> and record the grid, switches and cache use.</p>
+<div class="table-wrapper colwidths-given docutils container" id="id1">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">What to run first</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 24.0%" />
+<col style="width: 43.0%" />
+<col style="width: 33.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Run size</p></th>
+<th class="head"><p>Wall-clock timing</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Aquifer</p></td>
+<td><p>First run: 10 m target spacing, one cycle. Gallery: 2 m, five cycles.</p></td>
+<td><p>Gallery recorded about 3.6 min</p></td>
+</tr>
+<tr class="row-odd"><td><p>Anticline</p></td>
+<td><p>Small check: 9 × 9 horizontal cells, one cycle. Gallery: 25 × 25, ten cycles.</p></td>
+<td><p>Gallery recorded about 4.4 min</p></td>
+</tr>
+<tr class="row-even"><td><p>Gas mixing</p></td>
+<td><p>Small check: 8 × 8 cells, 30 simulated days. Gallery: 40 × 40.</p></td>
+<td><p>No published timing</p></td>
+</tr>
+<tr class="row-odd"><td><p>Biochemistry</p></td>
+<td><p>First run: coarse grid, two steps per scenario. Gallery: 10,116 cells, five cycles.</p></td>
+<td><p>No published timing; use the prefix before the full 2D comparison</p></td>
+</tr>
+<tr class="row-even"><td><p>PHREEQC</p></td>
+<td><p>Setup check: four cells, two steps. Full 1D validation: 20 cells, 125 steps.</p></td>
+<td><p>No published timing; cell chemistry and reaction substeps add work</p></td>
+</tr>
+<tr class="row-odd"><td><p>Thermodynamics</p></td>
+<td><p>A pressure/temperature property grid, without reservoir timestepping</p></td>
+<td><p>No published timing</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Timing sources: <a class="reference download internal" download="" href="_downloads/15f71b16cc17e25322b7a45d547c1636/aquifer_gallery_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">aquifer</span> <span class="pre">provenance</span></code></a>
+and <a class="reference download internal" download="" href="_downloads/39ae0314498d9ab4dfb89900a676758f/hydrogen_anticline_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">anticline</span> <span class="pre">provenance</span></code></a>.
+Short setup runs are not numerical regression tests; use <a class="reference internal" href="verification.html"><span class="doc">Local verification</span></a>
+for the local test commands and their coverage.</p>
+</section>
 <section id="small-hydrogen-mixing-animation">
 <h2>Small hydrogen-mixing animation<a class="headerlink" href="#small-hydrogen-mixing-animation" title="Link to this heading">¶</a></h2>
+<p><strong>Run:</strong> <code class="docutils literal notranslate"><span class="pre">result</span> <span class="pre">=</span> <span class="pre">exampleHydrogenMixing2D('gridSize',</span> <span class="pre">[8,</span> <span class="pre">8],</span>
+<span class="pre">'durationDays',</span> <span class="pre">30,</span> <span class="pre">'outputCount',</span> <span class="pre">12);</span></code> for a small check.
+<strong>Output:</strong> initial/accepted states and conservation diagnostics; call
+<code class="docutils literal notranslate"><span class="pre">animateHydrogenMixing2D(result,</span> <span class="pre">fullfile('build',</span> <span class="pre">'mixing'))</span></code> separately.
+<strong>Scope:</strong> sealed hydrogen–methane gas section, gravity and diffusion, without
+water or reactions. The linked guide gives the full gallery configuration.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/mixing/exampleHydrogenMixing2D.m">exampleHydrogenMixing2D.m</a>.</p>
+<p>For the anticline, use <code class="docutils literal notranslate"><span class="pre">small</span> <span class="pre">=</span> <span class="pre">exampleHydrogenAnticline('horizontalCells',</span>
+<span class="pre">[9,</span> <span class="pre">9],</span> <span class="pre">'buildupDays',</span> <span class="pre">90,</span> <span class="pre">'shutInDays',</span> <span class="pre">20,</span> <span class="pre">'numCycles',</span> <span class="pre">1);</span></code>.
+It returns states, well outputs and hydrogen inventory for layered black-oil
+storage without reactions. The guide gives the ten-cycle animation command.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-store/examples/anticline/exampleHydrogenAnticline.m">exampleHydrogenAnticline.m</a>.</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
@@ -349,6 +421,17 @@ storage cycles. Watch the plume, well operation and hydrogen inventory.</p>
 </section>
 <section id="storage-in-saline-aquifers">
 <h2>Storage in saline aquifers<a class="headerlink" href="#storage-in-saline-aquifers" title="Link to this heading">¶</a></h2>
+<p><strong>Run:</strong> the <a class="reference internal" href="quickstart.html#quickstart-aquifer"><span class="std std-ref">Hydrogen storage in saline aquifers</span></a> command for a first simulation. For the
+website’s five-cycle configuration:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">(</span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">plotBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong> accepted states, well histories, packed output and a saved result;
+plots show gas saturation, dissolution and well response.
+<strong>Scope:</strong> hydrogen–brine black-oil flow with gravity, capillarity and
+dissolution using bundled tables; no PHREEQC or new NIST downloads.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-store/examples/exampleBlackOilAquifer2D.m">exampleBlackOilAquifer2D.m</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-1 sd-row-cols-lg-1 docutils">
 <div class="sd-col sd-d-flex-row docutils">
@@ -365,7 +448,21 @@ the existing aquifer model. Gravity, capillarity, and dissolved hydrogen.</p>
 </div>
 </section>
 <section id="storage-in-depleted-gas-reservoirs">
-<h2>Storage in depleted gas reservoirs<a class="headerlink" href="#storage-in-depleted-gas-reservoirs" title="Link to this heading">¶</a></h2>
+<span id="example-biochemistry"></span><h2>Storage in depleted gas reservoirs<a class="headerlink" href="#storage-in-depleted-gas-reservoirs" title="Link to this heading">¶</a></h2>
+<p><strong>Run:</strong> use <a class="reference internal" href="quickstart.html#quickstart-biochemistry"><span class="std std-ref">Hydrogen storage in depleted gas reservoirs</span></a> for the two-step setup check.
+For the full gallery configuration:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">'scenarios'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s">'bacterial'</span><span class="p">,</span><span class="w"> </span><span class="s">'abiotic'</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'molecularDiffusion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">'molecularDispersion'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">plotCompositionalBacterial2DThreeReactions</span><span class="p">(</span><span class="n">results</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong> two completed scenario structures and plots of hydrogen
+consumption, microbial populations, composition and well component rates.
+<strong>Scope:</strong> residual methane and three microbial pathways; diffusion and
+dispersion are disabled for this configuration. No PHREEQC is used.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/2D_experiments/exampleCompositionalBacterial2DThreeReactions.m">exampleCompositionalBacterial2DThreeReactions.m</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-1 sd-row-cols-lg-1 docutils">
 <div class="sd-col sd-d-flex-row docutils">
@@ -382,7 +479,17 @@ Compare bacterial and abiotic injection and withdrawal on the original grid.</p>
 </div>
 </section>
 <section id="thermodynamics">
-<h2>Thermodynamics<a class="headerlink" href="#thermodynamics" title="Link to this heading">¶</a></h2>
+<span id="example-thermodynamics"></span><h2>Thermodynamics<a class="headerlink" href="#thermodynamics" title="Link to this heading">¶</a></h2>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">study</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleH2BrineSolubilityStudy</span><span class="p">(</span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">plotH2BrineSolubilityStudy</span><span class="p">(</span><span class="n">study</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong> property-study results and pressure, temperature and salinity
+comparison plots, without reservoir timestepping.
+<strong>Scope:</strong> distinct phase-behavior models and bundled ePC-SAFT reference data;
+this command requires neither PHREEQC nor a live NIST download. New table
+fetching is a separate workflow in <a class="reference internal" href="thermodynamics.html"><span class="doc">Thermodynamics and PVT tabulation</span></a>.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/thermo/exampleH2BrineSolubilityStudy.m">exampleH2BrineSolubilityStudy.m</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-1 sd-row-cols-lg-1 docutils">
 <div class="sd-col sd-d-flex-row docutils">
@@ -400,6 +507,21 @@ ePC-SAFT reference tables. Inspect the route to black-oil PVT tabulation.</p>
 </section>
 <section id="phreeqc-validation">
 <h2>PHREEQC validation<a class="headerlink" href="#phreeqc-validation" title="Link to this heading">¶</a></h2>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span><span class="p">(</span><span class="s">'phreeqc'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
+<span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">runPhreeqcValidation</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'gridCells'</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s">'totalDays'</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="s">'rate'</span><span class="p">,</span><span class="w"> </span><span class="s">'highrate'</span><span class="p">);</span>
+<span class="n">plotCompositionalPhreeqcValidation</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong> H2sim states and diagnostics across injection, storage and
+production, including hydrogen consumption and aqueous chemistry.
+<strong>Scope:</strong> 20 cells, 250 days, high-rate microbial kinetics. No external
+reference checkout is needed for this command. The plotted external reference
+is supplied data; reproducing it requires an explicit <code class="docutils literal notranslate"><span class="pre">referenceRoot</span></code> and
+its separate platform requirements. For a first-step setup check, use
+<code class="docutils literal notranslate"><span class="pre">'totalDays',</span> <span class="pre">2,</span> <span class="pre">'plotResults',</span> <span class="pre">false</span></code> instead.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/1D_validation/runPhreeqcValidation.m">runPhreeqcValidation.m</a>
+and <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/1D_validation/exampleCompositionalPhreeqcValidation.m">exampleCompositionalPhreeqcValidation.m</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-1 sd-row-cols-lg-1 docutils">
 <div class="sd-col sd-d-flex-row docutils">
@@ -415,16 +537,24 @@ pH, DIC, and the three metabolic pathways.</p>
 </div>
 </div>
 </div>
-<figure class="align-default" id="id1">
+<figure class="align-default" id="id2">
 <img alt="Full-cycle hydrogen consumption and dissolved-hydrogen evolution compared with the reference." src="_images/phreeqc_validation_full_cycle.png" style="width: 100%;" />
 <figcaption>
 <p><span class="caption-text">Complete-cycle PHREEQC validation. The source of the reference and the differences
-in chemistry splitting are described in the notebook.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+in chemistry splitting are described in the notebook.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="three-cycle-2d-phreeqc-coupling">
 <h2>Three-cycle 2D PHREEQC coupling<a class="headerlink" href="#three-cycle-2d-phreeqc-coupling" title="Link to this heading">¶</a></h2>
+<p><strong>Run:</strong> <code class="docutils literal notranslate"><span class="pre">exampleCompositionalBacterial2DPhreeqcMinerals</span></code> after chemistry
+startup to run the public layered setup. See <a class="reference internal" href="phreeqc_2d.html"><span class="doc">Three-cycle reactive storage in 2D</span></a> before running.
+<strong>Output:</strong> layered compositional/chemistry simulation output. The web gallery
+uses saved continuation segments and provides consumption histories.
+<strong>Scope:</strong> the default entry point does not reproduce the displayed three-cycle
+comparison. Exact reproduction requires the continuation configurations and
+saved inputs identified in the guide; no small-run timing is recorded.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/experimentals/exampleCompositionalBacterial2DPhreeqcMinerals.m">exampleCompositionalBacterial2DPhreeqcMinerals.m</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-1 sd-row-cols-lg-1 docutils">
 <div class="sd-col sd-d-flex-row docutils">
@@ -442,6 +572,19 @@ pH, and a time-slider animation comparing mobile and cell-local populations.</p>
 </section>
 <section id="short-chemistry-walkthroughs">
 <h2>Short chemistry walkthroughs<a class="headerlink" href="#short-chemistry-walkthroughs" title="Link to this heading">¶</a></h2>
+<p><strong>Mineral setup check:</strong> follow <a class="reference internal" href="quickstart.html#quickstart-chemistry"><span class="std std-ref">Short PHREEQC mineral comparison</span></a> to run four cells
+and two timesteps and redraw the four cases. Expect a microbial baseline plus
+three mineral configurations; backend differences prevent attributing every
+change to minerals alone.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/experimentals/exampleCompositionalBacterial1DPhreeqcMinerals.m">exampleCompositionalBacterial1DPhreeqcMinerals.m</a>.</p>
+<p><strong>Multirate setup check:</strong> after chemistry startup, run
+<code class="docutils literal notranslate"><span class="pre">summary</span> <span class="pre">=</span> <span class="pre">exampleSequentialBiochemistryPhreeqc1D('maximumFlowSteps',</span> <span class="pre">2);</span></code>.
+Expect states and consumption diagnostics for a short prefix with local
+reaction substeps. This does not reproduce the notebook’s saved 250-day
+comparison. The notebook describes the full configuration, downloadable
+histories, audit limitations and redraw workflow. MRST owns microbial kinetics
+here; PHREEQC supplies aqueous equilibrium.
+<strong>Source:</strong> <a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/examples/1D_validation/exampleSequentialBiochemistryPhreeqc1D.m">exampleSequentialBiochemistryPhreeqc1D.m</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
 <div class="sd-col sd-d-flex-row docutils">
@@ -538,6 +681,7 @@ execute MATLAB or require a MATLAB notebook kernel.</p>
             <ul>
 <li><a class="reference internal" href="#">Selected examples and notebooks</a><ul>
 <li><a class="reference internal" href="#choose-how-to-run-an-example">Choose how to run an example</a></li>
+<li><a class="reference internal" href="#run-sizes-and-recorded-timings">Run sizes and recorded timings</a></li>
 <li><a class="reference internal" href="#small-hydrogen-mixing-animation">Small hydrogen-mixing animation</a></li>
 <li><a class="reference internal" href="#storage-in-saline-aquifers">Storage in saline aquifers</a></li>
 <li><a class="reference internal" href="#storage-in-depleted-gas-reservoirs">Storage in depleted gas reservoirs</a></li>

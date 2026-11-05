@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Quick start" href="quickstart.html"><link rel="prev" title="Installation" href="installation.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Choose a model" href="model-selection.html"><link rel="prev" title="Installation" href="installation.html">
         <link rel="canonical" href="https://sintefmath.github.io/h2-sim/dependencies.html">
         <link rel="prefetch" href="_static/h2sim-logo.svg" as="image">
 
@@ -207,6 +207,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model-selection.html">Choose a model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
 </ul>
@@ -293,6 +294,9 @@
         <article role="main" id="furo-main-content">
           <section id="dependencies">
 <h1>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h1>
+<p>For core simulation, install <strong>MATLAB, Git and the pinned MRST submodule</strong>.
+PHREEQC is optional. Use <a class="reference internal" href="model-selection.html"><span class="doc">Choose a model</span></a> to choose a family and follow
+the core-only checkout in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for a first run.</p>
 <p>The standard workflows run serially. Plain <code class="docutils literal notranslate"><span class="pre">startupH2sim</span></code> initializes core
 modules and MRST without checking or fetching chemistry libraries. Request
 <code class="docutils literal notranslate"><span class="pre">startupH2sim('phreeqc',</span> <span class="pre">true)</span></code> only for chemistry workflows, or initialize
@@ -405,12 +409,12 @@ are preserved. Cite <a class="reference external" href="https://doi.org/10.1016/
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="quickstart.html">
+          <a class="next-page" href="model-selection.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Quick start</div>
+                <div class="title">Choose a model</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
