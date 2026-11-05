@@ -305,6 +305,7 @@ controls come from the existing 2D mineral-coupling example. This is an
 illustrative layered model, not a calibrated field forecast.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/b5f359ee96216097e973df4935fcb625/phreeqc_2d_setup.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <div class="table-wrapper docutils container" id="id2">
 <table class="docutils align-default" id="id2">
 <caption><span class="caption-text">Physical setup</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
@@ -318,10 +319,10 @@ illustrative layered model, not a calibrated field forecast.</span><a class="hea
 <td><p>Porosity 0.25; permeability 10 mD</p></td>
 </tr>
 <tr class="row-odd"><td><p>Caprock</p></td>
-<td><p>Porosity 0.10; permeability 0.01 mD</p></td>
+<td><p>Porosity 0.10; permeability 0.0001 mD</p></td>
 </tr>
 <tr class="row-even"><td><p>Bedrock</p></td>
-<td><p>Porosity 0.10; permeability 0.0001 mD</p></td>
+<td><p>Porosity 0.10; permeability 0.01 mD</p></td>
 </tr>
 <tr class="row-odd"><td><p>Temperature</p></td>
 <td><p>317.50 K</p></td>
@@ -342,6 +343,19 @@ chemistry. Neither enables molecular diffusion, mechanical dispersion,
 bacterial diffusion, chemotaxis, or bioclogging. The workflow comparison
 therefore includes changes in kinetic formulation and population transport;
 it does not isolate mineral chemistry alone.</p>
+<section id="movie-preview">
+<h2>Movie preview<a class="headerlink" href="#movie-preview" title="Link to this heading">¶</a></h2>
+<video controls loop muted playsinline preload="metadata" style="width:100%;max-width:1280px" poster="_static/examples/phreeqc_storage.png" aria-label="Dissolved hydrogen and cell-local microbial evolution during three PHREEQC storage cycles">
+  <source src="_static/examples/phreeqc_storage.mp4" type="video/mp4">
+  <a href="_static/examples/phreeqc_storage.gif">View the animated GIF</a>.
+</video><p>This is the compositional PHREEQC workflow from the comparison below.
+It uses the same fixed logarithmic map limits as the explorer, with no
+interpolated fields. The population fields are relative model scales, not
+calibrated cell counts. PHREEQC populations remain cell-local.</p>
+<p>Download the <a class="reference download internal" download="" href="_downloads/fdaf00dd06614014a50af73e82a685af/phreeqc_storage.mp4"><code class="xref download docutils literal notranslate"><span class="pre">MP4</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/42dbf8fb7d7e77cd2608fbb09c565a7d/phreeqc_storage.gif"><code class="xref download docutils literal notranslate"><span class="pre">GIF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/707ecd152ef07bf89ff7bf2bbf6635ba/phreeqc_gallery_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">gallery</span> <span class="pre">provenance</span></code></a>.</p>
+</section>
 <section id="explore-hydrogen-and-microbial-evolution">
 <h2>Explore hydrogen and microbial evolution<a class="headerlink" href="#explore-hydrogen-and-microbial-evolution" title="Link to this heading">¶</a></h2>
 <p>Choose a workflow, press <strong>Play</strong>, or move the time slider. Colors retain the
@@ -369,6 +383,7 @@ contributions; solid curves use PHREEQC, dashed curves use mobile kinetics.
 Dotted lines mark the starts of the three storage cycles.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/0f700f31b0d0e4529ae7f52f77d3c36c/phreeqc_2d_loss.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <p>The final consumed amounts are <strong>6.199 kmol (10.426%)</strong> with compositional
 PHREEQC and <strong>6.818 kmol (11.466%)</strong> with mobile flow–biochemistry. These
 percentages measure metabolic conversion, excluding dissolved or unrecovered
@@ -387,6 +402,7 @@ at every time.</p>
 to inspect the hydrogen plume and its chemical environment.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/9de809482804318f14d90b5b0aeba751/phreeqc_2d_chemistry.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <p>This selected mineral inventory represents Bentheimer sandstone: 2% dolomite
 and 98% inert rock by mass, with no initial calcite.</p>
 <p>The chemical maps complement the bulk consumption curves: hydrogen exposure,
@@ -417,6 +433,21 @@ transport in the separate depleted-reservoir example.</p>
 </div>
 <p>Download the <a class="reference download internal" download="" href="_downloads/366a957543d2975ea8fae2320e8ecbec/histories.csv"><code class="xref download docutils literal notranslate"><span class="pre">consumption</span> <span class="pre">histories</span></code></a>
 and <a class="reference download internal" download="" href="_downloads/c3dd43af82df1bff42278a6261c26484/provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">result</span> <span class="pre">provenance</span></code></a>.</p>
+</section>
+<section id="regenerate-the-gallery-from-saved-comparison-files">
+<h2>Regenerate the gallery from saved comparison files<a class="headerlink" href="#regenerate-the-gallery-from-saved-comparison-files" title="Link to this heading">¶</a></h2>
+<p>The optional Python plotting tools read the three saved result segments per
+workflow and the accepted snapshot state in their packed output folders.
+They do not invoke MATLAB or PHREEQC. Supply a local JSON manifest with
+<code class="docutils literal notranslate"><span class="pre">mobile</span></code> and <code class="docutils literal notranslate"><span class="pre">phreeqc</span></code> arrays, each listing the three result MAT files in
+time order. The manifest contains local input paths and is not published.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>tools/requirements-figures.txt
+python<span class="w"> </span>tools/plot_phreeqc_2d_results.py<span class="w"> </span>--manifest<span class="w"> </span>/path/to/manifest.json
+</pre></div>
+</div>
+<p>The exporter writes the movie, GIF, poster, PNG/PDF figures, explorer data,
+histories and source provenance. It overwrites those gallery assets. The
+source result files and packed states remain unchanged.</p>
 </section>
 </section>
 
@@ -472,10 +503,12 @@ and <a class="reference download internal" download="" href="_downloads/c3dd43af
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Three-cycle reactive storage in 2D</a><ul>
+<li><a class="reference internal" href="#movie-preview">Movie preview</a></li>
 <li><a class="reference internal" href="#explore-hydrogen-and-microbial-evolution">Explore hydrogen and microbial evolution</a></li>
 <li><a class="reference internal" href="#hydrogen-consumption-and-reaction-pathways">Hydrogen consumption and reaction pathways</a></li>
 <li><a class="reference internal" href="#gas-composition-and-aqueous-chemistry">Gas composition and aqueous chemistry</a></li>
 <li><a class="reference internal" href="#use-the-existing-example">Use the existing example</a></li>
+<li><a class="reference internal" href="#regenerate-the-gallery-from-saved-comparison-files">Regenerate the gallery from saved comparison files</a></li>
 </ul>
 </li>
 </ul>

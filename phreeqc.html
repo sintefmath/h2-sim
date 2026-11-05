@@ -293,6 +293,34 @@
         <article role="main" id="furo-main-content">
           <section id="phreeqc-coupling">
 <h1>PHREEQC coupling<a class="headerlink" href="#phreeqc-coupling" title="Link to this heading">¶</a></h1>
+<p>PHREEQC adds aqueous chemistry and mineral feedback to hydrogen-storage
+workflows. This animation follows the saved <strong>three-cycle 2D compositional
+PHREEQC case</strong>, using the presentation shared by <a class="reference internal" href="hydrogen-anticline.html"><span class="doc">Anticlinal hydrogen storage</span></a>,
+<a class="reference internal" href="store.html"><span class="doc">Hydrogen storage in saline aquifers</span></a>, and <a class="reference internal" href="biochem.html"><span class="doc">Hydrogen storage in depleted gas reservoirs</span></a>.</p>
+<video controls loop muted playsinline preload="metadata" style="width:100%;max-width:1280px" poster="_static/examples/phreeqc_storage.png" aria-label="Dissolved hydrogen and cell-local microbial evolution during three PHREEQC storage cycles">
+  <source src="_static/examples/phreeqc_storage.mp4" type="video/mp4">
+  <a href="_static/examples/phreeqc_storage.gif">View the animated GIF</a>.
+</video><p>The maps show <strong>liquid-phase H₂ mole fraction</strong> and the MET, ACE and SRB
+population scales relative to their initial value. All four maps use fixed
+<strong>log₁₀ scales</strong> shared with the interactive explorer. Before taking logarithms,
+values are floored at 10⁻¹² for H₂ mole fraction and 10⁻⁶ for population/initial.
+These safeguards affect rendering, not the stored chemistry. PHREEQC populations are cell-local:
+their spatial changes represent growth and decay, rather than transport or
+trajectories of individual organisms.</p>
+<p>The movie uses selected accepted states from the 347.4-day comparison,
+retaining each operating-stage endpoint without interpolating fields.
+Labelled simulation times are uneven; frames have equal playback duration.
+The first frame is the first saved accepted state, not an invented initial
+state. The section has no vertical exaggeration. The consumption curve uses
+cumulative prescribed injection as its denominator; the rate panel shows
+prescribed surface gas rates, not measured well-component fluxes.</p>
+<p>Download the <a class="reference download internal" download="" href="_downloads/fdaf00dd06614014a50af73e82a685af/phreeqc_storage.mp4"><code class="xref download docutils literal notranslate"><span class="pre">MP4</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/42dbf8fb7d7e77cd2608fbb09c565a7d/phreeqc_storage.gif"><code class="xref download docutils literal notranslate"><span class="pre">GIF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/707ecd152ef07bf89ff7bf2bbf6635ba/phreeqc_gallery_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">gallery</span> <span class="pre">provenance</span></code></a>.
+<a class="reference internal" href="phreeqc_2d.html"><span class="doc">Three-cycle reactive storage in 2D</span></a> retains the interactive workflow comparison and complete
+2D setup. The 250-day 1D validation below is a separate case with a different
+consumption normalization. This presentation update redraws saved results;
+it does not rerun chemistry or resolve the reported audit limitations.</p>
 <section id="platform-support">
 <h2>Platform support<a class="headerlink" href="#platform-support" title="Link to this heading">¶</a></h2>
 <p>H2sim supports both sequential backends on <strong>Linux
@@ -372,6 +400,7 @@ and unrecovered gas are excluded.</p>
 Vertical lines mark the day-50 and day-200 control changes.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/95f009d63a8589668920bfad670b9603/phreeqc_validation_full_cycle.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <div class="table-wrapper docutils container" id="id3">
 <table class="docutils align-default" id="id3">
 <caption><span class="caption-text">Consumed hydrogen (% of total prescribed injection)</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
@@ -413,6 +442,7 @@ inorganic-carbon molality, not only dissolved CO₂; the reference records
 it directly from PHREEQC selected output.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/28a76cd058cdbf78ef2036df01f551ca/phreeqc_geochemistry_full_cycle.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <p>The pH and DIC fronts show how reactive aqueous chemistry evolves throughout
 injection, storage, and production. Similar bulk consumption does not imply
 identical spatial chemistry. The compositional run records 87 cell-step
@@ -430,6 +460,8 @@ prescribed hydrogen injection. Their sum equals the total-consumption
 curve for the corresponding implementation.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/f199dc3ef35596ed7ac19c89d3540fe1/phreeqc_reaction_loss_full_cycle.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/b711e5652c2f7e55b00d79c5e146af32/phreeqc_loss_history.csv"><code class="xref download docutils literal notranslate"><span class="pre">validation</span> <span class="pre">data</span></code></a>.</p>
 <p>At day 250, the compositional contributions are 33.357% (MET), 5.092% (ACE),
 and 0.408% (SRB), compared with 32.439%, 4.879%, and 0.386% in the reference.
 All plots use the full 0–250-day interval. Setups and accepted outputs remain
@@ -550,6 +582,7 @@ splitting; this is not a convergence test of reaction substepping alone.</p>
 Percentages use total prescribed injection as a fixed denominator.</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/2ef2ea131b40f2507a566103678ecc39/multirate_full_cycle_loss.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <figure class="align-default" id="id7">
 <img alt="PHREEQC pH and dissolved inorganic carbon spatial medians and minimum–maximum ranges over 250 days." src="_images/multirate_full_cycle_chemistry_history.png" style="width: 100%;" />
 <figcaption>
@@ -558,6 +591,7 @@ range. The notebook also compares pH and DIC space-time maps and reports
 the available conservation diagnostics.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/15481b38454de8942ae3483e030b343f/multirate_full_cycle_chemistry_history.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">PDF</span></code></a>.</p>
 <p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/multirate_reactions.html"><span class="doc">Open the full-cycle multirate comparison →</span></a></p>
 </section>
 <section id="three-cycle-2d-storage">
@@ -595,6 +629,8 @@ a difference is not automatically a mineral or pH effect.</p>
 </div>
 <p>Paired states and timings are saved under <code class="docutils literal notranslate"><span class="pre">build/phreeqc-performance</span></code>.
 Compare states and diagnostics before interpreting runtime improvements.</p>
+<p>The <a class="reference download internal" download="" href="_downloads/85e3912f3b123fb8cc261097a9730329/model-presentation.md"><code class="xref download docutils literal notranslate"><span class="pre">Model</span> <span class="pre">presentation</span> <span class="pre">guide</span></code></a> records the
+shared figure and animation conventions.</p>
 </section>
 </section>
 
