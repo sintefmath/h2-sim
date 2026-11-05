@@ -314,20 +314,55 @@ hydrogen build-up, a 30-day shut-in, then five 70-day storage cycles
 saved through MRST packed simulation output and can be replotted locally.
 Withdrawal has a 35 bar minimum bottom-hole pressure limit, so the well can
 reduce its rate as available hydrogen decreases.</p>
+<video controls loop muted playsinline preload="metadata" style="width:100%;max-width:1280px" poster="_static/examples/aquifer_storage.png" aria-label="Simulated hydrogen injection, shut-in and withdrawal in a saline aquifer">
+  <source src="_static/examples/aquifer_storage.mp4" type="video/mp4">
+  <a href="_static/examples/aquifer_storage.gif">View the animated GIF</a>.
+</video><p>The animation follows the same presentation as <a class="reference internal" href="hydrogen-anticline.html"><span class="doc">Anticlinal hydrogen storage</span></a>:
+fixed saturation limits, labelled operating stages, and a history of retained
+hydrogen. The orange inventory curve shows dissolved hydrogen, which remains
+inside the model. The rate panel uses positive injection and negative withdrawal.
+Initial and accepted states are selected by physical time, retaining every
+operating-stage endpoint, without interpolation. Labelled simulation times are
+uneven; playback is not real time. The 2D section has no vertical exaggeration.
+The saturation range is fixed across this case’s frames and snapshots; its
+upper limit comes from this simulation, rather than the anticline case.</p>
+<p>Download the <a class="reference download internal" download="" href="_downloads/82e4cd875ef01e63c42b20e620d39fbb/aquifer_storage.mp4"><code class="xref download docutils literal notranslate"><span class="pre">MP4</span></code></a>,
+<a class="reference download internal" download="" href="_downloads/921eca7b1624a8b133596db0bace27d5/aquifer_storage.gif"><code class="xref download docutils literal notranslate"><span class="pre">GIF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/15f71b16cc17e25322b7a45d547c1636/aquifer_gallery_provenance.json"><code class="xref download docutils literal notranslate"><span class="pre">provenance</span> <span class="pre">record</span></code></a>.</p>
+<section id="geological-structure">
+<h3>Geological structure<a class="headerlink" href="#geological-structure" title="Link to this heading">¶</a></h3>
 <figure class="align-default" id="id1">
-<img alt="Hydrogen gas saturation in the 2D aquifer after build-up, injection, and withdrawal." src="_images/aquifer_plume.png" style="width: 100%;" />
+<img alt="Curved caprock above the aquifer reservoir, bedrock below and well completion beneath the crest." src="_images/aquifer_geology.png" style="width: 100%;" />
 <figcaption>
-<p><span class="caption-text">Hydrogen plume snapshots after build-up and in the fifth cycle. The same saturation
-color scale is used in every panel.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The three rock regions and the actual completion cells in the teaching grid.
+Elevation increases upward; distances are in metres.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/30603f6fd8596ee14db9675256f80253/aquifer_geology.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="plume-development">
+<h3>Plume development<a class="headerlink" href="#plume-development" title="Link to this heading">¶</a></h3>
 <figure class="align-default" id="id2">
+<img alt="Hydrogen gas saturation after build-up and after injection and withdrawal in the fifth cycle." src="_images/aquifer_plume.png" style="width: 100%;" />
+<figcaption>
+<p><span class="caption-text">Saved-state snapshots use the animation’s saturation palette and fixed
+limits. Labels show actual simulation times.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference download internal" download="" href="_downloads/311c6279783aed93a108affb32de06f7/aquifer_plume.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
+<section id="operating-response">
+<h3>Operating response<a class="headerlink" href="#operating-response" title="Link to this heading">¶</a></h3>
+<figure class="align-default" id="id3">
 <img alt="Gas surface rate and bottom-hole pressure over the aquifer build-up and storage cycle." src="_images/aquifer_well_response.png" style="width: 100%;" />
 <figcaption>
 <p><span class="caption-text">Well response through the prescribed storage schedule. Positive gas rate
-denotes injection and negative gas rate denotes withdrawal.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+denotes injection and negative gas rate denotes withdrawal. Rates are
+constant over each completed schedule interval; inactive-well BHP is omitted.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/6cd42bbf5dd362cd6a41600f843fc302/aquifer_well_response.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a>.</p>
+</section>
 <section id="hydrogen-loss-due-to-dissolution">
 <h3>Hydrogen loss due to dissolution<a class="headerlink" href="#hydrogen-loss-due-to-dissolution" title="Link to this heading">¶</a></h3>
 <p>Dissolution transfers hydrogen from the free-gas plume into brine. We report
@@ -346,13 +381,27 @@ surface conditions. This metric describes loss from the free-gas inventory;
 it is not cumulative loss relative to injected hydrogen or irreversible
 consumption. Hydrogen can exsolve during pressure decline, and the fraction
 can increase during withdrawal as the free-gas inventory decreases.</p>
-<figure class="align-default" id="id3">
+<figure class="align-default" id="id4">
 <img alt="Dissolved hydrogen volume and dissolved fraction of retained hydrogen over five storage cycles." src="_images/aquifer_dissolution.png" style="width: 100%;" />
 <figcaption>
 <p><span class="caption-text">Hydrogen partitioned into brine throughout build-up and cycling (left),
-with the dissolved share shown over the cycling period (right).</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+with the dissolved share shown over the cycling period (right).</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/5a85900d2d9e97e11e013d3854bde589/aquifer_dissolution.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/88db505e284bf8ff5b0538f89b8daeb8/aquifer_dissolution.csv"><code class="xref download docutils literal notranslate"><span class="pre">inventory</span> <span class="pre">data</span> <span class="pre">(CSV)</span></code></a>.</p>
+<p>Reproduce the animation and figures from the same result:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">startupH2sim</span>
+<span class="s">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">exampleBlackOilAquifer2D</span><span class="p">(</span><span class="s">'numCycles'</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">'plotResults'</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">output</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="s">'build'</span><span class="p">,</span><span class="w"> </span><span class="s">'aquifer-gallery'</span><span class="p">);</span>
+<span class="n">animateBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">'frameRate'</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">'maxFrames'</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+<span class="n">plotBlackOilAquifer2D</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">);</span>
+<span class="n">plotAquiferFluidTables</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="s">'outputDirectory'</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">'writeVideo',</span> <span class="pre">false</span></code> when the MPEG-4 VideoWriter profile is unavailable.
+The GIF and poster remain available. Plotting and animation functions only read
+saved results; they do not rerun flow or alter the physical model.</p>
 <p><a class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" href="notebooks/blackoil_storage.html"><span class="doc">Open the 2D aquifer notebook →</span></a></p>
 </section>
 </section>
@@ -373,17 +422,21 @@ in saline aquifers</em> (2024). Input provenance is recorded in
 solubility, and PVT generation. New NIST data tables require network access.
 See <a class="reference internal" href="thermodynamics.html"><span class="doc">Thermodynamics and PVT tabulation</span></a> for RK, SW, Henry–Setschenow, ePC-SAFT reference
 comparisons, and the route from phase behavior to black-oil tables.</p>
-<figure class="align-default" id="id4">
+<figure class="align-default" id="id5">
 <img alt="Solution ratio, gas and liquid formation-volume factors, and gas viscosity versus pressure." src="_images/aquifer_fluid_tables.png" style="width: 100%;" />
 <figcaption>
 <p><span class="caption-text">PVT functions from the bundled aquifer input, evaluated over 30–50 bar.
-These are the existing simulation tables, not newly generated NIST data.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+These are the existing simulation tables, not newly generated NIST data.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p><a class="reference download internal" download="" href="_downloads/a866408991bc7bc24d56e816bbb5151b/aquifer_fluid_tables.pdf"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">vector</span> <span class="pre">PDF</span></code></a> or
+<a class="reference download internal" download="" href="_downloads/3325628c1c3c944781ddb383f6a9c6e0/aquifer_fluid_tables.csv"><code class="xref download docutils literal notranslate"><span class="pre">fluid</span> <span class="pre">data</span> <span class="pre">(CSV)</span></code></a>.</p>
 <p>Replot the fluid properties from a saved aquifer result:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">plotAquiferFluidTables</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>For contributors, the <a class="reference download internal" download="" href="_downloads/85e3912f3b123fb8cc261097a9730329/model-presentation.md"><code class="xref download docutils literal notranslate"><span class="pre">Model</span> <span class="pre">presentation</span> <span class="pre">guide</span></code></a>
+records the figure and animation conventions used on this page.</p>
 </section>
 </section>
 
@@ -440,6 +493,9 @@ These are the existing simulation tables, not newly generated NIST data.</span><
             <ul>
 <li><a class="reference internal" href="#">Hydrogen storage in saline aquifers</a><ul>
 <li><a class="reference internal" href="#a-2d-structural-trap-example">A 2D structural-trap example</a><ul>
+<li><a class="reference internal" href="#geological-structure">Geological structure</a></li>
+<li><a class="reference internal" href="#plume-development">Plume development</a></li>
+<li><a class="reference internal" href="#operating-response">Operating response</a></li>
 <li><a class="reference internal" href="#hydrogen-loss-due-to-dissolution">Hydrogen loss due to dissolution</a></li>
 </ul>
 </li>
