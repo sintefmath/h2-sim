@@ -1,0 +1,617 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Discretization and coupling" href="numerical-methods.html"><link rel="prev" title="Biochemistry" href="biochemistry-model.html">
+        <link rel="canonical" href="https://sintefmath.github.io/h2-sim/geochemistry-model.html">
+        <link rel="prefetch" href="_static/h2sim-logo.svg" as="image">
+
+    <link rel="shortcut icon" href="_static/h2sim-icon.svg"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Geochemistry - H2sim · Hydrogen storage modeling</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=bc7fc180" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #087f82;
+  --color-brand-content: #087579;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6cddd2;
+  --color-brand-content: #6cddd2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6cddd2;
+  --color-brand-content: #6cddd2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">H2sim · Hydrogen storage modeling</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+<div class="sidebar-logo-container">
+  <img class="sidebar-logo only-light" src="_static/h2sim-logo.svg" alt="H2sim home"/>
+  <img class="sidebar-logo only-dark" src="_static/h2sim-logo-on-dark.svg" alt="H2sim home"/>
+</div>
+
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model-selection.html">Choose a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verification.html">Local verification</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mathematical models</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modeling.html">Mathematical models</a><input aria-label="Toggle navigation of Mathematical models" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="black-oil-model.html">Black-oil model</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="compositional-model.html">Compositional model</a><input aria-label="Toggle navigation of Compositional model" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="phase-behavior.html">Phase behavior and fluid properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="biochemistry-model.html">Biochemistry</a></li>
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Geochemistry</a><input aria-label="Toggle navigation of Geochemistry" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="numerical-methods.html">Discretization and coupling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Storage workflows</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hydrogen-anticline.html">Anticlinal hydrogen storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="store.html">Hydrogen storage in saline aquifers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biochem.html">Hydrogen storage in depleted gas reservoirs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="phreeqc.html">PHREEQC coupling</a><input aria-label="Toggle navigation of PHREEQC coupling" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="phreeqc_2d.html">Three-cycle reactive storage in 2D</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn and explore</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="thermodynamics.html">Thermodynamics and PVT tabulation</a><input aria-label="Toggle navigation of Thermodynamics and PVT tabulation" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/thermodynamics.html">Hydrogen–brine phase behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Selected examples and notebooks</a><input aria-label="Toggle navigation of Selected examples and notebooks" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="hydrogen-mixing.html">Hydrogen–methane mixing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/blackoil_storage.html">2D hydrogen storage in an aquifer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/bacterial_storage_2d.html">2D compositional storage with three reactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nblinks/simple1DBacterialExampleMetacet.html">Closed-system microbial reactions in a 1D compositional model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/phreeqc_validation.html">Complete-cycle PHREEQC validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/mineral_comparison.html">Mineral chemistry setup check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/multirate_reactions.html">Separate flow and reaction timescales</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Research &amp; community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications &amp; presentations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">News &amp; events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community &amp; support</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Code reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Reference lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="website-statistics.html">Visitor statistics</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/sintefmath/h2-sim/blob/master/doc/geochemistry-model.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/sintefmath/h2-sim/edit/master/doc/geochemistry-model.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="geochemistry">
+<h1>Geochemistry<a class="headerlink" href="#geochemistry" title="Link to this heading">¶</a></h1>
+<p>Geochemistry adds aqueous speciation, acid-base reactions and configured
+mineral dissolution/precipitation to the compositional and microbial
+models. It is a <strong>cell-local chemical calculation</strong>, coupled to MRST’s
+reservoir transport. It is not a replacement for the
+<a class="reference internal" href="compositional-model.html"><span class="doc">Compositional model</span></a> or an additional copy of its reaction sources.</p>
+<p>H2sim uses PHREEQC with the bundled <code class="docutils literal notranslate"><span class="pre">h2_biogeochemistry.dat</span></code> database.
+The selected inventory, redox bookkeeping and activity model define the
+chemical problem. The storage examples and backend comparisons are on
+<a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a>. The published compositional/biochemical starting point is
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="bibliography.html#id6" title="Elyes Ahmed, Brahim Amaziane, Salaheddine Chabab, Stéphanie Delage Santacreu, Guillaume Galliéro, Olav Møyner, and Xavier Raynaud. Modeling and simulation of coupled biochemical and two-phase compositional flow in underground hydrogen storage. International Journal of Hydrogen Energy, 168:150947, 2025. URL: https://doi.org/10.1016/j.ijhydene.2025.150947, doi:10.1016/j.ijhydene.2025.150947.">AAC+25</a>]</span>; the PHREEQC framework and a related UHS
+coupling approach are described in <span class="bibtex-citation" id="id2">[<a class="reference internal" href="bibliography.html#id8" title="David L. Parkhurst and C. A. J. Appelo. User's guide to phreeqc (version 2): a computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations. Technical Report, U.S. Geological Survey, 1999.">PA99</a>, <a class="reference internal" href="bibliography.html#id7" title="A. Shojaee, S. Ghanbari, G. Wang, S. Gregory, N. Dopffel, and E. Mackay. New flow simulation framework for underground hydrogen storage modelling considering microbial and geochemical reactions. International Journal of Hydrogen Energy, 159:150453, 2025. URL: https://doi.org/10.1016/j.ijhydene.2025.150453, doi:10.1016/j.ijhydene.2025.150453.">SGW+25</a>]</span>.</p>
+<section id="aqueous-mass-action-and-activities">
+<h2>Aqueous mass action and activities<a class="headerlink" href="#aqueous-mass-action-and-activities" title="Link to this heading">¶</a></h2>
+<p>For an equilibrium reaction <span class="math notranslate nohighlight">\(r\)</span> written with signed species
+coefficients <span class="math notranslate nohighlight">\(\nu_{sr}\)</span>, mass action requires</p>
+<div class="math-wrapper docutils container" id="equation-aqueous-mass-action">
+<div class="math notranslate nohighlight" id="equation-aqueous-mass-action">
+<span class="eqno">(1)<a class="headerlink" href="#equation-aqueous-mass-action" title="Link to this equation">¶</a></span>\[K_r(T,p)=\prod_s a_s^{\nu_{sr}},
+\qquad a_s=\gamma_s\frac{m_s}{m^\circ}.\]</div>
+</div>
+<p><span class="math notranslate nohighlight">\(m_s\)</span> is aqueous molality in mol/kg water,
+<span class="math notranslate nohighlight">\(m^\circ=1\ \mathrm{mol/kgw}\)</span> is the standard molality,
+and <span class="math notranslate nohighlight">\(\gamma_s\)</span> is the activity coefficient from the selected
+database/activity formulation. Activity is dimensionless.
+Water activity is treated according to that formulation, rather than
+being identified with a solute molality.</p>
+<p>Representative equilibria are</p>
+<div class="math-wrapper docutils container" id="equation-aqueous-speciation">
+<div class="math notranslate nohighlight" id="equation-aqueous-speciation">
+<span class="eqno">(2)<a class="headerlink" href="#equation-aqueous-speciation" title="Link to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\mathrm{H_2O}
+  &amp;\rightleftharpoons \mathrm{H^+}+\mathrm{OH^-},\\
+\mathrm{CO_2(aq)}+\mathrm{H_2O}
+  &amp;\rightleftharpoons \mathrm{H^+}+\mathrm{HCO_3^-},\\
+\mathrm{HCO_3^-}
+  &amp;\rightleftharpoons \mathrm{H^+}+\mathrm{CO_3^{2-}},\\
+\mathrm{H_2S(aq)}
+  &amp;\rightleftharpoons \mathrm{H^+}+\mathrm{HS^-}.
+\end{aligned}\end{split}\]</div>
+</div>
+<p>These reactions redistribute an analytical total among species.
+For example, dissolved inorganic carbon is not just free CO2:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[m_{\mathrm{DIC}}
+  =m_{\mathrm{CO_2(aq)}}+m_{\mathrm{HCO_3^-}}
+   +m_{\mathrm{CO_3^{2-}}}
+   +\text{carbon in aqueous complexes}.\]</div>
+</div>
+<p>The hydrogen-ion activity defines <span class="math notranslate nohighlight">\(\mathrm{pH}=-\log_{10}a_{\mathrm{H^+}}\)</span>.
+Changing pH changes substrate availability and sulfide speciation, even
+when the corresponding analytical total is unchanged.</p>
+</section>
+<section id="element-and-charge-bookkeeping">
+<h2>Element and charge bookkeeping<a class="headerlink" href="#element-and-charge-bookkeeping" title="Link to this heading">¶</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(W\)</span> be the cell’s liquid-water mass in kg, <span class="math notranslate nohighlight">\(A_{es}\)</span>
+the amount of element <span class="math notranslate nohighlight">\(e\)</span> in species <span class="math notranslate nohighlight">\(s\)</span>, and
+<span class="math notranslate nohighlight">\(n_m,n_g\)</span> mineral and gas amounts in mol. A closed local
+equilibrium calculation redistributes a fixed elemental inventory:</p>
+<div class="math-wrapper docutils container" id="equation-geochemical-element-balance">
+<div class="math notranslate nohighlight" id="equation-geochemical-element-balance">
+<span class="eqno">(3)<a class="headerlink" href="#equation-geochemical-element-balance" title="Link to this equation">¶</a></span>\[N_e^{\mathrm{tot}}
+  =W\sum_s A_{es}m_s
+   +\sum_m A_{em}n_m
+   +\sum_g A_{eg}n_g.\]</div>
+</div>
+<p>Gas terms apply only when that local chemistry workflow exchanges gas;
+prescribed open reservoirs or kinetic transfers need their corresponding
+inventory terms. Ionic charge is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[q_{\mathrm{aq}}=\sum_s z_s^{\mathrm{ion}}m_s,\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(z_s^{\mathrm{ion}}\)</span> is ionic charge, not overall
+composition. Electroneutral input has <span class="math notranslate nohighlight">\(q_{\mathrm{aq}}=0\)</span>;
+the PHREEQC input determines whether a component or pH is adjusted to
+enforce that condition. The current coupling builders write a prescribed
+initial pH with <code class="docutils literal notranslate"><span class="pre">#charge</span></code> commented out. They must not be interpreted
+as automatically charge-balancing the initial solution by adjusting pH.
+The transported analytical totals and PHREEQC’s selected outputs provide
+the basis for element/charge diagnostics.</p>
+</section>
+<section id="mineral-equilibrium">
+<h2>Mineral equilibrium<a class="headerlink" href="#mineral-equilibrium" title="Link to this heading">¶</a></h2>
+<p>For mineral <span class="math notranslate nohighlight">\(m\)</span>, the saturation index is</p>
+<div class="math-wrapper docutils container" id="equation-mineral-saturation">
+<div class="math notranslate nohighlight" id="equation-mineral-saturation">
+<span class="eqno">(4)<a class="headerlink" href="#equation-mineral-saturation" title="Link to this equation">¶</a></span>\[SI_m=\log_{10}
+    \left(\frac{\mathrm{IAP}_m}{K_m}\right).\]</div>
+</div>
+<p><span class="math notranslate nohighlight">\(\mathrm{IAP}_m\)</span> is the ion-activity product of the dissolution
+reaction and <span class="math notranslate nohighlight">\(K_m\)</span> its equilibrium constant.
+A present equilibrium mineral at a zero target saturation index has
+<span class="math notranslate nohighlight">\(SI_m=0\)</span>. A finite mineral inventory can be exhausted; equilibrium
+does not provide an unlimited source of carbon, sulfate or cations.
+Whether precipitation is permitted is controlled by the phase
+definition and coupling input.</p>
+<p>Examples of dissolution reactions are</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mathrm{CaCO_3(s)}
+  &amp;\rightleftharpoons\mathrm{Ca^{2+}}+\mathrm{CO_3^{2-}},\\
+\mathrm{CaMg(CO_3)_2(s)}
+  &amp;\rightleftharpoons\mathrm{Ca^{2+}}+\mathrm{Mg^{2+}}
+                    +2\,\mathrm{CO_3^{2-}},\\
+\mathrm{CaSO_4(s)}
+  &amp;\rightleftharpoons\mathrm{Ca^{2+}}+\mathrm{SO_4^{2-}}.
+\end{aligned}\end{split}\]</div>
+</div>
+<p>Calcite and dolomite can buffer inorganic carbon and pH. Anhydrite can
+replenish sulfate used by SRB. The mineral assemblage and initial
+amounts are case inputs, not a universal sandstone composition.
+Equilibrium phases are distinct from the optional kinetic anhydrite
+source in the reduced microbial model.</p>
+</section>
+<section id="cell-local-phreeqc-kinetics">
+<h2>Cell-local PHREEQC kinetics<a class="headerlink" href="#cell-local-phreeqc-kinetics" title="Link to this heading">¶</a></h2>
+<p>The compositional PHREEQC backend expresses microbial rates on a
+water-mass basis. With kinetic biomass amount <span class="math notranslate nohighlight">\(B_j\)</span>, a
+double-Monod form is</p>
+<div class="math-wrapper docutils container" id="equation-phreeqc-monod">
+<div class="math notranslate nohighlight" id="equation-phreeqc-monod">
+<span class="eqno">(5)<a class="headerlink" href="#equation-phreeqc-monod" title="Link to this equation">¶</a></span>\[\mu_j=\mu_{\max,j}
+  \frac{m_{\mathrm{H_2}}}{K_{\mathrm{H_2},j}+m_{\mathrm{H_2}}}
+  \frac{\widehat m_{s,j}}{K_{s,j}+\widehat m_{s,j}}
+  f_{T,j}f_{\mathrm{pH},j}f_{\mathrm{TDS},j},\]</div>
+</div>
+<div class="math-wrapper docutils container" id="equation-phreeqc-kinetics">
+<div class="math notranslate nohighlight" id="equation-phreeqc-kinetics">
+<span class="eqno">(6)<a class="headerlink" href="#equation-phreeqc-kinetics" title="Link to this equation">¶</a></span>\[r_{\mathrm{H_2},j}^{w}
+   =\frac{\mu_j B_j}{Y_j},\qquad
+\frac{\mathrm d B_j}{\mathrm dt}
+   =Y_j r_{\mathrm{H_2},j}^{w}-b_j B_j .\]</div>
+</div>
+<p><span class="math notranslate nohighlight">\(B_j\)</span> is mol of kinetic biomass per kg water,
+<span class="math notranslate nohighlight">\(Y_j\)</span> is mol biomass per mol consumed H2 and
+<span class="math notranslate nohighlight">\(r_{\mathrm{H_2},j}^{w}\)</span> is
+<span class="math notranslate nohighlight">\(\mathrm{mol\ H_2/(kgw\,s)}\)</span>.
+The implemented kinetic blocks use dissolved H2 molality and total
+carbonate(4) for MET/ACE; the SRB co-substrate factor uses the free
+sulfate-species molality. Temperature, pH and total dissolved solids
+modify growth through population-specific response functions.
+Biomass caps and substrate inventories also constrain the update.</p>
+<p>These concentration and biomass bases differ from the
+<a class="reference internal" href="biochemistry-model.html"><span class="doc">Biochemistry</span></a>. Substituting a mole-fraction half-saturation
+constant into a molality law, or transferring a yield without its
+population conversion, changes the model.</p>
+</section>
+<section id="what-each-coupling-workflow-exchanges">
+<h2>What each coupling workflow exchanges<a class="headerlink" href="#what-each-coupling-workflow-exchanges" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-given docutils container" id="id3">
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Chemical ownership and gas handoff</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 24.0%" />
+<col style="width: 36.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Workflow</p></th>
+<th class="head"><p>Microbial reactions</p></th>
+<th class="head"><p>Local gas-liquid treatment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Compositional PHREEQC</p></td>
+<td><p>PHREEQC <code class="docutils literal notranslate"><span class="pre">RATES</span></code> / <code class="docutils literal notranslate"><span class="pre">KINETICS</span></code>; overlapping MRST sources disabled</p></td>
+<td><p>Fixed-volume PHREEQC gas phase repartitions passed volatile totals;
+the reservoir state is subsequently reconstructed with the EOS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Multirate PHREEQC</p></td>
+<td><p>H2sim bounded local kinetics between coarse flow steps</p></td>
+<td><p>Aqueous/mineral equilibrium only, without <code class="docutils literal notranslate"><span class="pre">GAS_PHASE</span></code>;
+gas-liquid partitioning stays with the EOS</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In the compositional kinetic call, volatile inventories include the
+passed gas and dissolved shares, normalized per kg water. It is
+incorrect to describe that local calculation as aqueous-only.
+In the multirate equilibrium call, only the <strong>dissolved</strong> CO2 and H2S
+shares contribute to the aqueous carbon and sulfide handoff. H2, CH4
+and N2 are not exchanged with PHREEQC in that equilibrium call.
+Keeping the multirate call aqueous-only avoids repeatedly repartitioning
+gas with two competing phase models and spuriously driving mineral
+dissolution.</p>
+<p>The update is a local map of transported/ reacted fluid state, aqueous
+totals and mineral amounts:</p>
+<div class="math-wrapper docutils container" id="equation-geochemical-map">
+<div class="math notranslate nohighlight" id="equation-geochemical-map">
+<span class="eqno">(7)<a class="headerlink" href="#equation-geochemical-map" title="Link to this equation">¶</a></span>\[(\mathbf U^+,\mathbf C^+,\mathbf n_m^+)
+   =\mathcal E_{\mathrm{ph}}
+       (\mathbf U^*,\mathbf C^*,\mathbf n_m^*).\]</div>
+</div>
+<p>The map adds no second microbial source when it is an equilibrium-only
+call. <a class="reference internal" href="numerical-methods.html"><span class="doc">Discretization and coupling</span></a> specifies the ordering of flow,
+kinetics, equilibrium and multirate substeps.</p>
+</section>
+<section id="implementation-and-limits">
+<h2>Implementation and limits<a class="headerlink" href="#implementation-and-limits" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/utils/runSequentialCompositionalPhreeqcCoupling.m">runSequentialCompositionalPhreeqcCoupling</a>:
+kinetic blocks, unit-water basis, volatile gas handoff and selected outputs.</p></li>
+<li><p><a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/utils/runSequentialH2BiochemPhreeqcEquilibrium.m">runSequentialH2BiochemPhreeqcEquilibrium</a>:
+aqueous-only equilibrium, mineral inventory and feedback.</p></li>
+<li><p><a class="reference external" href="https://github.com/sintefmath/h2-sim/blob/master/h2-biochem/database/h2_biogeochemistry.dat">h2_biogeochemistry.dat</a>:
+species, equilibrium constants and activity parameters.</p></li>
+</ul>
+<p>Local element audits and reservoir inventory checks are necessary:
+nonlinear convergence of flow is not evidence that the chemical handoff
+conserves every element. The recorded <a class="reference internal" href="phreeqc.html"><span class="doc">PHREEQC coupling</span></a> comparisons retain
+their measured audit failures and splitting limitations.
+Neither mineral speciation nor a porosity modifier alone constitutes a
+coupled geomechanical model.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="numerical-methods.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Discretization and coupling</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="biochemistry-model.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Biochemistry</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Geochemistry</a><ul>
+<li><a class="reference internal" href="#aqueous-mass-action-and-activities">Aqueous mass action and activities</a></li>
+<li><a class="reference internal" href="#element-and-charge-bookkeeping">Element and charge bookkeeping</a></li>
+<li><a class="reference internal" href="#mineral-equilibrium">Mineral equilibrium</a></li>
+<li><a class="reference internal" href="#cell-local-phreeqc-kinetics">Cell-local PHREEQC kinetics</a></li>
+<li><a class="reference internal" href="#what-each-coupling-workflow-exchanges">What each coupling workflow exchanges</a></li>
+<li><a class="reference internal" href="#implementation-and-limits">Implementation and limits</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"loader": {"load": ["[tex]/mhchem"]}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "packages": {"[+]": ["mhchem"]}}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="_static/js/community.js?v=d9e2ea3f"></script>
+    <script defer="defer" src="_static/js/accessibility.js?v=043da814"></script>
+    <script data-do-not-track="true" data-domains="sintefmath.github.io" data-exclude-hash="true" data-exclude-search="true" data-website-id="aeb4cd9c-9e16-4992-aa40-c418b160424a" defer="defer" src="https://cloud.umami.is/script.js"></script>
+    </body>
+</html>
