@@ -314,17 +314,17 @@
 </div>
 <section id="Plume-and-well-response">
 <h2>Plume and well response<a class="headerlink" href="#Plume-and-well-response" title="Link to this heading">¶</a></h2>
-<p><img alt="Hydrogen gas saturation after build-up and after injection and withdrawal in the fifth cycle." src="../_static/examples/aquifer_plume.png" /></p>
-<p class="figure-access"><a class="reference external" href="../_static/examples/aquifer_plume.png">Open full-size<span class="figure-access-context"> — Hydrogen gas saturation after build-up and after injection and withdrawal in the fifth cycle.</span></a> · <a class="reference download external" download="" href="../_static/examples/aquifer_plume.pdf">Download PDF<span class="figure-access-context"> — Hydrogen gas saturation after build-up and after injection and withdrawal in the fifth cycle.</span></a></p>
-<p><img alt="Gas surface rate and bottom-hole pressure over the aquifer build-up and storage cycle." src="../_static/examples/aquifer_well_response.png" /></p>
-<p class="figure-access"><a class="reference external" href="../_static/examples/aquifer_well_response.png">Open full-size<span class="figure-access-context"> — Gas surface rate and bottom-hole pressure over the aquifer build-up and storage cycle.</span></a> · <a class="reference download external" download="" href="../_static/examples/aquifer_well_response.pdf">Download PDF<span class="figure-access-context"> — Gas surface rate and bottom-hole pressure over the aquifer build-up and storage cycle.</span></a></p>
+<p><img alt="Hydrogen gas saturation after build-up and after injection and withdrawal in the fifth cycle." src="../_images/notebook-figure-39c35eb755f5992a8443531b0f3133e712a03af28c9f5b9b2c334e133c8d3ad7.png" /></p>
+<p class="figure-access"><a class="reference external" href="../_images/notebook-figure-39c35eb755f5992a8443531b0f3133e712a03af28c9f5b9b2c334e133c8d3ad7.png">Open full-size<span class="figure-access-context"> — Hydrogen gas saturation after build-up and after injection and withdrawal in the fifth cycle.</span></a></p>
+<p><img alt="Gas surface rate and bottom-hole pressure over the aquifer build-up and storage cycle." src="../_images/notebook-figure-f603a2db852b13e864ef2a87ac2daea606fc8518b9c6afa0199f01beeb830e0b.png" /></p>
+<p class="figure-access"><a class="reference external" href="../_images/notebook-figure-f603a2db852b13e864ef2a87ac2daea606fc8518b9c6afa0199f01beeb830e0b.png">Open full-size<span class="figure-access-context"> — Gas surface rate and bottom-hole pressure over the aquifer build-up and storage cycle.</span></a></p>
 <p>The 50 m × 50 m grid has a 2 m target spacing. The 500-day schedule includes 120 days of build-up, a 30-day shut-in, and five 70-day cycles. Each cycle contains 30 days of injection, 10 days idle, and 30 days withdrawal. Plume panels share a color scale. <code class="docutils literal notranslate"><span class="pre">result.packedProblem</span></code> identifies the setup and accepted outputs on disk.</p>
 </section>
 <section id="Hydrogen-loss-due-to-dissolution">
 <h2>Hydrogen loss due to dissolution<a class="headerlink" href="#Hydrogen-loss-due-to-dissolution" title="Link to this heading">¶</a></h2>
 <p>The dissolved share is <span class="math notranslate nohighlight">\(100 V_{\mathrm{diss}}/(V_{\mathrm{diss}}+V_{\mathrm{free}})\)</span>, with <span class="math notranslate nohighlight">\(V_{\mathrm{diss}}=\sum_c PV_c S_{l,c} b_{l,c}R_{s,c}\)</span> and <span class="math notranslate nohighlight">\(V_{\mathrm{free}}=\sum_c PV_c S_{g,c}b_{g,c}\)</span>. All volumes use the same surface conditions. This measures partitioning out of the free-gas inventory, rather than irreversible consumption or cumulative loss of injected hydrogen. Pressure decline can release dissolved hydrogen.</p>
-<p><img alt="Dissolved hydrogen volume and dissolved fraction of retained hydrogen over five storage cycles." src="../_static/examples/aquifer_dissolution.png" /></p>
-<p class="figure-access"><a class="reference external" href="../_static/examples/aquifer_dissolution.png">Open full-size<span class="figure-access-context"> — Dissolved hydrogen volume and dissolved fraction of retained hydrogen over five storage cycles.</span></a> · <a class="reference download external" download="" href="../_static/examples/aquifer_dissolution.pdf">Download PDF<span class="figure-access-context"> — Dissolved hydrogen volume and dissolved fraction of retained hydrogen over five storage cycles.</span></a></p>
+<p><img alt="Dissolved hydrogen volume and dissolved fraction of retained hydrogen over five storage cycles." src="../_images/notebook-figure-908285c5599b60312d3a2177e1470edae5370e7f3f97ee4c6caccda04e831cb2.png" /></p>
+<p class="figure-access"><a class="reference external" href="../_images/notebook-figure-908285c5599b60312d3a2177e1470edae5370e7f3f97ee4c6caccda04e831cb2.png">Open full-size<span class="figure-access-context"> — Dissolved hydrogen volume and dissolved fraction of retained hydrogen over five storage cycles.</span></a></p>
 </section>
 <section id="Inspect-the-fluid-tables">
 <h2>Inspect the fluid tables<a class="headerlink" href="#Inspect-the-fluid-tables" title="Link to this heading">¶</a></h2>
@@ -332,8 +332,8 @@
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">plotAquiferFluidTables</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 </pre></div>
 </div>
-<p><img alt="Solution ratio, gas and liquid formation-volume factors, and gas viscosity versus pressure." src="../_static/examples/aquifer_fluid_tables.png" /></p>
-<p class="figure-access"><a class="reference external" href="../_static/examples/aquifer_fluid_tables.png">Open full-size<span class="figure-access-context"> — Solution ratio, gas and liquid formation-volume factors, and gas viscosity versus pressure.</span></a> · <a class="reference download external" download="" href="../_static/examples/aquifer_fluid_tables.pdf">Download PDF<span class="figure-access-context"> — Solution ratio, gas and liquid formation-volume factors, and gas viscosity versus pressure.</span></a></p>
+<p><img alt="Solution ratio, gas and liquid formation-volume factors, and gas viscosity versus pressure." src="../_images/notebook-figure-9db4202ba8f2c10e02f7bbcf43f915febfd1c16d6aa678306ceb8207c967b42f.png" /></p>
+<p class="figure-access"><a class="reference external" href="../_images/notebook-figure-9db4202ba8f2c10e02f7bbcf43f915febfd1c16d6aa678306ceb8207c967b42f.png">Open full-size<span class="figure-access-context"> — Solution ratio, gas and liquid formation-volume factors, and gas viscosity versus pressure.</span></a></p>
 </section>
 </section>
 
