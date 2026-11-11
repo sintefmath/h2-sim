@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bc7fc180" />
     
@@ -322,19 +322,19 @@
 <h2>Hydrogen consumption and dissolved H₂<a class="headerlink" href="#Hydrogen-consumption-and-dissolved-H₂" title="Link to this heading">¶</a></h2>
 <p><img alt="Full-cycle hydrogen consumption and dissolved-hydrogen evolution compared with the reference." src="../_static/examples/phreeqc_validation_full_cycle.png" /></p>
 <p class="figure-access"><a class="reference external" href="../_static/examples/phreeqc_validation_full_cycle.png">Open full-size<span class="figure-access-context"> — Full-cycle hydrogen consumption and dissolved-hydrogen evolution compared with the reference.</span></a> · <a class="reference download external" download="" href="../_static/examples/phreeqc_validation_full_cycle.pdf">Download PDF<span class="figure-access-context"> — Full-cycle hydrogen consumption and dissolved-hydrogen evolution compared with the reference.</span></a></p>
-<p>Percentages use a fixed denominator: the total prescribed ideal-gas injection at 101325 Pa and 288.15 K. This is a reaction-source quadrature diagnostic, not an independent inventory-deficit measurement. At day 250 H2sim consumes 38.857% and the reference 37.704%, a difference of 1.153 percentage points. This comparison does not establish grid or timestep convergence.</p>
+<p>Percentages use a fixed denominator: the total prescribed ideal-gas injection at 101325 Pa and 288.15 K. This is a reaction-source quadrature diagnostic, not an independent inventory-deficit measurement. At day 250 H2sim consumes 40.180% and the reference 37.704%, a difference of 2.476 percentage points. This comparison does not establish grid or timestep convergence.</p>
 </section>
 <section id="PHREEQC-geochemistry-over-the-full-cycle">
 <h2>PHREEQC geochemistry over the full cycle<a class="headerlink" href="#PHREEQC-geochemistry-over-the-full-cycle" title="Link to this heading">¶</a></h2>
 <p><img alt="Full-period space-time maps of PHREEQC pH and total dissolved inorganic carbon for both implementations." src="../_static/examples/phreeqc_geochemistry_full_cycle.png" /></p>
 <p class="figure-access"><a class="reference external" href="../_static/examples/phreeqc_geochemistry_full_cycle.png">Open full-size<span class="figure-access-context"> — Full-period space-time maps of PHREEQC pH and total dissolved inorganic carbon for both implementations.</span></a> · <a class="reference download external" download="" href="../_static/examples/phreeqc_geochemistry_full_cycle.pdf">Download PDF<span class="figure-access-context"> — Full-period space-time maps of PHREEQC pH and total dissolved inorganic carbon for both implementations.</span></a></p>
-<p>Each observable shares color limits across implementations. DIC denotes total dissolved inorganic-carbon molality, rather than only dissolved CO₂. The compositional run records 87 cell-step elemental-audit failures (maximum absolute residual 3.61 × 10⁻⁵ mol); the reference lacks the same audit. The two implementations also retain distinct acetate/nitrogen and aqueous-organic-carbon bookkeeping.</p>
+<p>Each observable shares color limits across implementations. DIC denotes total dissolved inorganic-carbon molality, rather than only dissolved CO₂. The compositional run records 98 cell-step elemental-audit failures (maximum absolute residual 3.61 × 10⁻⁵ mol); the reference lacks the same audit. The two implementations also retain distinct acetate/nitrogen and aqueous-organic-carbon bookkeeping.</p>
 </section>
 <section id="Hydrogen-consumed-by-reaction">
 <h2>Hydrogen consumed by reaction<a class="headerlink" href="#Hydrogen-consumed-by-reaction" title="Link to this heading">¶</a></h2>
 <p><img alt="Methanogenesis, acetogenesis, and sulfate-reduction hydrogen consumption compared over the full 250-day cycle." src="../_static/examples/phreeqc_reaction_loss_full_cycle.png" /></p>
 <p class="figure-access"><a class="reference external" href="../_static/examples/phreeqc_reaction_loss_full_cycle.png">Open full-size<span class="figure-access-context"> — Methanogenesis, acetogenesis, and sulfate-reduction hydrogen consumption compared over the full 250-day cycle.</span></a> · <a class="reference download external" download="" href="../_static/examples/phreeqc_reaction_loss_full_cycle.pdf">Download PDF<span class="figure-access-context"> — Methanogenesis, acetogenesis, and sulfate-reduction hydrogen consumption compared over the full 250-day cycle.</span></a></p>
-<p>MET, ACE, and SRB sum to the total curve. At day 250 the compositional contributions are 33.357%, 5.092%, and 0.408%; the reference contributions are 32.439%, 4.879%, and 0.386%. Dissolution and unrecovered gas are excluded. Full packed outputs are retained for replotting.</p>
+<p>MET, ACE, and SRB sum to the total curve. At day 250 the compositional contributions are 34.456%, 5.316%, and 0.408%; the reference contributions are 32.439%, 4.879%, and 0.386%. Dissolution and unrecovered gas are excluded. Full packed outputs are retained for replotting.</p>
 <p>Reference: <a class="reference external" href="https://github.com/ahmadrezashojaee/UGFACT">UGFACT</a>, Ahmadreza Shojaee. The adapter retains reference reaction equations and records total DIC directly from PHREEQC selected output.</p>
 </section>
 </section>
@@ -411,7 +411,7 @@
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/mhchem"]}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "packages": {"[+]": ["mhchem"]}}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
