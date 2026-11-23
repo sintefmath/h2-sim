@@ -254,10 +254,10 @@ function D_i = gasMixtureDiffusivity(d, model, state, c, ncomp, Dij_ref, gasScal
     % Gas diffusion (Wilke multi-component)
     % D_i,mix = (1 - y_i) / sum(y_j/D_ij) for j!=i
     yAll = model.getProp(state, 'y');
-    yc_curr = localGetComponentVector(yAll, c);
-    numerator = max(1 - yc_curr, 1e-6);
-
+    % Sum the other mole fractions directly to retain trace precision.
+    numerator = 0;
     invDi = 0;
+    invBinaryMean = 0;
     for j = 1:ncomp
         if j == c
             continue
@@ -265,9 +265,19 @@ function D_i = gasMixtureDiffusivity(d, model, state, c, ncomp, Dij_ref, gasScal
         yj = localGetComponentVector(yAll, j);
         Dij = Dij_ref(c, j) .* gasScale;
         Dij = max(Dij, d.minDiffusivity);
+        numerator = numerator + yj;
         invDi = invDi + yj ./ Dij;
+        invBinaryMean = invBinaryMean + 1 ./ Dij;
     end
-    Di_mix = numerator ./ max(invDi, d.minDiffusivity);
+    % At exact purity, choose the limit for equal infinitesimal traces.
+    % This finite coefficient creates no flux for uniform pure composition.
+    pure = value(numerator) == 0;
+    if ncomp > 1
+        invBinaryMean = invBinaryMean ./ (ncomp - 1);
+        Di_mix = (numerator + pure) ./ (invDi + pure .* invBinaryMean);
+    else
+        Di_mix = d.minDiffusivity;
+    end
     D_i = Di_mix;
 end
 
