@@ -38,6 +38,36 @@ classdef H2BiochemVolumePressureTest < matlab.unittest.TestCase
             test.verifyEqual(info.evaluations, 1);
         end
 
+        function failedProbeUsesFiniteFallback(test)
+            [actual, info] = solveH2BiochemVolumePressure(@boundedResidual, 0);
+            test.verifyEqual(actual, 0.0005, 'AbsTol', 1e-12);
+            test.verifyTrue(info.fallback);
+            test.verifyGreaterThan(info.invalidProbes, 0);
+
+            function result = boundedResidual(point)
+                assert(abs(point) < 0.0009, 'Test:InvalidFlash', ...
+                    'EOS probe outside its valid pressure range.');
+                result = exp(0.0005 - point) - 1;
+            end
+        end
+
+        function noRootWithinPressureBoundFailsClearly(test)
+            residual = @(point) exp(log(8) - point) - 1;
+            test.verifyError(@() solveH2BiochemVolumePressure(residual, 0), ...
+                'H2Biochem:NoFiniteVolumeBracket');
+        end
+
+        function allFallbackProbesFailClearly(test)
+            test.verifyError(@() solveH2BiochemVolumePressure(@isolatedResidual, 0), ...
+                'H2Biochem:NoFiniteVolumeBracket');
+
+            function result = isolatedResidual(point)
+                assert(point == 0, 'Test:InvalidFlash', ...
+                    'Only the initial pressure is valid.');
+                result = 1;
+            end
+        end
+
         function repeatedProbesDoNotRepeatFlash(test)
             seen = [];
             [actual, info] = solveH2BiochemVolumePressure(@countedResidual, 10);

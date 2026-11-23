@@ -53,12 +53,40 @@ function [logPressure, diagnostics] = solveH2BiochemVolumePressure(residual, ini
             end
         catch ME
             % An exploratory EOS probe can fail near a phase boundary. It is
-            % not an accepted state: fall back to the original scalar fzero search.
+            % not an accepted state: seek a finite sign-changing bracket.
             diagnostics.invalidProbes = diagnostics.invalidProbes + 1;
             diagnostics.localProbeError = ME.message;
         end
         diagnostics.fallback = true;
-        logPressure = fzero(@evaluate, initialLogPressure);
+        % Bound exploratory flashes to a factor of four in pressure.
+        bracket = [];
+        offsets = unique([1e-7 * 2.^(0:24), log(4)]);
+        offsets = offsets(offsets <= log(4));
+        for distance = offsets
+            for direction = [sign(f0), -sign(f0)]
+                point = initialLogPressure + direction * distance;
+                try
+                    candidate = evaluate(point);
+                catch
+                    diagnostics.invalidProbes = diagnostics.invalidProbes + 1;
+                    continue
+                end
+                if candidate == 0
+                    logPressure = point;
+                    diagnostics.evaluations = numel(probes);
+                    return
+                elseif sign(candidate) ~= sign(f0)
+                    bracket = sort([initialLogPressure, point]);
+                    break
+                end
+            end
+            if ~isempty(bracket)
+                break
+            end
+        end
+        assert(~isempty(bracket), 'H2Biochem:NoFiniteVolumeBracket', ...
+            'No finite EOS volume bracket within a factor of four of the current pressure.');
+        logPressure = fzero(@evaluate, bracket);
     end
     diagnostics.evaluations = numel(probes);
 
